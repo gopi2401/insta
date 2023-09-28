@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,7 @@ void main() async {
 }
 
 var permission = false;
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -30,7 +32,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      navigatorKey: navigatorKey,
+      routes: {
+        "login": (BuildContext context) => InstaLogin(),
+      },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -48,6 +53,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const platform = MethodChannel('app.channel.shared.data');
   DownloadController downloadController = Get.put(DownloadController());
   TextEditingController reelController = TextEditingController();
   late FToast fToast;
@@ -57,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    getSharedText();
     fToast = FToast();
     fToast.init(context);
   }
@@ -140,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   downloading = true;
                 });
                 if (!reelController.text.trim().isEmpty) {
-                  downloadController.downloadReal(reelController.text, context);
+                  downloadController.downloadReal(reelController.text);
                 } else {
                   showToast();
                 }
@@ -278,6 +285,13 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
       return 'result';
+    }
+  }
+
+  Future<void> getSharedText() async {
+    var sharedData = await platform.invokeMethod('getSharedText');
+    if (sharedData != null) {
+      downloadController.downloadReal(sharedData);
     }
   }
 }
