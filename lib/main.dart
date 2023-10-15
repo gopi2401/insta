@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/Controller/DownloadController.dart';
 import 'package:insta/Controller/instagram_login.dart';
+import 'package:insta/Whatsapp/videos.dart';
 import 'package:insta/create_folder.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -123,6 +124,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       routes: {
         "login": (BuildContext context) => InstaLogin(),
+        // "VideoListView": (BuildContext context) => VideoListView(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -259,8 +261,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                 child: Text('Login')),
             TextButton(
-                onPressed: () => {_showNotificationMediaStyle()},
-                child: Text('showNotification')),
+                onPressed: () =>
+                    {navigatorKey.currentState?.pushNamed('VideoListView')},
+                child: Text('VideoListView')),
           ],
         ),
       ),

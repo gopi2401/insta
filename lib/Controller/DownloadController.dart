@@ -65,8 +65,8 @@ class DownloadController extends GetxController {
                 var dddddd = json['caption'];
                 var ssss = dddddd['text']
                     .toString()
-                    .replaceAll("\n", "_")
-                    .replaceAll("#", "_");
+                    .replaceAll(RegExp(r"[&/\\#,+()$~%.\':*?<>{}]+"), '')
+                    .replaceAll("\n", "_");
                 ssss.length >= 60
                     ? fileName = ssss.substring(0, 60)
                     : fileName = ssss;
@@ -75,11 +75,24 @@ class DownloadController extends GetxController {
           } else if (data['graphql'] != null) {
             InstaPostWithoutLogin post = InstaPostWithoutLogin.fromJson(data);
             videoURLLLLL = post.graphql?.shortcodeMedia?.videoUrl;
+            if (videoURLLLLL == null) {
+              var arr = data['graphql']['shortcode_media']
+                  ['edge_sidecar_to_children']['edges'];
+              arr.forEach((json) {
+                var medi = json['node'];
+                if (medi['__typename'] == 'GraphVideo') {
+                  videoURLLLLL = medi['video_url'];
+                }
+                if (medi['__typename'] == 'GraphImage') {
+                  medi['display_url'];
+                }
+              });
+            }
             var s = data['graphql']['shortcode_media']['edge_media_to_caption']
                     ['edges'][0]['node']['text']
                 .toString()
-                .replaceAll("\n", "_")
-                .replaceAll("#", "_");
+                .replaceAll(RegExp(r"[&/\\#,+()$~%.\':*?<>{}]+"), '')
+                .replaceAll("\n", "_");
             s.length >= 60 ? fileName = s.substring(0, 60) : fileName = s;
             ImgURLLLLL = data['graphql']['shortcode_media']['display_url'];
           }
