@@ -1,16 +1,14 @@
 # insta
 
-A new Flutter project.
+A new instagram videos download app.
 
-## Getting Started
+## Download
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[<img src="get_website.png"
+     alt="Download from Website"
+     height="90">](https://gopi2401.github.io/)
+[<img src="get_github.png"
+     alt="Download from GitHub"
+     height="90">](https://github.com/gopi2401/insta-app/releases)
+     
+### Don't forget to :star: the repo
