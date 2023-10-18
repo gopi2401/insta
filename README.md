@@ -15,3 +15,6 @@ A new instagram videos download app.
 ### Don't forget to :star: the repo
 
 ## Features
+
+No Subscription
+No Ads
