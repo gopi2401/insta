@@ -4,11 +4,14 @@ A new instagram videos download app.
 
 ## Download
 
-[<img src="get_website.png"
-     alt="Download from Website"
-     height="90">](https://gopi2401.github.io/)
-[<img src="get_github.png"
-     alt="Download from GitHub"
-     height="90">](https://github.com/gopi2401/insta-app/releases)
+[<img src="https://img.shields.io/badge/Website-blue"
+     alt="Website"
+     height="50">](https://gopi2401.github.io/)
+     
+[<img src="https://img.shields.io/badge/GitHub-8A2BE2"
+     alt="GitHub"
+     height="50">](https://github.com/gopi2401/insta-app/releases)
      
 ### Don't forget to :star: the repo
+
+## Features
