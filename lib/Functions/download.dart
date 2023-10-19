@@ -11,8 +11,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:insta/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../model/insta_post_with_login.dart';
-import '../model/insta_post_without_login.dart';
+import '../models/insta_post_with_login.dart';
+import '../models/insta_post_without_login.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart' as wb;
 import 'package:http/http.dart' as http;
 
@@ -44,6 +44,7 @@ class DownloadController extends GetxController {
     String? videoURLLLLL;
     String? ImgURLLLLL;
     String? fileName;
+    var Urls = [];
     try {
       var request = await httpClient.getUrl(Uri.parse(url));
       for (var element in gotCookies) {
@@ -60,6 +61,19 @@ class DownloadController extends GetxController {
             InstaPostWithLogin postWithLogin =
                 InstaPostWithLogin.fromJson(data);
             videoURLLLLL = postWithLogin.items?.first.videoVersions?.first.url;
+            if (videoURLLLLL == null && data['items'][0]['carousel_media']) {
+              var json = data['items'][0];
+              json['carousel_media'].forEach((jso) {
+                if (jso['video_versions']) {
+                  Urls.add(jso['video_versions'][0]['url']);
+                } else if (jso['image_versions2']) {
+                  Urls.add(jso['image_versions2']['candidates'][0]['url']);
+                }
+              });
+            } else if (data['items'][0]['image_versions2']) {
+              Urls.add(
+                  data['items'][0]['image_versions2']['candidates'][0]['url']);
+            }
             data['items'].forEach((json) {
               if (json['caption'] != null) {
                 var dddddd = json['caption'];
@@ -75,44 +89,56 @@ class DownloadController extends GetxController {
           } else if (data['graphql'] != null) {
             InstaPostWithoutLogin post = InstaPostWithoutLogin.fromJson(data);
             videoURLLLLL = post.graphql?.shortcodeMedia?.videoUrl;
-            if (videoURLLLLL == null) {
-              var arr = data['graphql']['shortcode_media']
-                  ['edge_sidecar_to_children']['edges'];
-              arr.forEach((json) {
-                var medi = json['node'];
-                if (medi['__typename'] == 'GraphVideo') {
-                  videoURLLLLL = medi['video_url'];
-                }
-                if (medi['__typename'] == 'GraphImage') {
-                  medi['display_url'];
-                }
-              });
+            if (videoURLLLLL == null &&
+                data['graphql']['shortcode_media'] != null) {
+              var d = data['graphql']['shortcode_media'];
+              if (d['edge_sidecar_to_children'] != null) {
+                var arr = d['edge_sidecar_to_children']['edges'];
+                arr.forEach((json) {
+                  var medi = json['node'];
+                  if (medi['__typename'] == 'GraphVideo') {
+                    Urls.add(medi['video_url']);
+                  }
+                  if (medi['__typename'] == 'GraphImage') {
+                    Urls.add(medi['display_url']);
+                  }
+                });
+              } else {
+                Urls.add(d['display_url']);
+              }
             }
-            var s = data['graphql']['shortcode_media']['edge_media_to_caption']
-                    ['edges'][0]['node']['text']
-                .toString()
-                .replaceAll(RegExp(r"[&/\\#,+()$~%.\':*?<>{}]+"), '')
-                .replaceAll("\n", "_");
-            s.length >= 60 ? fileName = s.substring(0, 60) : fileName = s;
-            ImgURLLLLL = data['graphql']['shortcode_media']['display_url'];
           }
+        }
+        ImgURLLLLL = data['graphql']['shortcode_media']['display_url'];
+        var ar = data['graphql']['shortcode_media']['edge_media_to_caption']
+            ['edges'];
+        if (ar.length > 0) {
+          var s = ar[0]['node']['text']
+              .toString()
+              .replaceAll(RegExp(r"[&/\\#,+()$~%.\':*?<>{}]+"), '')
+              .replaceAll("\n", "_")
+              .replaceAll("|", "_");
+          s.length >= 60 ? fileName = s.substring(0, 60) : fileName = s;
         } else {
-          InstaPostWithoutLogin post = InstaPostWithoutLogin.fromJson(data);
-          videoURLLLLL = post.graphql?.shortcodeMedia?.videoUrl;
+          fileName = data['graphql']['shortcode_media']['id'];
         }
       } else {
         navigatorKey.currentState?.pushNamed('login');
       }
       // Download video & save
-      if (videoURLLLLL == null) {
+      if (videoURLLLLL == null && Urls.isEmpty) {
         return null;
+      } else if (Urls.isNotEmpty) {
+        int i = 0;
+        Urls.forEach((element) {
+          String j = fileName!;
+          if (i != 0) {
+            j = "${fileName}${i}";
+          }
+          downloadFile(ImgURLLLLL, element, j);
+          i++;
+        });
       } else {
-        // var knockDir = await new Directory('/storage/emulated/0/Download/Insta')
-        //     .create(recursive: true);
-        // var appDocDir = await getTemporaryDirectory();
-        // String savePath = knockDir.path + '/$fileName.mp4';
-        // String savePath = '/storage/emulated/0/insta' + '/$fileName.mp4';
-        // await dio.download(videoURLLLLL, savePath);
         downloadFile(ImgURLLLLL, videoURLLLLL, fileName);
       }
     } catch (exception) {
@@ -122,18 +148,25 @@ class DownloadController extends GetxController {
 
   Future<String> downloadFile(ImgURLLLLL, url, fileName) async {
     HttpClient httpClient = new HttpClient();
+    var Dir = await new Directory('/storage/emulated/0/Download/Insta')
+        .create(recursive: true);
     File file;
     String filePath = '';
-    // String fileName = 'video.mp4';
-
+    String type = 'mp4';
     try {
       var request = await httpClient.getUrl(Uri.parse(url));
       var response = await request.close();
       if (response.statusCode == 200) {
+        var arr = response.headers['content-type']!.toList();
+        for (var element in arr) {
+          if (element == 'video/mp4') {
+            type = 'mp4';
+          } else if (element == 'image/jpeg') {
+            type = 'jpg';
+          }
+        }
         var bytes = await consolidateHttpClientResponseBytes(response);
-        var Dir = await new Directory('/storage/emulated/0/Download/Insta')
-            .create(recursive: true);
-        filePath = '${Dir.path}/$fileName.mp4';
+        filePath = '${Dir.path}/$fileName.$type';
         file = File(filePath);
         await file.writeAsBytes(bytes);
         _showNotificationMediaStyle(filePath, ImgURLLLLL);

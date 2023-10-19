@@ -7,10 +7,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:insta/Controller/DownloadController.dart';
-import 'package:insta/Controller/instagram_login.dart';
-import 'package:insta/Whatsapp/videos.dart';
-import 'package:insta/create_folder.dart';
+import 'package:insta/Functions/download.dart';
+import 'package:insta/instagram_login_page.dart';
+import 'Functions/create_folder.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
@@ -121,15 +120,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'insta',
       navigatorKey: navigatorKey,
       routes: {
         "login": (BuildContext context) => InstaLogin(),
-        // "VideoListView": (BuildContext context) => VideoListView(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
     );
   }
@@ -254,16 +254,9 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             TextButton(
-                onPressed: () async => {
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (_) => InstaLogin()))
-                      navigatorKey.currentState?.pushNamed('login')
-                    },
+                onPressed: () async =>
+                    {navigatorKey.currentState?.pushNamed('login')},
                 child: Text('Login')),
-            TextButton(
-                onPressed: () =>
-                    {navigatorKey.currentState?.pushNamed('VideoListView')},
-                child: Text('VideoListView')),
           ],
         ),
       ),
@@ -272,6 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> getSharedText() async {
     var sharedData = await platform.invokeMethod('getSharedText');
+    print(sharedData);
     if (sharedData != null) {
       downloadController.downloadReal(sharedData);
     }
