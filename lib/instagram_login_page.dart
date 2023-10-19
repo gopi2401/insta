@@ -22,27 +22,18 @@ class InstaLoginState extends State<InstaLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: TextButton(
-          child: Text('hiii'),
-          onPressed: () async {
-            final cookieManager = wb.WebviewCookieManager();
-            final gotCookies =
-                await cookieManager.getCookies('https://www.instagram.com/');
-            print('hiii...$gotCookies');
-          },
-        ),
-      ),
+      // appBar: AppBar(
+      // title: TextButton(
+      //     child: Text('hiii'),
+      //     onPressed: () async {
+      //       final cookieManager = wb.WebviewCookieManager();
+      //       final gotCookies =
+      //           await cookieManager.getCookies('https://www.instagram.com/');
+      //     },
+      //   ),
+      // ),
       body: SafeArea(
         child: WebViewWidget(controller: controller),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final cookies =
-              await controller.runJavaScriptReturningResult('document.cookie');
-          print('cookies$cookies');
-        },
-        child: Icon(Icons.arrow_upward),
       ),
     );
     // child: WebView(
