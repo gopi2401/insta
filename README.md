@@ -15,4 +15,12 @@ A new instagram videos download app.
 ### Don't forget to :star: the repo
 
 ## Features
-ad
+- Download Photos and Videos
+- Story Saver
+- Multiple Downloads
+- Fast Downloads
+- User-Friendly Interface
+- Secure and Private
+- No Subscription
+- No Watermarks
+- No Ads
