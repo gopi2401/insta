@@ -80,7 +80,8 @@ class DownloadController extends GetxController {
                 var ssss = dddddd['text']
                     .toString()
                     .replaceAll(RegExp(r"[&/\\#,+()$~%.\':*?<>{}]+"), '')
-                    .replaceAll("\n", "_");
+                    .replaceAll("\n", "_")
+                    .replaceAll("|", "_");
                 ssss.length >= 60
                     ? fileName = ssss.substring(0, 60)
                     : fileName = ssss;
