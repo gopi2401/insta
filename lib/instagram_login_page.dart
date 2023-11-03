@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_cookie_manager/webview_cookie_manager.dart' as wb;
 
 class InstaLogin extends StatefulWidget {
+  const InstaLogin({super.key});
+
   @override
   InstaLoginState createState() => InstaLoginState();
 }
@@ -36,18 +37,5 @@ class InstaLoginState extends State<InstaLogin> {
         child: WebViewWidget(controller: controller),
       ),
     );
-    // child: WebView(
-    //   javascriptMode: JavascriptMode.unrestricted,
-    //   initialUrl: 'https://www.instagram.com/accounts/login/',
-    //   navigationDelegate: (navigation) {
-    //     if (!navigation.url.contains("https://www.instagram.com/accounts/login/")) {
-    //       Navigator.pop(context);
-    //       return NavigationDecision.prevent;
-    //     } else {
-    //       return NavigationDecision.navigate;
-    //     }
-    //   },
-    // ),
-    // );
   }
 }

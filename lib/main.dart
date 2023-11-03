@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:insta/Functions/download.dart';
+import 'package:insta/Functions/insta_download.dart';
 import 'package:insta/instagram_login_page.dart';
 import 'Functions/create_folder.dart';
 import 'package:path_provider/path_provider.dart';
@@ -80,7 +80,7 @@ void main() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('ic_launcher');
 
-  final InitializationSettings initializationSettings = InitializationSettings(
+  const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
     // iOS: initializationSettingsDarwin,
     // macOS: initializationSettingsDarwin,
@@ -112,7 +112,7 @@ void main() async {
 }
 
 var permission = false;
-final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -144,12 +144,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   static const platform = MethodChannel('app.channel.shared.data');
-  DownloadController downloadController = Get.put(DownloadController());
+  InstaDownloadController downloadController =
+      Get.put(InstaDownloadController());
   TextEditingController reelController = TextEditingController();
   late FToast fToast;
   bool isLogin = false;
   bool downloading = false;
 
+  // ignore: unused_field
   bool _notificationsEnabled = false;
   @override
   void initState() {
@@ -165,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(25.0),
     ),
-    child: Row(
+    child: const Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(FontAwesomeIcons.link, size: 15),
@@ -180,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.TOP,
-      toastDuration: Duration(seconds: 2),
+      toastDuration: const Duration(seconds: 2),
     );
   }
 
@@ -227,23 +229,23 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            downloading ? CupertinoActivityIndicator() : Container(),
+            downloading ? const CupertinoActivityIndicator() : Container(),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextField(
                 controller: reelController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Url",
                 ),
               ),
             ),
             ElevatedButton(
-              child: Text('Download'),
+              child: const Text('Download'),
               onPressed: () async {
                 setState(() {
                   downloading = true;
                 });
-                if (!reelController.text.trim().isEmpty) {
+                if (reelController.text.trim().isNotEmpty) {
                   downloadController.downloadReal(reelController.text);
                 } else {
                   showToast();
@@ -256,7 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(
                 onPressed: () async =>
                     {navigatorKey.currentState?.pushNamed('login')},
-                child: Text('Login')),
+                child: const Text('Login')),
           ],
         ),
       ),
@@ -265,13 +267,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> getSharedText() async {
     var sharedData = await platform.invokeMethod('getSharedText');
-    print(sharedData);
+    debugPrint(sharedData);
     if (sharedData != null) {
       downloadController.downloadReal(sharedData);
     }
   }
 
-  Future<void> _showNotification() async {
+  Future<void> showNotification() async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails('your channel id', 'your channel name',
             channelDescription: 'your channel description',
@@ -285,7 +287,7 @@ class _MyHomePageState extends State<MyHomePage> {
         payload: 'item x');
   }
 
-  Future<void> _showNotificationMediaStyle() async {
+  Future<void> showNotificationMediaStyle() async {
     final String largeIconPath = await _downloadAndSaveFile(
         'https://dummyimage.com/128x128/00FF00/000000', 'largeIcon');
     final AndroidNotificationDetails androidNotificationDetails =
