@@ -9,9 +9,9 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/Functions/insta_download.dart';
 import 'package:insta/instagram_login_page.dart';
-import 'Functions/create_folder.dart';
+// import 'Functions/create_folder.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
 int id = 0;
@@ -105,10 +105,10 @@ void main() async {
   );
   // _isAndroidPermissionGranted();
   runApp(const MyApp());
-  var isGranted = await Permission.manageExternalStorage.isGranted;
-  if (isGranted) {
-    AppUtil.createFolder();
-  }
+  // var isGranted = await Permission.manageExternalStorage.isGranted;
+  // if (isGranted) {
+  //   AppUtil.createFolder();
+  // }
 }
 
 var permission = false;
