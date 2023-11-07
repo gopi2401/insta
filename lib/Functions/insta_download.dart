@@ -41,6 +41,47 @@ class InstaDownloadController extends GetxController {
     }
   }
 
+  stories(String uName, String? sId) async {
+    try {
+      var url = 'https://igs.sf-converter.com/api/userInfoByUsername/$uName';
+      final http.Response user = await http.get(Uri.parse(url));
+      var userData = jsonDecode(user.body);
+      var userId = userData['result']['user']['pk'];
+      var url1 = 'https://igs.sf-converter.com/api/stories/$userId';
+      final http.Response stories = await http.get(Uri.parse(url1));
+      var storiesData = jsonDecode(stories.body);
+      var arr = storiesData['result'];
+      for (var storie in arr) {
+        if (storie['pk'] == sId) {
+          if (storie['image_versions2'] != null) {
+            var image = storie['image_versions2']['candidates'][0]['url'];
+            if (storie['video_versions'] != null) {
+              var video = storie['video_versions'][0]['url'];
+              downloadFile(image, video, 'storie_video_$sId');
+            } else {
+              downloadFile(image, image, 'storie_image_$sId');
+            }
+          }
+        }
+      }
+      // arr.forEach((storie) {
+      //   if (storie['pk'] == sId) {
+      //     if (storie['image_versions2'] != null) {
+      //       var image = storie['image_versions2']['candidates'][0]['url'];
+      //       if (storie['video_versions'] != null) {
+      //         var video = storie['video_versions'][0]['url'];
+      //         downloadFile(image, video, 'storie_video_$sId');
+      //       } else {
+      //         downloadFile(image, image, 'storie_image_$sId');
+      //       }
+      //     }
+      //   }
+      // });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   postReel(data) {
     if (data['require_login'] != null && data['require_login']) {
       navigatorKey.currentState?.pushNamed('login');

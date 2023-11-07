@@ -245,8 +245,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   downloading = true;
                 });
-                if (reelController.text.trim().isNotEmpty) {
-                  downloadController.downloadReal(reelController.text);
+                var url = reelController.text.trim();
+                if (url.isNotEmpty) {
+                  final Uri uri = Uri.parse(url);
+                  if (uri.hasAbsolutePath) {
+                    RegExp ins = RegExp(r'instagram.com');
+                    bool test = ins.hasMatch(url);
+                    if (test) {
+                      var optIon = url.split("/")[3];
+                      if (optIon == 'p' || optIon == 'reel') {
+                        downloadController.downloadReal(url);
+                      } else if (optIon == 'stories') {
+                        var data = url.split('/');
+                        RegExp regExp = RegExp(r'^(\d+)');
+                        var match = regExp.firstMatch(data[5]);
+                        if (match == null) return;
+                        downloadController.stories(data[4], match.group(0));
+                      }
+                    }
+                  } else {
+                    print('else');
+                  }
                 } else {
                   showToast();
                 }
