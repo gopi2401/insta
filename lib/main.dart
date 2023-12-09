@@ -7,8 +7,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:insta/Functions/insta_download.dart';
+import 'package:insta/Functions/distribUrl.dart';
 import 'package:insta/instagram_login_page.dart';
+import 'package:insta/profilepage.dart';
 // import 'Functions/create_folder.dart';
 import 'package:path_provider/path_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
@@ -123,7 +124,8 @@ class MyApp extends StatelessWidget {
       title: 'insta',
       navigatorKey: navigatorKey,
       routes: {
-        "login": (BuildContext context) => InstaLogin(),
+        "login": (BuildContext context) => const InstaLogin(),
+        "nextpage": (BuildContext context) => const PorfilePage(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -144,8 +146,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   static const platform = MethodChannel('app.channel.shared.data');
-  InstaDownloadController downloadController =
-      Get.put(InstaDownloadController());
+  DistribUrl downloadController = Get.put(DistribUrl());
   TextEditingController reelController = TextEditingController();
   late FToast fToast;
   bool isLogin = false;
@@ -249,20 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (url.isNotEmpty) {
                   final Uri uri = Uri.parse(url);
                   if (uri.hasAbsolutePath) {
-                    RegExp ins = RegExp(r'instagram.com');
-                    bool test = ins.hasMatch(url);
-                    if (test) {
-                      var optIon = url.split("/")[3];
-                      if (optIon == 'p' || optIon == 'reel') {
-                        downloadController.downloadReal(url);
-                      } else if (optIon == 'stories') {
-                        var data = url.split('/');
-                        RegExp regExp = RegExp(r'^(\d+)');
-                        var match = regExp.firstMatch(data[5]);
-                        if (match == null) return;
-                        downloadController.stories(data[4], match.group(0));
-                      }
-                    }
+                    downloadController.url(url);
                   } else {
                     print('else');
                   }
@@ -278,6 +266,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () async =>
                     {navigatorKey.currentState?.pushNamed('login')},
                 child: const Text('Login')),
+            // TextButton(
+            //     onPressed: () async =>
+            //         {navigatorKey.currentState?.pushNamed('nextpage')},
+            //     child: const Text('Next Page')),
           ],
         ),
       ),
@@ -288,7 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var sharedData = await platform.invokeMethod('getSharedText');
     debugPrint(sharedData);
     if (sharedData != null) {
-      downloadController.downloadReal(sharedData);
+      downloadController.url(sharedData);
     }
   }
 
