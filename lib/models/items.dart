@@ -32,11 +32,12 @@ class FileJson {
   });
 
   FileJson.fromJson(Map<String, dynamic> json, String name) {
-    fileName = name;
     fileDisplayUrl = json['image_versions2']['candidates'][0]['url'];
     if (json['image_versions2'] != null && json['video_versions'] != null) {
+      fileName = '$name.mp4';
       fileUrl = json['video_versions'][0]['url'];
     } else if (json['image_versions2'] != null) {
+      fileName = '$name.jpg';
       fileUrl = json['image_versions2']['candidates'][0]['url'];
     }
   }

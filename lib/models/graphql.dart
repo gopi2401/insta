@@ -43,11 +43,12 @@ class FileJson {
   });
 
   FileJson.fromJson(Map<String, dynamic> json, String name) {
-    fileName = name;
     fileDisplayUrl = json['display_url'];
     if (json['__typename'] == 'GraphVideo') {
+      fileName = '$name.mp4';
       fileUrl = json['video_url'];
     } else if (json['__typename'] == 'GraphImage') {
+      fileName = '$name.jpg';
       fileUrl = json['display_url'];
     }
   }
