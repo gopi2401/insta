@@ -28,18 +28,13 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)
-
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
-                call,
-                result ->
-            if (call.method == "getSharedText") {
-                result.success(sharedText)
-                sharedText = null
-            }
-        }
     }
 
     private fun handleSendText(intent: Intent) {
         sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+        if (sharedText != null) {
+            MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL)
+                    .invokeMethod("getSharedText", sharedText)
+        }
     }
 }

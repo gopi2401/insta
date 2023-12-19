@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
+DistribUrl downloadController = Get.put(DistribUrl());
 int id = 0;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -110,6 +111,17 @@ void main() async {
   // if (isGranted) {
   //   AppUtil.createFolder();
   // }
+
+  const MethodChannel _channel = const MethodChannel('app.channel.shared.data');
+
+  _channel.setMethodCallHandler((call) async {
+    if (call.method == 'getSharedText') {
+      String sharedText = call.arguments;
+      // Handle the shared text as needed
+      // print('hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii$sharedText');
+      downloadController.url(sharedText);
+    }
+  });
 }
 
 var permission = false;
@@ -145,8 +157,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const platform = MethodChannel('app.channel.shared.data');
-  DistribUrl downloadController = Get.put(DistribUrl());
   TextEditingController reelController = TextEditingController();
   late FToast fToast;
   bool isLogin = false;
@@ -157,7 +167,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    getSharedText();
     _requestPermissions();
     fToast = FToast();
     fToast.init(context);
@@ -274,14 +283,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
-  }
-
-  Future<void> getSharedText() async {
-    var sharedData = await platform.invokeMethod('getSharedText');
-    debugPrint(sharedData);
-    if (sharedData != null) {
-      downloadController.url(sharedData);
-    }
   }
 
   Future<void> showNotification() async {
