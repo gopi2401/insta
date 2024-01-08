@@ -10,9 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:insta/Functions/distribUrl.dart';
 import 'package:insta/instagram_login_page.dart';
 import 'package:insta/profilepage.dart';
-// import 'Functions/create_folder.dart';
+import 'Functions/permission.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
 DistribUrl downloadController = Get.put(DistribUrl());
@@ -105,12 +105,8 @@ void main() async {
     },
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
-  // _isAndroidPermissionGranted();
   runApp(const MyApp());
-  // var isGranted = await Permission.manageExternalStorage.isGranted;
-  // if (isGranted) {
-  //   AppUtil.createFolder();
-  // }
+  Permissions.storage_permission();
 
   const MethodChannel _channel = const MethodChannel('app.channel.shared.data');
 
@@ -279,6 +275,20 @@ class _MyHomePageState extends State<MyHomePage> {
             //     onPressed: () async =>
             //         {navigatorKey.currentState?.pushNamed('nextpage')},
             //     child: const Text('Next Page')),
+            ElevatedButton(
+              onPressed: () {
+                final snackBar = SnackBar(
+                  content: Text('Hello World!'),
+                  margin: EdgeInsets.all(20),
+                  behavior: SnackBarBehavior.floating,
+                );
+
+                // Find the ScaffoldMessenger in the widget tree
+                // and use it to show a SnackBar.
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              },
+              child: const Text('Show SnackBar'),
+            ),
           ],
         ),
       ),
