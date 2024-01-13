@@ -12,7 +12,6 @@ import 'package:insta/instagram_login_page.dart';
 import 'package:insta/profilepage.dart';
 import 'Functions/permission.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
 DistribUrl downloadController = Get.put(DistribUrl());
@@ -275,20 +274,24 @@ class _MyHomePageState extends State<MyHomePage> {
             //     onPressed: () async =>
             //         {navigatorKey.currentState?.pushNamed('nextpage')},
             //     child: const Text('Next Page')),
-            ElevatedButton(
-              onPressed: () {
-                final snackBar = SnackBar(
-                  content: Text('Hello World!'),
-                  margin: EdgeInsets.all(20),
-                  behavior: SnackBarBehavior.floating,
-                );
-
-                // Find the ScaffoldMessenger in the widget tree
-                // and use it to show a SnackBar.
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              },
-              child: const Text('Show SnackBar'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     final snackBar = SnackBar(
+            //       content: Row(
+            //         children: [
+            //           CircularProgressIndicator(),
+            //           SizedBox(width: 16),
+            //           Text("Loading..."),
+            //         ],
+            //       ),
+            //       duration: Duration(seconds: 2),
+            //     );
+            //     // Find the ScaffoldMessenger in the widget tree
+            //     // and use it to show a SnackBar.
+            //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            //   },
+            //   child: const Text('Show SnackBar'),
+            // ),
           ],
         ),
       ),

@@ -1,14 +1,16 @@
 // ignore_for_file: file_names
 
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:get/get.dart';
 import 'package:insta/Functions/fileDownload.dart';
 import 'package:insta/main.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:http/http.dart' as http;
 
 import '../models/graphql.dart';
@@ -30,13 +32,41 @@ class InstaDownloadController extends GetxController {
             final cook = await controller.runJavaScriptReturningResult(
                 'JSON.parse(document.documentElement.innerText)') as String;
             var data = jsonDecode(cook);
-            debugPrint('Page finished loading: $cook');
-            postReel(data);
+            foundation.debugPrint('Page finished loading: $cook');
+            if (data['require_login'] != null && data['require_login']) {
+              var httpClient = new HttpClient();
+              var request = await httpClient.getUrl(
+                  Uri.parse("https://backend.instavideosave.com/allinone"));
+              request.headers.add('url', encryptFun(link));
+              var response = await request.close();
+              if (response.statusCode == HttpStatus.OK) {
+                var json = await response.transform(utf8.decoder).join();
+                var data = jsonDecode(json);
+                if (data['video'] != null && data['video'].isNotEmpty) {
+                  for (var file in data['video']) {
+                    downloadController.downloadFile(
+                        file['video'],
+                        "ReelVideo-${Random().nextInt(900000) + 100000}",
+                        file['thumbnail']);
+                  }
+                }
+                if (data['image'] != null && data['image'].isNotEmpty) {
+                  for (var url in data['image']) {
+                    downloadController.downloadFile(url,
+                        "ReelImage-${Random().nextInt(900000) + 100000}", url);
+                  }
+                }
+              } else {
+                navigatorKey.currentState?.pushNamed('login');
+              }
+            } else {
+              postReel(data);
+            }
           },
         ))
         ..loadRequest(Uri.parse(url));
     } catch (e) {
-      debugPrint('downloadReal: $e');
+      foundation.debugPrint('downloadReal: $e');
     }
   }
 
@@ -106,5 +136,26 @@ class InstaDownloadController extends GetxController {
         }
       }
     }
+  }
+
+  String encryptFun(String input) {
+    final key = encrypt.Key.fromUtf8('qwertyuioplkjhgf');
+    final iv = encrypt.IV.fromLength(16); // IV length is 16 for AES
+    final encrypter =
+        encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.ecb));
+    // Encrypt the input directly
+    final encrypted = encrypter.encrypt(input, iv: iv);
+    // Convert the encrypted bytes to a hex string
+    final encryptedHex = encrypted.base16;
+    return encryptedHex;
+  }
+
+  String nameFun(String input) {
+    var text = input
+        .toString()
+        .replaceAll(RegExp(r"[&/\\#,+()$~%.\':*?<>{}]+"), '')
+        .replaceAll("\n", "_")
+        .replaceAll("|", "_");
+    return text.length >= 60 ? text.substring(0, 60) : text;
   }
 }

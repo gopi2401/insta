@@ -23,6 +23,7 @@ A new instagram videos download app.
 ## Features
 - Download Photos and Videos
 - Story Saver
+- Youtube Video Shorts
 - Multiple Downloads
 - Fast Downloads
 - User-Friendly Interface
