@@ -46,14 +46,14 @@ class InstaDownloadController extends GetxController {
                   for (var file in data['video']) {
                     downloadController.downloadFile(
                         file['video'],
-                        "ReelVideo-${Random().nextInt(900000) + 100000}",
+                        "ReelVideo-${Random().nextInt(900000) + 100000}.mp4",
                         file['thumbnail']);
                   }
                 }
                 if (data['image'] != null && data['image'].isNotEmpty) {
                   for (var url in data['image']) {
                     downloadController.downloadFile(url,
-                        "ReelImage-${Random().nextInt(900000) + 100000}", url);
+                        "ReelImage-${Random().nextInt(900000) + 100000}.jpg", url);
                   }
                 }
               } else {
