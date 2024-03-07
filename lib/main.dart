@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:insta/Functions/distribUrl.dart';
+import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
 import 'package:insta/profilepage.dart';
 import 'Functions/permission.dart';
@@ -133,6 +134,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "login": (BuildContext context) => const InstaLogin(),
         "nextpage": (BuildContext context) => const PorfilePage(),
+        "about": (BuildContext context) => AboutPage()
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -295,46 +297,117 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      drawer: Drawer(
+        child: Container(
+          color: Colors.blueGrey, // Background color of the drawer
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                ),
+                child: Text(
+                  'Drawer Header',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.home,
+                  color: Colors.white,
+                ),
+                title: Text(
+                  'Home',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: () {
+                  // Add your navigation logic here
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.error_outline,
+                  color: Colors.white,
+                ),
+                title: const Text(
+                  'About',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: () {
+                  navigatorKey.currentState?.pushNamed('about');
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Future<void> showNotification() async {
-    const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('your channel id', 'your channel name',
-            channelDescription: 'your channel description',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        id++, 'plain title', 'plain body', notificationDetails,
-        payload: 'item x');
-  }
+  // Future<void> showNotification() async {
+  //   const AndroidNotificationDetails androidNotificationDetails =
+  //       AndroidNotificationDetails('your channel id', 'your channel name',
+  //           channelDescription: 'your channel description',
+  //           importance: Importance.max,
+  //           priority: Priority.high,
+  //           ticker: 'ticker');
+  //   const NotificationDetails notificationDetails =
+  //       NotificationDetails(android: androidNotificationDetails);
+  //   await flutterLocalNotificationsPlugin.show(
+  //       id++, 'plain title', 'plain body', notificationDetails,
+  //       payload: 'item x');
+  // }
 
-  Future<void> showNotificationMediaStyle() async {
-    final String largeIconPath = await _downloadAndSaveFile(
-        'https://dummyimage.com/128x128/00FF00/000000', 'largeIcon');
-    final AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-      'media channel id',
-      'media channel name',
-      channelDescription: 'media channel description',
-      largeIcon: FilePathAndroidBitmap(largeIconPath),
-      styleInformation: const MediaStyleInformation(),
+  // Future<void> showNotificationMediaStyle() async {
+  //   final String largeIconPath = await _downloadAndSaveFile(
+  //       'https://dummyimage.com/128x128/00FF00/000000', 'largeIcon');
+  //   final AndroidNotificationDetails androidNotificationDetails =
+  //       AndroidNotificationDetails(
+  //     'media channel id',
+  //     'media channel name',
+  //     channelDescription: 'media channel description',
+  //     largeIcon: FilePathAndroidBitmap(largeIconPath),
+  //     styleInformation: const MediaStyleInformation(),
+  //   );
+  //   final NotificationDetails notificationDetails =
+  //       NotificationDetails(android: androidNotificationDetails);
+  //   await flutterLocalNotificationsPlugin.show(
+  //       id++, 'notification title', 'notification body', notificationDetails);
+  // }
+
+  // Future<String> _downloadAndSaveFile(String url, String fileName) async {
+  //   final Directory directory = await getApplicationDocumentsDirectory();
+  //   final String filePath = '${directory.path}/$fileName';
+  //   final http.Response response = await http.get(Uri.parse(url));
+  //   final File file = File(filePath);
+  //   await file.writeAsBytes(response.bodyBytes);
+  //   return filePath;
+  // }
+
+  showSnackBar(msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error: $msg'),
+      ),
     );
-    final NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        id++, 'notification title', 'notification body', notificationDetails);
   }
 
-  Future<String> _downloadAndSaveFile(String url, String fileName) async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    final String filePath = '${directory.path}/$fileName';
-    final http.Response response = await http.get(Uri.parse(url));
-    final File file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
-    return filePath;
+  Future<String> getAppVersion() async {
+    const platform = MethodChannel('com.example.insta/app_version');
+    try {
+      return await platform.invokeMethod('getAppVersion');
+    } on PlatformException catch (e) {
+      return 'Failed to get app version: ${e.message}';
+    }
   }
 }

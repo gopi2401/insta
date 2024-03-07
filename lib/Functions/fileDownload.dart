@@ -14,13 +14,17 @@ class FileDownload extends GetxController {
     try {
       Random random = new Random();
       int progressId = random.nextInt(100);
+      int progress = 0;
       await _dio.download(url, '/storage/emulated/0/Download/Insta/$fileName',
           onReceiveProgress: (received, total) async {
         if (total != -1) {
-          int progress = (received / total * 100).toInt();
-          print((received / total * 100).toStringAsFixed(0) + '%');
-          if (progress == 0 || progress == 50 || progress == 85) {
-            await _showProgressNotification(progress, progressId);
+          int progre = (received / total * 100).toInt();
+          if (progre == 0 || progre > progress) {
+            progress = progre;
+            print((received / total * 100).toStringAsFixed(0) + '%');
+            if (progress == 0 || progress == 50 || progress == 85) {
+              await _showProgressNotification(progress, progressId);
+            }
           }
         }
       });
@@ -94,14 +98,18 @@ class FileDownload extends GetxController {
 
   Future<void> _showNotificationMediaStyle(
       notificationBody, notificationImg, idno) async {
-    final String largeIconPath =
-        await _downloadAndSaveFile(notificationImg, 'largeIcon');
+    var largeIconPath;
+    if (notificationImg != null) {
+      final String file =
+          await _downloadAndSaveFile(notificationImg, 'largeIcon');
+      largeIconPath = FilePathAndroidBitmap(file);
+    }
     final AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
       'media channel id',
       'media channel name',
       channelDescription: 'media channel description',
-      largeIcon: FilePathAndroidBitmap(largeIconPath),
+      largeIcon: largeIconPath,
       styleInformation: const MediaStyleInformation(),
     );
     final NotificationDetails notificationDetails =

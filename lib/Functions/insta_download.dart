@@ -33,7 +33,8 @@ class InstaDownloadController extends GetxController {
                 'JSON.parse(document.documentElement.innerText)') as String;
             var data = jsonDecode(cook);
             foundation.debugPrint('Page finished loading: $cook');
-            if (data['require_login'] != null && data['require_login']) {
+            if (data == null ||
+                data['require_login'] != null && data['require_login']) {
               var httpClient = new HttpClient();
               var request = await httpClient.getUrl(
                   Uri.parse("https://backend.instavideosave.com/allinone"));
@@ -52,8 +53,10 @@ class InstaDownloadController extends GetxController {
                 }
                 if (data['image'] != null && data['image'].isNotEmpty) {
                   for (var url in data['image']) {
-                    downloadController.downloadFile(url,
-                        "ReelImage-${Random().nextInt(900000) + 100000}.jpg", url);
+                    downloadController.downloadFile(
+                        url,
+                        "ReelImage-${Random().nextInt(900000) + 100000}.jpg",
+                        url);
                   }
                 }
               } else {
