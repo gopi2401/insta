@@ -1,12 +1,12 @@
 package com.example.insta
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity : FlutterActivity() {
 
@@ -27,7 +27,19 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-        GeneratedPluginRegistrant.registerWith(flutterEngine)
+        super.configureFlutterEngine(flutterEngine)
+
+        // Registering the method channel for getting the app version
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
+                call,
+                result ->
+            if (call.method == "getAppVersion") {
+                val versionName = getAppVersion()
+                result.success(versionName)
+            } else {
+                result.notImplemented()
+            }
+        }
     }
 
     private fun handleSendText(intent: Intent) {
@@ -36,5 +48,15 @@ class MainActivity : FlutterActivity() {
             MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL)
                     .invokeMethod("getSharedText", sharedText)
         }
+    }
+
+    private fun getAppVersion(): String {
+        try {
+            val pInfo = packageManager.getPackageInfo(packageName, 0)
+            return pInfo.versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        return "Unknown"
     }
 }

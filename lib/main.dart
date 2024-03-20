@@ -299,7 +299,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: Drawer(
         child: Container(
-          color: Colors.blueGrey, // Background color of the drawer
+          color: Colors.black45, // Background color of the drawer
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
@@ -400,14 +400,5 @@ class _MyHomePageState extends State<MyHomePage> {
         content: Text('Error: $msg'),
       ),
     );
-  }
-
-  Future<String> getAppVersion() async {
-    const platform = MethodChannel('com.example.insta/app_version');
-    try {
-      return await platform.invokeMethod('getAppVersion');
-    } on PlatformException catch (e) {
-      return 'Failed to get app version: ${e.message}';
-    }
   }
 }
