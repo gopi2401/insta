@@ -10,7 +10,7 @@ class Items {
       var fName = filename(media);
       if (media['carousel_media'] != null) {
         media['carousel_media'].forEach((jso) {
-          var n = "_" + jso['id'].substring(20);
+          var n = "_${jso['id'].substring(20)}";
           files!.add(FileJson.fromJson(jso, fName + n));
         });
       } else {

@@ -10,7 +10,7 @@ class YTDownloadController extends GetxController {
   fb(String link) async {
     const data =
         'c480452d9cc3afa9f8ba7051efd1d55695c2925d6d0a5a27c196b1066e0cf3a93e5cb078760b871ef5a40e198cd5853d';
-    var httpClient = new HttpClient();
+    var httpClient = HttpClient();
     var request = await httpClient.postUrl(Uri.parse(decryptFun(data)));
     request.headers.set('content-type', 'application/json');
     request.add(utf8.encode(json.encode({"url": link})));
@@ -23,7 +23,7 @@ class YTDownloadController extends GetxController {
     var response = await request.close();
     if (response.statusCode == 200) {
       var json = await response.transform(utf8.decoder).join();
-      var jsons = jsonDecode(json);
+      jsonDecode(json);
     }
   }
 

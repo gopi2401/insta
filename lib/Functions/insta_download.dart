@@ -35,7 +35,7 @@ class InstaDownloadController extends GetxController {
             foundation.debugPrint('Page finished loading: $cook');
             if (data == null ||
                 data['require_login'] != null && data['require_login']) {
-              var httpClient = new HttpClient();
+              var httpClient = HttpClient();
               var request = await httpClient.getUrl(
                   Uri.parse("https://backend.instavideosave.com/allinone"));
               request.headers.add('url', encryptFun(link));

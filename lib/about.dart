@@ -7,7 +7,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
 class AboutPage extends StatefulWidget {
+  const AboutPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _AboutPageState createState() => _AboutPageState();
 }
 
@@ -17,7 +20,7 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('About'),
+        title: const Text('About'),
       ),
       body: Center(
         child: Column(
@@ -45,7 +48,7 @@ class _AboutPageState extends State<AboutPage> {
             const SizedBox(height: 10),
             ElevatedButton(
               style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),
               ))),
@@ -86,7 +89,7 @@ class _AboutPageState extends State<AboutPage> {
             // InkWell(
             //     child: new Text('Open Browser'), onTap: () => launchUrl(_url)),
             // SizedBox(height: 10),
-            Text(
+            const Text(
               'Description: This is instagram post,reel,story & youtube video, short easy downloader app.',
               style: TextStyle(
                 fontSize: 15,
@@ -110,7 +113,7 @@ class _AboutPageState extends State<AboutPage> {
       }
       if (version == version1) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Already updated! 😉', style: TextStyle(fontSize: 18)),
           ),
         );

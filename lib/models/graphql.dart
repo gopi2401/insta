@@ -21,10 +21,10 @@ class Graphql {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.files != null && this.files!.isNotEmpty) {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (files != null && files!.isNotEmpty) {
       data['graphql'] = {
-        'shortcode_media': this.files![0].toJson(),
+        'shortcode_media': files![0].toJson(),
       };
     }
     return data;
@@ -54,10 +54,10 @@ class FileJson {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.fileName;
-    data['display_url'] = this.fileDisplayUrl;
-    data['url'] = this.fileUrl;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = fileName;
+    data['display_url'] = fileDisplayUrl;
+    data['url'] = fileUrl;
     return data;
   }
 }

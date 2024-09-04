@@ -10,10 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:insta/Functions/distribUrl.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
-import 'package:insta/profilepage.dart';
+import 'package:insta/status_saver/whatsapp.dart';
 import 'Functions/permission.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
+import 'additional.dart';
 
 DistribUrl downloadController = Get.put(DistribUrl());
 int id = 0;
@@ -108,9 +107,9 @@ void main() async {
   runApp(const MyApp());
   Permissions.storage_permission();
 
-  const MethodChannel _channel = const MethodChannel('app.channel.shared.data');
+  const MethodChannel channel = MethodChannel('app.channel.shared.data');
 
-  _channel.setMethodCallHandler((call) async {
+  channel.setMethodCallHandler((call) async {
     if (call.method == 'getSharedText') {
       String sharedText = call.arguments;
       // Handle the shared text as needed
@@ -130,16 +129,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'insta',
-      navigatorKey: navigatorKey,
-      routes: {
-        "login": (BuildContext context) => const InstaLogin(),
-        "nextpage": (BuildContext context) => const PorfilePage(),
-        "about": (BuildContext context) => AboutPage()
-      },
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      // navigatorKey: navigatorKey,
+      // routes: {
+      //   "login": (BuildContext context) => const InstaLogin(),
+      //   "nextpage": (BuildContext context) => const PorfilePage(),
+      //   "about": (BuildContext context) => const AboutPage(),
+      //   "wa": (BuildContext context) => const Wa()
+      // },
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      //   useMaterial3: true,
+      // ),
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       home: const MyHomePage(),
     );
@@ -212,14 +214,23 @@ class _MyHomePageState extends State<MyHomePage> {
             sound: true,
           );
     } else if (Platform.isAndroid) {
-      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+      // final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+      //     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+      //         AndroidFlutterLocalNotificationsPlugin>();
 
-      final bool? grantedNotificationPermission =
-          await androidImplementation?.requestPermission();
+      // final bool? grantedNotificationPermission =
+      //     await androidImplementation?.requestPermission();
+      // setState(() {
+      //   _notificationsEnabled = grantedNotificationPermission ?? false;
+      // });
+      final bool grantedNotificationPermission =
+          await flutterLocalNotificationsPlugin
+                  .resolvePlatformSpecificImplementation<
+                      AndroidFlutterLocalNotificationsPlugin>()
+                  ?.areNotificationsEnabled() ??
+              false;
       setState(() {
-        _notificationsEnabled = grantedNotificationPermission ?? false;
+        _notificationsEnabled = grantedNotificationPermission;
       });
     }
   }
@@ -269,13 +280,21 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             TextButton(
-                onPressed: () async =>
-                    {navigatorKey.currentState?.pushNamed('login')},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const InstaLogin()),
+                  );
+                },
                 child: const Text('Login')),
             // TextButton(
-            //     onPressed: () async =>
-            //         {navigatorKey.currentState?.pushNamed('nextpage')},
-            //     child: const Text('Next Page')),
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => const WhatsApp()),
+            //       );
+            //     },
+            //     child: const Text('wa')),
             // ElevatedButton(
             //   onPressed: () {
             //     final snackBar = SnackBar(
@@ -294,6 +313,7 @@ class _MyHomePageState extends State<MyHomePage> {
             //   },
             //   child: const Text('Show SnackBar'),
             // ),
+            const Additional()
           ],
         ),
       ),
@@ -303,7 +323,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              DrawerHeader(
+              const DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.grey,
                 ),
@@ -316,11 +336,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.home,
                   color: Colors.white,
                 ),
-                title: Text(
+                title: const Text(
                   'Home',
                   style: TextStyle(
                     color: Colors.white,
@@ -344,7 +364,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 onTap: () {
-                  navigatorKey.currentState?.pushNamed('about');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AboutPage()),
+                  );
                 },
               ),
             ],
