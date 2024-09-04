@@ -44,12 +44,23 @@ dependencies:
   font_awesome_flutter: ^10.5.0
   fluttertoast: ^8.2.2
   http: ^1.1.0
-  flutter_local_notifications: ^15.1.1
+  flutter_local_notifications: ^17.2.2
   dio: ^5.4.0
   permission_handler: ^11.0.1
   webview_flutter: ^4.4.4
   encrypt: ^5.0.0
   url_launcher: ^6.2.4
+  #new add
+  adaptive_theme: ^2.3.1
+  device_info_plus:
+  video_thumbnail: ^0.5.3
+  speed_dial_fab: ^2.2.1
+  # image_gallery_saver:
+  #   git:
+  #     url: https://github.com/hui-z/image_gallery_saver
+  #     ref: master
+  chewie: ^1.3.4
+  video_player: ^2.4.6
 dev_dependencies:
   flutter_test:
     sdk: flutter

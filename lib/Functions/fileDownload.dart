@@ -10,18 +10,18 @@ import 'package:path_provider/path_provider.dart';
 
 class FileDownload extends GetxController {
   void downloadFile(url, fileName, notificationImg) async {
-    Dio _dio = Dio();
+    Dio dio = Dio();
     try {
-      Random random = new Random();
+      Random random = Random();
       int progressId = random.nextInt(100);
       int progress = 0;
-      await _dio.download(url, '/storage/emulated/0/Download/Insta/$fileName',
+      await dio.download(url, '/storage/emulated/0/Download/Insta/$fileName',
           onReceiveProgress: (received, total) async {
         if (total != -1) {
           int progre = (received / total * 100).toInt();
           if (progre == 0 || progre > progress) {
             progress = progre;
-            print((received / total * 100).toStringAsFixed(0) + '%');
+            print('${(received / total * 100).toStringAsFixed(0)}%');
             if (progress == 0 || progress == 50 || progress == 85) {
               await _showProgressNotification(progress, progressId);
             }
