@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:insta/story_saver/profilepage.dart';
 
 import 'status_saver/whatsapp.dart';
+import 'story_saver/profilepage.dart';
 
 class Additional extends StatefulWidget {
   const Additional({super.key});
@@ -28,7 +28,7 @@ class AdditionalState extends State<Additional> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const PorfilePage()),
+                        builder: (context) => const ProfilePage()),
                   );
                 },
                 child: const Text(

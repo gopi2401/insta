@@ -1,97 +1,96 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:insta/models/highlight_model.dart';
+import 'package:insta/models/story_model.dart';
+import 'package:insta/models/user_info_model.dart';
+import 'package:insta/story_saver/image_screen.dart';
 import 'story_view.dart';
 
-class InsataPorfile extends StatefulWidget {
-  const InsataPorfile({super.key, required this.data});
-  final data;
+class InstaProfile extends StatefulWidget {
+  const InstaProfile({super.key, required this.data});
+  final UserInfo data;
+
   @override
-  State<InsataPorfile> createState() => InsataPorfileState();
+  State<InstaProfile> createState() => InstaProfileState();
 }
 
-class InsataPorfileState extends State<InsataPorfile> {
+class InstaProfileState extends State<InstaProfile> {
   late TextEditingController profileController;
+  late Future<Highlight?> highlightsFuture;
+  late Future<Story?> storiesFuture;
+
   @override
   void initState() {
     super.initState();
     profileController = TextEditingController();
+
+    // Fetch highlights and stories only if the profile is public
+    highlightsFuture = widget.data.isPrivate
+        ? Future.value(null)
+        : apiHighlight(widget.data.id);
+
+    storiesFuture =
+        widget.data.isPrivate ? Future.value(null) : apiStories(widget.data.id);
   }
 
   @override
   void dispose() {
-    super.dispose();
     profileController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var data = widget.data[0];
-    String username = data['result']['user']['username'];
-    String profilePicUrl = data['result']['user']['profile_pic_url'];
-    String fullName = data['result']['user']['full_name'];
-    String bio = data['result']['user']['biography'];
-    String followerCount = data['result']['user']['follower_count'].toString();
-    String followingCount =
-        data['result']['user']['following_count'].toString();
-    var highlights = widget.data[1]['result'];
-    var stories = widget.data[2];
+    var user = widget.data;
     return Scaffold(
-        appBar: AppBar(
-          title: Text(username),
-        ),
-        body: Container(
-          margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-          child: Column(children: [
+      appBar: AppBar(
+        title: Text(user.username),
+      ),
+      body: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
-                    onTap: () {
-                      if (stories.length > 0) {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) {
-                          return StoryView(
-                            stories: stories,
-                          );
-                        }));
-                        // if (stories[0]['image_versions2'] != null) {
-                        //   String img = stories[0]['image_versions2']
-                        //       ['candidates'][0]['url'];
-                        //   Navigator.push(context,
-                        //       MaterialPageRoute(builder: (_) {
-                        //     return ImageScreen(
-                        //       imgUrl: img,
-                        //     );
-                        //   }));
-                        // } else {}
-                      } else {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) {
-                          return ImageScreen(
-                            imgUrl: profilePicUrl,
-                          );
-                        }));
-                      }
-                    },
-                    onLongPress: () {
+                  onTap: () async {
+                    final stories = await storiesFuture;
+                    if (stories != null && stories.stories.isNotEmpty) {
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return ImageScreen(
-                          imgUrl: profilePicUrl,
+                        return StoryView(
+                          stories: stories,
                         );
                       }));
-                    },
+                    } else {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return ImageScreen(
+                          imgUrl: user.hdProfilePicUrl,
+                        );
+                      }));
+                    }
+                  },
+                  onLongPress: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) {
+                      return ImageScreen(
+                        imgUrl: user.hdProfilePicUrl,
+                      );
+                    }));
+                  },
+                  child: CircleAvatar(
+                    radius: 54,
                     child: CircleAvatar(
-                      radius: 54,
-                      backgroundColor:
-                          stories.length > 0 ? Colors.green : Colors.grey,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(profilePicUrl),
-                      ),
-                    )),
-                const Padding(
-                    padding: EdgeInsets.only(left: 20.0, right: 20.0)),
+                      radius: 50,
+                      backgroundImage: NetworkImage(user.profilePicUrl),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20),
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    text: '$followerCount\n',
+                    text: '${user.followerCount}\n',
                     style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -107,7 +106,7 @@ class InsataPorfileState extends State<InsataPorfile> {
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    text: '$followingCount\n',
+                    text: '${user.followingCount}\n',
                     style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -120,76 +119,98 @@ class InsataPorfileState extends State<InsataPorfile> {
                     ],
                   ),
                 ),
-                const Padding(padding: EdgeInsets.only(left: 5.0, right: 5.0)),
+                const SizedBox(width: 5),
               ],
             ),
             Row(
-              children: [Text('$fullName\n$bio')],
+              children: [Text('${user.fullname}\n${user.biography}')],
             ),
-            SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (highlights.length > 0) ...[
-                      for (var highlight in highlights) ...[
-                        SizedBox(
-                          // width: auto,
-                          child: Column(
-                            // crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              CircleAvatar(
-                                radius: 37,
-                                backgroundColor: Colors.grey,
-                                child: CircleAvatar(
-                                  radius: 35,
-                                  backgroundImage: NetworkImage(
-                                      highlight['cover_media']
-                                          ['cropped_image_version']['url']),
-                                ),
-                              ),
-                              Text(highlight['title'])
-                            ],
-                          ),
+            SizedBox(
+              child: FutureBuilder<Highlight?>(
+                future: highlightsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Text('Failed to load highlights.');
+                  } else if (!snapshot.hasData ||
+                      snapshot.data == null ||
+                      snapshot.data!.highlights.isEmpty) {
+                    return const Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 37,
+                          backgroundColor: Colors.grey,
+                          child: Icon(Icons.add),
                         ),
                       ],
-                    ] else ...[
-                      const CircleAvatar(
-                        radius: 37,
-                        backgroundColor: Colors.grey,
-                        child: Icon(Icons.add),
+                    );
+                  } else {
+                    var highlights = snapshot.data!.highlights;
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: highlights.map((highlight) {
+                          return SizedBox(
+                            child: Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: 37,
+                                  backgroundColor: Colors.grey,
+                                  child: CircleAvatar(
+                                    radius: 35,
+                                    backgroundImage:
+                                        NetworkImage(highlight.coverMedia),
+                                  ),
+                                ),
+                                Text(highlight.title),
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ),
-                    ]
-                  ],
-                ))
-          ]),
-        ));
-  }
-}
-
-class ImageScreen extends StatelessWidget {
-  const ImageScreen({super.key, required this.imgUrl});
-  final String imgUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        child: Center(
-          child: Hero(
-            tag: '',
-            child: Image.network(
-              imgUrl,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+                    );
+                  }
+                },
+              ),
             ),
-          ),
+          ],
         ),
-        onTap: () {
-          Navigator.pop(context);
-        },
       ),
     );
+  }
+
+  Future<Highlight?> apiHighlight(int id) async {
+    try {
+      final uri = Uri.parse('https://igs.sf-converter.com/api/highlights/$id');
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        return Highlight.fromJson(jsonDecode(response.body));
+      } else {
+        print('Failed to load highlights. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<Story?> apiStories(int id) async {
+    try {
+      final uri = Uri.parse('https://igs.sf-converter.com/api/highlights/$id');
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        return Story.fromJson(jsonDecode(response.body));
+      } else {
+        print('Failed to load stories. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
   }
 }

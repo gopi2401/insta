@@ -5,17 +5,19 @@ class Story {
 
   Story({required this.stories});
 
-  Story.fromJson(Map<String, dynamic> json)
-      : stories = (json['result'] as List<dynamic>)
-            .map((storie) =>
-                StoriesJson.fromJson(storie as Map<String, dynamic>))
-            .toList();
+  factory Story.fromJson(Map<String, dynamic> json) {
+    return Story(
+      stories: (json['result'] as List<dynamic>)
+          .map((storie) => StoriesJson.fromJson(storie as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 }
 
 class StoriesJson {
-  String? fileName;
-  String? img;
-  String? storie;
+  String fileName;
+  String img;
+  String storie;
 
   StoriesJson({
     required this.fileName,
@@ -23,9 +25,19 @@ class StoriesJson {
     required this.storie,
   });
 
-  StoriesJson.fromJson(Map<String, dynamic> json) {
-    img = json['image_versions2']['candidates'][0]['url'];
-    storie = json['video_versions'][0]['url'];
-    fileName = path.basename(storie!);
+  factory StoriesJson.fromJson(Map<String, dynamic> json) {
+    return StoriesJson(
+      fileName:
+          (json['video_versions'] != null && json['video_versions'] is List
+              ? path.basename(json['video_versions'][0]['url'] ?? '')
+              : ''),
+      img: json['image_versions2'] != null &&
+              json['image_versions2']['candidates'] is List
+          ? json['image_versions2']['candidates'][0]['url'] ?? ''
+          : '',
+      storie: json['video_versions'] != null && json['video_versions'] is List
+          ? json['video_versions'][0]['url'] ?? ''
+          : '',
+    );
   }
 }

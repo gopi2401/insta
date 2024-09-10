@@ -6,7 +6,7 @@ import '../models/story_model.dart';
 
 class StoryView extends StatefulWidget {
   const StoryView({super.key, required this.stories});
-  final stories;
+  final Story stories;
 
   @override
   State<StoryView> createState() => StoryViewState();
@@ -21,6 +21,7 @@ class StoryViewState extends State<StoryView> {
   final bool _center = true;
   final double _velocityFactor = 1.0;
   double _itemExtent = 120;
+
   @override
   void initState() {
     super.initState();
@@ -35,13 +36,13 @@ class StoryViewState extends State<StoryView> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var stories = Story.fromJson(widget.stories);
+    var stories = widget.stories.stories;
     return Scaffold(
         body: SizedBox(
       // height: 200,
@@ -72,7 +73,7 @@ class StoryViewState extends State<StoryView> {
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Video(
-                data: stories.stories![itemIndex],
+                data: stories[itemIndex],
               ),
             ),
           );
