@@ -15,9 +15,9 @@ class StoryState extends State<Story> {
   int selectedIndex = 0;
   double get screenWidth => MediaQuery.of(context).size.width;
 
-  double _anchor = 0.0;
-  bool _center = true;
-  double _velocityFactor = 1.0;
+  final double _anchor = 0.0;
+  final bool _center = true;
+  final double _velocityFactor = 1.0;
   double _itemExtent = 120;
   @override
   void initState() {

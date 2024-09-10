@@ -1039,7 +1039,7 @@ class PorfilePageState extends State<PorfilePage> {
       return [userData, highlightsData, storieData];
     } catch (e) {
       print(e);
-      throw e;
+      rethrow;
     }
   }
 }
