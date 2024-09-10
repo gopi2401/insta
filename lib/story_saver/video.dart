@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
+import '../Functions/fileDownload.dart';
+
 class Video extends StatefulWidget {
-  const Video({super.key, required this.url, required this.name});
-  final String url;
-  final String name;
+  const Video({super.key, required this.data});
+  final dynamic data;
 
   @override
   VideoState createState() => VideoState();
@@ -12,19 +14,20 @@ class Video extends StatefulWidget {
 
 class VideoState extends State<Video> {
   late VideoPlayerController _controller;
+  late FileDownload downloadController;
   late double _progressValue;
   bool isMusicOn = true;
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url))
+    _controller = VideoPlayerController.networkUrl(Uri.parse('widget.url'))
       ..initialize().then((_) {
         _controller.addListener(checkVideo);
         _controller.play();
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
       });
     _progressValue = 0.0;
+    downloadController = Get.put(FileDownload());
   }
 
   @override
@@ -63,7 +66,7 @@ class VideoState extends State<Video> {
               backgroundColor: Colors.transparent,
               // forceMaterialTransparency: true,
               shadowColor: Colors.transparent,
-              title: Text(widget.name,
+              title: Text('',
                   style: const TextStyle(color: Colors.white, fontSize: 5)),
               toolbarHeight: 80,
               actions: <Widget>[
@@ -108,7 +111,8 @@ class VideoState extends State<Video> {
                   ),
                   tooltip: "Download",
                   onPressed: () {
-                    // save();
+                    // downloadController.downloadFile(
+                    //     widget.url, path.basename(widget.url), widget.url);
                   },
                 ),
               ],
@@ -146,9 +150,6 @@ class VideoState extends State<Video> {
           .toStringAsFixed(2));
     });
 
-    print(double.parse((_controller.value.position.inSeconds /
-            _controller.value.duration.inSeconds)
-        .toStringAsFixed(2)));
     if (_controller.value.isCompleted) {
       _controller.removeListener(checkVideo);
       Navigator.of(context).pop();
@@ -158,6 +159,7 @@ class VideoState extends State<Video> {
   @override
   void dispose() {
     _controller.dispose();
+    downloadController.dispose();
     super.dispose();
   }
 }
