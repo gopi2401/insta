@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ImageScreen extends StatelessWidget {
-  const ImageScreen({super.key, required this.imgUrl});
+  const ImageScreen(
+      {super.key, required this.imgUrl, required this.profilePicDownload});
   final String imgUrl;
-
+  final Function profilePicDownload;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,6 +15,13 @@ class ImageScreen extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                profilePicDownload();
+              },
+              icon: const Icon(Icons.download))
+        ],
       ),
       body: GestureDetector(
         onTap: () {

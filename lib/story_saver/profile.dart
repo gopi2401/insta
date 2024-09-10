@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:insta/models/highlight_model.dart';
 import 'package:insta/models/story_model.dart';
 import 'package:insta/models/user_info_model.dart';
 import 'package:insta/story_saver/image_screen.dart';
+import '../Functions/fileDownload.dart';
 import 'story_view.dart';
+import 'package:path/path.dart' as path;
 
 class InstaProfile extends StatefulWidget {
   const InstaProfile({super.key, required this.data});
@@ -17,6 +20,7 @@ class InstaProfile extends StatefulWidget {
 
 class InstaProfileState extends State<InstaProfile> {
   late TextEditingController profileController;
+  late FileDownload downloadController;
   late Future<Highlight?> highlightsFuture;
   late Future<Story?> storiesFuture;
 
@@ -24,6 +28,7 @@ class InstaProfileState extends State<InstaProfile> {
   void initState() {
     super.initState();
     profileController = TextEditingController();
+    downloadController = Get.put(FileDownload());
 
     // Fetch highlights and stories only if the profile is public
     highlightsFuture = widget.data.isPrivate
@@ -37,6 +42,7 @@ class InstaProfileState extends State<InstaProfile> {
   @override
   void dispose() {
     profileController.dispose();
+    downloadController.dispose();
     super.dispose();
   }
 
@@ -66,16 +72,16 @@ class InstaProfileState extends State<InstaProfile> {
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
                         return ImageScreen(
-                          imgUrl: user.hdProfilePicUrl,
-                        );
+                            imgUrl: user.hdProfilePicUrl,
+                            profilePicDownload: profilePicDownload);
                       }));
                     }
                   },
                   onLongPress: () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
                       return ImageScreen(
-                        imgUrl: user.hdProfilePicUrl,
-                      );
+                          imgUrl: user.hdProfilePicUrl,
+                          profilePicDownload: profilePicDownload);
                     }));
                   },
                   child: CircleAvatar(
@@ -180,9 +186,10 @@ class InstaProfileState extends State<InstaProfile> {
     );
   }
 
+  String baseUrl = 'https://igs.sf-converter.com/api/';
   Future<Highlight?> apiHighlight(int id) async {
     try {
-      final uri = Uri.parse('https://igs.sf-converter.com/api/highlights/$id');
+      final uri = Uri.parse('${baseUrl}highlights/$id');
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
@@ -199,7 +206,7 @@ class InstaProfileState extends State<InstaProfile> {
 
   Future<Story?> apiStories(int id) async {
     try {
-      final uri = Uri.parse('https://igs.sf-converter.com/api/highlights/$id');
+      final uri = Uri.parse('${baseUrl}stories/$id');
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
@@ -212,5 +219,10 @@ class InstaProfileState extends State<InstaProfile> {
       print('Error: $e');
       return null;
     }
+  }
+
+  void profilePicDownload() {
+    downloadController.downloadFile(widget.data.hdProfilePicUrl,
+        path.basename(widget.data.hdProfilePicUrl), widget.data.profilePicUrl);
   }
 }
