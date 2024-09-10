@@ -165,7 +165,7 @@ class _ViewPhotosState extends State<ViewPhotos> {
         primaryBackgroundColor: Colors.teal,
         primaryForegroundColor: Colors.white,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

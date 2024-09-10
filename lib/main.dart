@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:insta/Functions/distribUrl.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
-import 'package:insta/status_saver/whatsapp.dart';
 import 'Functions/permission.dart';
 import 'additional.dart';
 
