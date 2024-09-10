@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'story.dart';
+import 'story_view.dart';
 
 class InsataPorfile extends StatefulWidget {
   const InsataPorfile({super.key, required this.data});
@@ -33,7 +33,7 @@ class InsataPorfileState extends State<InsataPorfile> {
     String followingCount =
         data['result']['user']['following_count'].toString();
     var highlights = widget.data[1]['result'];
-    var stories = widget.data[2]['result'];
+    var stories = widget.data[2];
     return Scaffold(
         appBar: AppBar(
           title: Text(username),
@@ -48,7 +48,7 @@ class InsataPorfileState extends State<InsataPorfile> {
                     onTap: () {
                       if (stories.length > 0) {
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
-                          return Story(
+                          return StoryView(
                             stories: stories,
                           );
                         }));
