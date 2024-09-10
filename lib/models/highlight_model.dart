@@ -1,22 +1,19 @@
 class Highlight {
-  List<HighlightInfo>? highlights;
+  List<HighlightInfo> highlights;
 
-  Highlight({this.highlights});
+  Highlight({required this.highlights});
 
   // Named constructor for JSON deserialization
-  Highlight.fromJson(Map<String, dynamic> json) {
-    highlights = <HighlightInfo>[];
-    if (json['result'] != null && json['result'].length > 0) {
-      for (var highlight in json['result']) {
-        highlights!.add(HighlightInfo.fromJson(highlight));
-      }
-    }
-  }
+  Highlight.fromJson(Map<String, dynamic> json)
+      : highlights = (json['result'] as List<dynamic>)
+            .map((highlight) =>
+                HighlightInfo.fromJson(highlight as Map<String, dynamic>))
+            .toList();
 
   // Method to convert the class object to JSON
   Map<String, dynamic> toJson() {
     return {
-      'result': highlights?.map((highlight) => highlight.toJson()).toList(),
+      'result': highlights.map((highlight) => highlight.toJson()).toList(),
     };
   }
 }

@@ -35,7 +35,7 @@ class UserInfo {
     var data = json['result']['user'];
 
     return UserInfo(
-      id: data['id'] ?? 0, // Provide fallback default values
+      id: int.parse(data['id']), // Provide fallback default values
       username: data['username'] ?? 'Unknown',
       fullname: data['full_name'] ?? '',
       biography: data['biography'] ?? '',
