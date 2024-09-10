@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 // import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:speed_dial_fab/speed_dial_fab.dart';
+import 'package:path/path.dart' as path;
 
 class ViewPhotos extends StatefulWidget {
   final String imgPath;
@@ -145,13 +146,23 @@ class _ViewPhotosState extends State<ViewPhotos> {
 
             final myUri = Uri.parse(widget.imgPath);
             final originalImageFile = File.fromUri(myUri);
-            late Uint8List bytes;
-            await originalImageFile.readAsBytes().then((value) {
-              bytes = Uint8List.fromList(value);
-            }).catchError((onError) {});
+
+            // Read the file as bytes
+            Uint8List bytes = await originalImageFile.readAsBytes();
+
+            // Create the directory if it doesn't exist
+            final dir =
+                await Directory('/storage/emulated/0/Download/Insta/status')
+                    .create(recursive: true);
+
+            // Write the bytes to a new file
+            final newFile =
+                File(path.join(dir.path, path.basename(widget.imgPath)));
+            await newFile.writeAsBytes(bytes);
+
             // await ImageGallerySaver.saveImage(Uint8List.fromList(bytes));
-            // _onLoading(false,
-            //     'If Image not available in gallary\n\nYou can find all images at');
+            _onLoading(false,
+                'If Image not available in gallary\n\nYou can find all images at');
           },
           () => {},
           () => {},
