@@ -3,8 +3,9 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:get/get.dart';
-import 'package:insta/Functions/fileDownload.dart';
-import 'package:insta/Functions/function.dart';
+
+import '../utils/function.dart';
+import 'file_download.dart';
 
 class YTDownloadController extends GetxController {
   FileDownload downloadController = Get.put(FileDownload());
@@ -13,8 +14,7 @@ class YTDownloadController extends GetxController {
       const data =
           '28092c5adf73dfe1043e22afc831a963d8926e00376069b4fa6f11f2a749ca71c3858d6b92e169c7eddae27198e9db04';
       var httpClient = HttpClient();
-      var request =
-          await httpClient.postUrl(Uri.parse(Functions.decryptFun(data)));
+      var request = await httpClient.postUrl(Uri.parse(decrypt(data)));
       request.headers.set('content-type', 'application/json');
       request.add(utf8.encode(json.encode({"url": link})));
       var response = await request.close();
@@ -27,8 +27,8 @@ class YTDownloadController extends GetxController {
         var payload;
         do {
           await Future.delayed(const Duration(seconds: 1));
-          var req = await httpClient
-              .getUrl(Uri.parse(Functions.decryptFun(d) + jsons['job_id']));
+          var req =
+              await httpClient.getUrl(Uri.parse(decrypt(d) + jsons['job_id']));
           req.headers.set('content-type', 'application/json');
           var res = await req.close();
           if (res.statusCode == 200) {
