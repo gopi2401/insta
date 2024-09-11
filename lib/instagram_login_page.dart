@@ -9,30 +9,25 @@ class InstaLogin extends StatefulWidget {
 }
 
 class InstaLoginState extends State<InstaLogin> {
-  WebViewController controller = WebViewController()
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..loadRequest(Uri.parse('https://www.instagram.com/accounts/login/'));
+  late WebViewController controller;
+
   @override
   void initState() {
     super.initState();
-    WebViewPlatform.instance;
-    // Enable virtual display.
-    // if (Platform.isAndroid) WebView.platform = AndroidWebView();
+
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse('https://www.instagram.com/accounts/login/'));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      // title: TextButton(
-      //     child: Text('hiii'),
-      //     onPressed: () async {
-      //       final cookieManager = wb.WebviewCookieManager();
-      //       final gotCookies =
-      //           await cookieManager.getCookies('https://www.instagram.com/');
-      //     },
-      //   ),
-      // ),
       body: SafeArea(
         child: WebViewWidget(controller: controller),
       ),
