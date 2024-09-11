@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:insta/Functions/distribUrl.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'Functions/permissions.dart';
 import 'additional.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -68,20 +67,7 @@ void main() async {
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
 
-  await Permissions.requestStoragePermission(); // Request storage permission
-
   runApp(const MyApp());
-}
-
-class Permissions {
-  static Future<void> requestStoragePermission() async {
-    if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
-      if (status.isDenied) {
-        // Handle denied permission
-      }
-    }
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -116,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    Permissions.requestStoragePermission(context);
     fToast = FToast();
     fToast.init(context);
     downloadController = Get.put(DistribUrl());
