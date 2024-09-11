@@ -7,8 +7,7 @@ import 'package:insta/models/story_model.dart';
 import 'package:insta/models/user_info_model.dart';
 import 'package:insta/story_saver/image_screen.dart';
 import '../Functions/fileDownload.dart';
-import 'story_view.dart';
-import 'package:path/path.dart' as path;
+import 'story_screen.dart';
 
 class InstaProfile extends StatefulWidget {
   const InstaProfile({super.key, required this.data});
@@ -65,7 +64,7 @@ class InstaProfileState extends State<InstaProfile> {
                     final stories = await storiesFuture;
                     if (stories != null && stories.stories.isNotEmpty) {
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return StoryView(
+                        return StoryScreen(
                           stories: stories,
                         );
                       }));

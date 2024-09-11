@@ -45,7 +45,7 @@ class ProfilePageState extends State<ProfilePage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   errorMessage!,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               ),
             ElevatedButton(
@@ -56,7 +56,7 @@ class ProfilePageState extends State<ProfilePage> {
                     errorMessage = null; // Clear previous errors
                   });
 
-                  var data = await apiUserData(profileController.text);
+                  var data = await apiUserData(profileController.text.trim());
 
                   setState(() {
                     isLoading = false;
@@ -99,8 +99,7 @@ class ProfilePageState extends State<ProfilePage> {
       http.Response response = await http.get(uri);
 
       if (response.statusCode == 200) {
-        var userData = UserInfo.fromJson(jsonDecode(response.body));
-        return userData;
+        return UserInfo.fromJson(jsonDecode(response.body));
       } else {
         print('Failed to load user data. Status code: ${response.statusCode}');
         return null;
