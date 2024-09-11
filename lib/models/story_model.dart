@@ -15,10 +15,12 @@ class Story {
 class StoriesJson {
   String img;
   String storie;
+  String pk;
 
   StoriesJson({
     required this.img,
     required this.storie,
+    required this.pk,
   });
 
   factory StoriesJson.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,7 @@ class StoriesJson {
       storie: json['video_versions'] != null && json['video_versions'] is List
           ? json['video_versions'][0]['url'] ?? ''
           : '',
+      pk: json['pk'] != null ? json['pk'] ?? '' : '',
     );
   }
 }
