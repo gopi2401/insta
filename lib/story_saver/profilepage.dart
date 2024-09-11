@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:insta/models/user_info_model.dart';
+import '../utils/appdata.dart';
 import 'profile.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -94,8 +95,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   Future<UserInfo?> apiUserData(String name) async {
     try {
-      final uri = Uri.parse(
-          'https://igs.sf-converter.com/api/userInfoByUsername/$name');
+      final uri = Uri.parse('${igs}userInfoByUsername/$name');
       http.Response response = await http.get(uri);
 
       if (response.statusCode == 200) {

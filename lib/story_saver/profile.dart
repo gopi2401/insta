@@ -6,7 +6,8 @@ import 'package:insta/models/highlight_model.dart';
 import 'package:insta/models/story_model.dart';
 import 'package:insta/models/user_info_model.dart';
 import 'package:insta/story_saver/image_screen.dart';
-import '../Functions/fileDownload.dart';
+import '../functions/file_download.dart';
+import '../utils/appdata.dart';
 import 'story_screen.dart';
 
 class InstaProfile extends StatefulWidget {
@@ -203,10 +204,9 @@ class InstaProfileState extends State<InstaProfile> {
     );
   }
 
-  String baseUrl = 'https://igs.sf-converter.com/api/';
   Future<Highlight?> apiHighlight(int id) async {
     try {
-      final uri = Uri.parse('${baseUrl}highlights/$id');
+      final uri = Uri.parse('${igs}highlights/$id');
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
@@ -223,7 +223,7 @@ class InstaProfileState extends State<InstaProfile> {
 
   Future<Story?> apiStories(int id) async {
     try {
-      final uri = Uri.parse('${baseUrl}stories/$id');
+      final uri = Uri.parse('${igs}stories/$id');
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {

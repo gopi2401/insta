@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +60,7 @@ class Permissions {
                       ),
                       const Text(
                         'Something went wrong, app not working properly',
-                        style: const TextStyle(fontSize: 16.0),
+                        style: TextStyle(fontSize: 16.0),
                       ),
                       const Padding(
                         padding: EdgeInsets.all(10.0),

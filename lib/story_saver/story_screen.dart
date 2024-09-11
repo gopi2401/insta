@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:insta/Functions/fileDownload.dart';
+import 'package:insta/functions/file_download.dart';
 import 'package:story_view/story_view.dart';
 
 import '../models/story_model.dart';
