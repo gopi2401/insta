@@ -5,10 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:insta/Functions/distribUrl.dart';
+import 'package:insta/functions/distrib_url.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
-import 'Functions/permissions.dart';
+import 'functions/permissions.dart';
 import 'additional.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -132,6 +132,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    reelController.dispose();
+    downloadController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
@@ -158,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (url.isNotEmpty) {
                   final Uri uri = Uri.parse(url);
                   if (uri.hasAbsolutePath) {
-                    downloadController.url(url);
+                    downloadController.handleUrl(url);
                   } else {
                     showToast();
                   }
