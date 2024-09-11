@@ -96,6 +96,22 @@ class InstaProfileState extends State<InstaProfile> {
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
+                    text: '${user.mediaCount}\n',
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17.0),
+                    children: const <TextSpan>[
+                      TextSpan(
+                          text: 'posts',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 14.0)),
+                    ],
+                  ),
+                ),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
                     text: '${user.followerCount}\n',
                     style: const TextStyle(
                         color: Colors.black,
@@ -103,7 +119,7 @@ class InstaProfileState extends State<InstaProfile> {
                         fontSize: 17.0),
                     children: const <TextSpan>[
                       TextSpan(
-                          text: 'Followers',
+                          text: 'followers',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 14.0)),
                     ],
@@ -119,7 +135,7 @@ class InstaProfileState extends State<InstaProfile> {
                         fontSize: 17.0),
                     children: const <TextSpan>[
                       TextSpan(
-                          text: 'Following',
+                          text: 'following',
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 14.0)),
                     ],
@@ -129,7 +145,9 @@ class InstaProfileState extends State<InstaProfile> {
               ],
             ),
             Row(
-              children: [Text('${user.fullname}\n${user.biography}')],
+              children: [
+                Text('${user.fullname}\n${user.category}\n${user.biography}')
+              ],
             ),
             SizedBox(
               child: FutureBuilder<Highlight?>(
@@ -222,7 +240,9 @@ class InstaProfileState extends State<InstaProfile> {
   }
 
   void profilePicDownload() {
-    downloadController.downloadFile(widget.data.hdProfilePicUrl,
-        path.basename(widget.data.hdProfilePicUrl), widget.data.profilePicUrl);
+    downloadController.downloadFile(
+        widget.data.hdProfilePicUrl,
+        widget.data.hdProfilePicUrl.split('?').first.split('/').last,
+        widget.data.profilePicUrl);
   }
 }
