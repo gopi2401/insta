@@ -1,5 +1,3 @@
-import 'package:path/path.dart' as path;
-
 class Story {
   List<StoriesJson> stories;
 
@@ -15,22 +13,16 @@ class Story {
 }
 
 class StoriesJson {
-  String fileName;
   String img;
   String storie;
 
   StoriesJson({
-    required this.fileName,
     required this.img,
     required this.storie,
   });
 
   factory StoriesJson.fromJson(Map<String, dynamic> json) {
     return StoriesJson(
-      fileName:
-          (json['video_versions'] != null && json['video_versions'] is List
-              ? path.basename(json['video_versions'][0]['url'] ?? '')
-              : ''),
       img: json['image_versions2'] != null &&
               json['image_versions2']['candidates'] is List
           ? json['image_versions2']['candidates'][0]['url'] ?? ''
