@@ -1,37 +1,26 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:insta/Functions/distribUrl.dart';
+import 'package:insta/functions/distrib_url.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
-import 'package:insta/status_saver/whatsapp.dart';
-import 'Functions/permission.dart';
+import 'package:insta/utils/function.dart';
+import 'functions/permissions.dart';
 import 'additional.dart';
-
-DistribUrl downloadController = Get.put(DistribUrl());
-int id = 0;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 /// Streams are created so that app can respond to notification-related events
-/// since the plugin is initialised in the `main` function
 final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
     StreamController<ReceivedNotification>.broadcast();
 
 final StreamController<String?> selectNotificationStream =
     StreamController<String?>.broadcast();
-
-const MethodChannel platform =
-    MethodChannel('dexterx.dev/flutter_local_notifications_example');
-
-const String portName = 'notification_send_port';
 
 class ReceivedNotification {
   ReceivedNotification({
@@ -49,33 +38,13 @@ class ReceivedNotification {
 
 String? selectedNotificationPayload;
 
-/// A notification action which triggers a url launch event
-const String urlLaunchActionId = 'id_1';
-
-/// A notification action which triggers a App navigation event
-const String navigationActionId = 'id_3';
-
-/// Defines a iOS/MacOS notification category for text input actions.
-const String darwinNotificationCategoryText = 'textCategory';
-
-/// Defines a iOS/MacOS notification category for plain actions.
-const String darwinNotificationCategoryPlain = 'plainCategory';
-
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
-  // ignore: avoid_print
   print('notification(${notificationResponse.id}) action tapped: '
-      '${notificationResponse.actionId} with'
-      ' payload: ${notificationResponse.payload}');
-  if (notificationResponse.input?.isNotEmpty ?? false) {
-    // ignore: avoid_print
-    print(
-        'notification action tapped with input: ${notificationResponse.input}');
-  }
+      '${notificationResponse.actionId} with payload: ${notificationResponse.payload}');
 }
 
 void main() async {
-  // needed if you intend to initialize in the `main` function
   WidgetsFlutterBinding.ensureInitialized();
 
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -83,63 +52,35 @@ void main() async {
 
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
-    // iOS: initializationSettingsDarwin,
-    // macOS: initializationSettingsDarwin,
-    // linux: initializationSettingsLinux,
   );
+
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse:
         (NotificationResponse notificationResponse) {
-      switch (notificationResponse.notificationResponseType) {
-        case NotificationResponseType.selectedNotification:
-          selectNotificationStream.add(notificationResponse.payload);
-          break;
-        case NotificationResponseType.selectedNotificationAction:
-          if (notificationResponse.actionId == navigationActionId) {
-            selectNotificationStream.add(notificationResponse.payload);
-          }
-          break;
+      if (notificationResponse.notificationResponseType ==
+          NotificationResponseType.selectedNotification) {
+        selectNotificationStream.add(notificationResponse.payload);
+      } else if (notificationResponse.actionId == 'navigation') {
+        selectNotificationStream.add(notificationResponse.payload);
       }
     },
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
+
   runApp(const MyApp());
-  Permissions.storage_permission();
-
-  const MethodChannel channel = MethodChannel('app.channel.shared.data');
-
-  channel.setMethodCallHandler((call) async {
-    if (call.method == 'getSharedText') {
-      String sharedText = call.arguments;
-      // Handle the shared text as needed
-      // print('hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii$sharedText');
-      downloadController.url(sharedText);
-    }
-  });
 }
-
-var permission = false;
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+  // Define a global key for the ScaffoldMessenger
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'insta',
-      // navigatorKey: navigatorKey,
-      // routes: {
-      //   "login": (BuildContext context) => const InstaLogin(),
-      //   "nextpage": (BuildContext context) => const PorfilePage(),
-      //   "about": (BuildContext context) => const AboutPage(),
-      //   "wa": (BuildContext context) => const Wa()
-      // },
-      // theme: ThemeData(
-      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      //   useMaterial3: true,
-      // ),
+      scaffoldMessengerKey: scaffoldMessengerKey, // Assigning the key
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
@@ -158,17 +99,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController reelController = TextEditingController();
   late FToast fToast;
-  bool isLogin = false;
   bool downloading = false;
+  late DistribUrl downloadController;
+  int id = 0;
 
-  // ignore: unused_field
-  bool _notificationsEnabled = false;
+  bool isLoading = false;
+  String? errorMessage;
+
   @override
   void initState() {
     super.initState();
-    _requestPermissions();
+    Permissions.requestStoragePermission(context);
     fToast = FToast();
     fToast.init(context);
+    downloadController = Get.put(DistribUrl());
   }
 
   Widget toast = Container(
@@ -180,13 +124,12 @@ class _MyHomePageState extends State<MyHomePage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(FontAwesomeIcons.link, size: 15),
-        SizedBox(
-          width: 12.0,
-        ),
+        SizedBox(width: 12.0),
         Text("url not found..!"),
       ],
     ),
   );
+
   void showToast() {
     fToast.showToast(
       child: toast,
@@ -195,48 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> _requestPermissions() async {
-    if (Platform.isIOS || Platform.isMacOS) {
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
-      await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              MacOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
-    } else if (Platform.isAndroid) {
-      // final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-      //     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-      //         AndroidFlutterLocalNotificationsPlugin>();
-
-      // final bool? grantedNotificationPermission =
-      //     await androidImplementation?.requestPermission();
-      // setState(() {
-      //   _notificationsEnabled = grantedNotificationPermission ?? false;
-      // });
-      final bool grantedNotificationPermission =
-          await flutterLocalNotificationsPlugin
-                  .resolvePlatformSpecificImplementation<
-                      AndroidFlutterLocalNotificationsPlugin>()
-                  ?.areNotificationsEnabled() ??
-              false;
-      setState(() {
-        _notificationsEnabled = grantedNotificationPermission;
-      });
-    }
-  }
-
   @override
   void dispose() {
+    reelController.dispose();
+    downloadController.dispose();
     super.dispose();
   }
 
@@ -257,69 +162,71 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
+            if (errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
             ElevatedButton(
-              child: const Text('Download'),
+              child: isLoading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : const Text('Download'),
               onPressed: () async {
-                setState(() {
-                  downloading = true;
-                });
-                var url = reelController.text.trim();
-                if (url.isNotEmpty) {
-                  final Uri uri = Uri.parse(url);
-                  if (uri.hasAbsolutePath) {
-                    downloadController.url(url);
-                  } else {
-                    print('else');
+                if (!isLoading) {
+                  try {
+                    setState(() {
+                      isLoading = true;
+                      errorMessage = null;
+                    });
+                    var url = reelController.text.trim();
+                    if (url.isNotEmpty) {
+                      final Uri uri = Uri.parse(url);
+                      if (uri.hasAbsolutePath) {
+                        downloadController.handleUrl(url);
+                      } else {
+                        setState(() {
+                          isLoading = false;
+                          errorMessage = "Please enter valid url";
+                        });
+                        showToast();
+                      }
+                    } else {
+                      setState(() {
+                        isLoading = false;
+                        errorMessage = "url not found!. please enter url";
+                      });
+                      showToast();
+                    }
+                    setState(() {
+                      isLoading = false;
+                    });
+                  } catch (e, stackTrace) {
+                    catchInfo(e, stackTrace);
                   }
-                } else {
-                  showToast();
                 }
-                setState(() {
-                  downloading = false;
-                });
               },
             ),
             TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const InstaLogin()),
-                  );
-                },
-                child: const Text('Login')),
-            // TextButton(
-            //     onPressed: () {
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(builder: (context) => const WhatsApp()),
-            //       );
-            //     },
-            //     child: const Text('wa')),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     final snackBar = SnackBar(
-            //       content: Row(
-            //         children: [
-            //           CircularProgressIndicator(),
-            //           SizedBox(width: 16),
-            //           Text("Loading..."),
-            //         ],
-            //       ),
-            //       duration: Duration(seconds: 2),
-            //     );
-            //     // Find the ScaffoldMessenger in the widget tree
-            //     // and use it to show a SnackBar.
-            //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            //   },
-            //   child: const Text('Show SnackBar'),
-            // ),
-            const Additional()
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const InstaLogin()),
+                );
+              },
+              child: const Text('Login'),
+            ),
+            const Additional(),
           ],
         ),
       ),
       drawer: Drawer(
         child: Container(
-          color: Colors.black45, // Background color of the drawer
+          color: Colors.black45,
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
@@ -373,54 +280,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // Future<void> showNotification() async {
-  //   const AndroidNotificationDetails androidNotificationDetails =
-  //       AndroidNotificationDetails('your channel id', 'your channel name',
-  //           channelDescription: 'your channel description',
-  //           importance: Importance.max,
-  //           priority: Priority.high,
-  //           ticker: 'ticker');
-  //   const NotificationDetails notificationDetails =
-  //       NotificationDetails(android: androidNotificationDetails);
-  //   await flutterLocalNotificationsPlugin.show(
-  //       id++, 'plain title', 'plain body', notificationDetails,
-  //       payload: 'item x');
-  // }
-
-  // Future<void> showNotificationMediaStyle() async {
-  //   final String largeIconPath = await _downloadAndSaveFile(
-  //       'https://dummyimage.com/128x128/00FF00/000000', 'largeIcon');
-  //   final AndroidNotificationDetails androidNotificationDetails =
-  //       AndroidNotificationDetails(
-  //     'media channel id',
-  //     'media channel name',
-  //     channelDescription: 'media channel description',
-  //     largeIcon: FilePathAndroidBitmap(largeIconPath),
-  //     styleInformation: const MediaStyleInformation(),
-  //   );
-  //   final NotificationDetails notificationDetails =
-  //       NotificationDetails(android: androidNotificationDetails);
-  //   await flutterLocalNotificationsPlugin.show(
-  //       id++, 'notification title', 'notification body', notificationDetails);
-  // }
-
-  // Future<String> _downloadAndSaveFile(String url, String fileName) async {
-  //   final Directory directory = await getApplicationDocumentsDirectory();
-  //   final String filePath = '${directory.path}/$fileName';
-  //   final http.Response response = await http.get(Uri.parse(url));
-  //   final File file = File(filePath);
-  //   await file.writeAsBytes(response.bodyBytes);
-  //   return filePath;
-  // }
-
-  showSnackBar(msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Error: $msg'),
       ),
     );
   }

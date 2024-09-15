@@ -1,67 +1,119 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:insta/models/user_info_model.dart';
+import 'package:insta/utils/function.dart';
+import '../utils/appdata.dart';
 import 'profile.dart';
 
-class PorfilePage extends StatefulWidget {
-  const PorfilePage({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  State<PorfilePage> createState() => PorfilePageState();
+  State<ProfilePage> createState() => ProfilePageState();
 }
 
-class PorfilePageState extends State<PorfilePage> {
+class ProfilePageState extends State<ProfilePage> {
   TextEditingController profileController = TextEditingController();
+  bool isLoading = false;
+  String? errorMessage;
+
+  @override
+  void dispose() {
+    profileController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: TextField(
-            controller: profileController,
-            decoration: const InputDecoration(
-              hintText: "Profile Name",
-            ),
-          ),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
-        ElevatedButton(
-            onPressed: () async {
-              var data = await getData(profileController.text);
-              print(data);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => InsataPorfile(data: data)),
-              );
-            },
-            child: const Text('View Profile'))
-      ]),
-    ));
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                controller: profileController,
+                decoration: const InputDecoration(
+                  hintText: "Profile Name",
+                ),
+              ),
+            ),
+            if (errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ElevatedButton(
+              onPressed: () async {
+                if (profileController.text.isNotEmpty) {
+                  setState(() {
+                    isLoading = true;
+                    errorMessage = null; // Clear previous errors
+                  });
+
+                  var data = await apiUserData(profileController.text.trim());
+
+                  setState(() {
+                    isLoading = false;
+                  });
+
+                  if (data != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InstaProfile(data: data)),
+                    );
+                  } else {
+                    setState(() {
+                      errorMessage =
+                          "Failed to load profile. Please try again.";
+                    });
+                  }
+                } else {
+                  setState(() {
+                    errorMessage = "Profile name cannot be empty!";
+                  });
+                }
+              },
+              child: isLoading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : const Text('View Profile'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  getData(name) async {
-    var url = 'https://igs.sf-converter.com/api/userInfoByUsername/' + name;
-    final http.Response user = await http.get(Uri.parse(url));
-    var userData = jsonDecode(user.body);
-    var userID = userData['result']['user']['pk'];
-    final http.Response highlights = await http
-        .get(Uri.parse('https://igs.sf-converter.com/api/highlights/$userID'));
-    var highlightsData = jsonDecode(highlights.body);
-    final http.Response storie = await http
-        .get(Uri.parse('https://igs.sf-converter.com/api/stories/$userID'));
-    // ignore: unused_local_variable
-    var storieData = jsonDecode(storie.body);
-    print(userData);
-    // print(highlightsData);
-    // print(storieData);
-    return [
-      userData,
-      highlightsData,
-      // storieData
-    ];
+  Future<UserInfo?> apiUserData(String name) async {
+    try {
+      final uri = Uri.parse('${igs}userInfoByUsername/$name');
+      http.Response response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        return UserInfo.fromJson(jsonDecode(response.body));
+      } else {
+        print('Failed to load user data. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
+      return null;
+    }
   }
 }
