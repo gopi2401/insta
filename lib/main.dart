@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:insta/functions/distrib_url.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
+import 'package:insta/utils/function.dart';
 import 'functions/permissions.dart';
 import 'additional.dart';
 
@@ -72,11 +73,14 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+  // Define a global key for the ScaffoldMessenger
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'insta',
+      scaffoldMessengerKey: scaffoldMessengerKey, // Assigning the key
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
@@ -98,6 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
   bool downloading = false;
   late DistribUrl downloadController;
   int id = 0;
+
+  bool isLoading = false;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -155,26 +162,53 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
+            if (errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
             ElevatedButton(
-              child: const Text('Download'),
+              child: isLoading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : const Text('Download'),
               onPressed: () async {
-                setState(() {
-                  downloading = true;
-                });
-                var url = reelController.text.trim();
-                if (url.isNotEmpty) {
-                  final Uri uri = Uri.parse(url);
-                  if (uri.hasAbsolutePath) {
-                    downloadController.handleUrl(url);
-                  } else {
-                    showToast();
+                if (!isLoading) {
+                  try {
+                    setState(() {
+                      isLoading = true;
+                      errorMessage = null;
+                    });
+                    var url = reelController.text.trim();
+                    if (url.isNotEmpty) {
+                      final Uri uri = Uri.parse(url);
+                      if (uri.hasAbsolutePath) {
+                        downloadController.handleUrl(url);
+                      } else {
+                        setState(() {
+                          isLoading = false;
+                          errorMessage = "Please enter valid url";
+                        });
+                        showToast();
+                      }
+                    } else {
+                      setState(() {
+                        isLoading = false;
+                        errorMessage = "url not found!. please enter url";
+                      });
+                      showToast();
+                    }
+                    setState(() {
+                      isLoading = false;
+                    });
+                  } catch (e, stackTrace) {
+                    catchInfo(e, stackTrace);
                   }
-                } else {
-                  showToast();
                 }
-                setState(() {
-                  downloading = false;
-                });
               },
             ),
             TextButton(
@@ -186,7 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text('Login'),
             ),
-            const Additional()
+            const Additional(),
           ],
         ),
       ),
