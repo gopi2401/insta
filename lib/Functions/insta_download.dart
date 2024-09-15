@@ -69,10 +69,11 @@ class InstaDownloadController extends GetxController {
   // Fetches and downloads Instagram stories
   Future<void> stories(String uName, String? sId) async {
     try {
-      final userResponse = await http.get(Uri.parse(decrypt(igsu) + uName));
+      final userResponse =
+          await http.get(Uri.parse('${igs}userInfoByUsername/$uName'));
       var userId = jsonDecode(userResponse.body)['result']['user']['id'];
       final storiesResponse =
-          await http.get(Uri.parse('${decrypt(igss)}$userId'));
+          await http.get(Uri.parse('${igs}stories/$userId'));
       var storiesData = Story.fromJson(jsonDecode(storiesResponse.body));
       if (storiesData.stories.isNotEmpty) {
         for (var story in storiesData.stories) {
