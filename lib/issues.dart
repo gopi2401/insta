@@ -11,18 +11,23 @@ class IssueForm extends StatefulWidget {
   const IssueForm({super.key});
 
   @override
-  _IssueFormState createState() => _IssueFormState();
+  IssueFormState createState() => IssueFormState();
 }
 
-class _IssueFormState extends State<IssueForm> {
+class IssueFormState extends State<IssueForm> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
-
+  String option = 'Issue';
   Future<void> createIssue(
       String title, String body, String? label, File? imageFile) async {
-    List<String> labels = label != null ? [label] : ['bug'];
+    List<String> labels = label == 'Issue'
+        ? ['bug']
+        : label == 'Suggestion'
+            ? ['ui']
+            : ['bug'];
 
     String imageUrl = '';
     if (imageFile != null) {
@@ -30,8 +35,11 @@ class _IssueFormState extends State<IssueForm> {
       imageUrl = await uploadImageToGitHub(imageFile);
     }
 
-    final issueBody =
-        body + (imageUrl.isNotEmpty ? '\n\n![Screenshot]($imageUrl)' : '');
+    final issueBody = body +
+        (imageUrl.isNotEmpty ? '\n\n![Screenshot]($imageUrl)' : '') +
+        (_nameController.text.isNotEmpty
+            ? '\n\nby ${_nameController.text.trim()}.'
+            : '');
 
     final response = await http.post(
       Uri.parse('$githubApi/issues'),
@@ -96,34 +104,129 @@ class _IssueFormState extends State<IssueForm> {
   }
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _titleController.dispose();
+    _bodyController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          TextField(
-            controller: _titleController,
-            decoration: const InputDecoration(labelText: 'Issue Title'),
-          ),
-          TextField(
-            controller: _bodyController,
-            decoration: const InputDecoration(labelText: 'Issue Body'),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () => pickImage(),
-            child: Text('Pick Screenshot'),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              final title = _titleController.text;
-              final body = _bodyController.text;
-              createIssue(title, body, null, _imageFile);
-            },
-            child: Text('Create Issue'),
-          ),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Feedback'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Choose the any option',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            DropdownButton<String>(
+              value: option, // Set the initial value
+              items: <String>['Issue', 'Suggestion'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  option = newValue!;
+                });
+              },
+            ),
+            const Text(
+              'Your Name',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                hintText: 'Enter your name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            Text(
+              '$option Title',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextField(
+              controller: _titleController,
+              decoration: InputDecoration(
+                hintText: 'Enter ${option.toLowerCase()} title',
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '$option Body',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextField(
+              controller: _bodyController,
+              decoration: InputDecoration(
+                hintText: 'Enter ${option.toLowerCase()} body',
+                border: const OutlineInputBorder(),
+              ),
+              maxLines: null,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: pickImage,
+                  child: const Text('Pick Screenshot'),
+                ),
+                if (_imageFile != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image.file(
+                      _imageFile!,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isLoading = true;
+                });
+                final title = _titleController.text;
+                final body = _bodyController.text;
+                createIssue(title, body, option, _imageFile);
+                setState(() {
+                  isLoading = false;
+                });
+              },
+              child: isLoading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : Text('Send $option'),
+            ),
+          ],
+        ),
       ),
     );
   }

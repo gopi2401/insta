@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:insta/issues.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
@@ -96,6 +97,21 @@ class _AboutPageState extends State<AboutPage> {
               ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              style: ButtonStyle(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ))),
+              onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const IssueForm()),
+                )
+              },
+              child: const Text('Feedback'),
+            ),
           ],
         ),
       ),
@@ -114,7 +130,8 @@ class _AboutPageState extends State<AboutPage> {
       if (version == version1) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Already updated! 😉', style: TextStyle(fontSize: 18)),
+            content:
+                Text('Already updated! 😉', style: TextStyle(fontSize: 18)),
           ),
         );
       } else {
