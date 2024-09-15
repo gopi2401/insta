@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:insta/models/user_info_model.dart';
+import 'package:insta/utils/function.dart';
 import '../utils/appdata.dart';
 import 'profile.dart';
 
@@ -16,6 +17,12 @@ class ProfilePageState extends State<ProfilePage> {
   TextEditingController profileController = TextEditingController();
   bool isLoading = false;
   String? errorMessage;
+
+  @override
+  void dispose() {
+    profileController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +111,8 @@ class ProfilePageState extends State<ProfilePage> {
         print('Failed to load user data. Status code: ${response.statusCode}');
         return null;
       }
-    } catch (e) {
-      print('Error: $e');
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
       return null;
     }
   }
