@@ -29,43 +29,50 @@ class InstaDownloadController extends GetxController {
         ..setBackgroundColor(const Color(0x00000000))
         ..setNavigationDelegate(NavigationDelegate(
           onPageFinished: (String url) async {
-            final cook = await controller.runJavaScriptReturningResult(
-                'JSON.parse(document.documentElement.innerText)') as String;
-            var data = jsonDecode(cook);
-            debugPrint('Page finished loading: $cook');
-            if (data == null ||
-                (data['require_login'] != null && data['require_login'])) {
-              var httpClient = HttpClient();
-              var request = await httpClient.getUrl(
-                  Uri.parse("https://backend.instavideosave.com/allinone"));
-              request.headers.add('url', encryption(link));
-              var response = await request.close();
-              if (response.statusCode == HttpStatus.ok) {
-                var json = await response.transform(utf8.decoder).join();
-                var responseData = jsonDecode(json);
-                downloadMedia(responseData);
+            try {
+              final cook = await controller.runJavaScriptReturningResult(
+                  'JSON.parse(document.documentElement.innerText)') as String;
+              var data = jsonDecode(cook);
+              debugPrint('Page finished loading: $cook');
+              if (data == null ||
+                  (data['require_login'] != null && data['require_login'])) {
+                try {
+                  var httpClient = HttpClient();
+                  var request =
+                      await httpClient.getUrl(Uri.parse(decrypt(insta)));
+                  request.headers.add('url', encryption(link));
+                  var response = await request.close();
+                  if (response.statusCode == HttpStatus.ok) {
+                    var json = await response.transform(utf8.decoder).join();
+                    var responseData = jsonDecode(json);
+                    downloadMedia(responseData);
+                  } else {
+                    Get.to(() => const InstaLogin());
+                  }
+                } catch (e, stackTrace) {
+                  catchInfo(e, stackTrace);
+                }
               } else {
-                Get.to(() => const InstaLogin());
+                postReel(data);
               }
-            } else {
-              postReel(data);
+            } catch (e, stackTrace) {
+              catchInfo(e, stackTrace);
             }
           },
         ))
         ..loadRequest(Uri.parse(url));
-    } catch (e) {
-      debugPrint('downloadReal: $e');
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
     }
   }
 
   // Fetches and downloads Instagram stories
   Future<void> stories(String uName, String? sId) async {
     try {
-      var url = '${igs}userInfoByUsername/$uName';
-      final userResponse = await http.get(Uri.parse(url));
+      final userResponse = await http.get(Uri.parse(decrypt(igsu) + uName));
       var userId = jsonDecode(userResponse.body)['result']['user']['id'];
-      var storiesUrl = '${igs}stories/$userId';
-      final storiesResponse = await http.get(Uri.parse(storiesUrl));
+      final storiesResponse =
+          await http.get(Uri.parse('${decrypt(igss)}$userId'));
       var storiesData = Story.fromJson(jsonDecode(storiesResponse.body));
       if (storiesData.stories.isNotEmpty) {
         for (var story in storiesData.stories) {
@@ -77,50 +84,58 @@ class InstaDownloadController extends GetxController {
           }
         }
       }
-    } catch (e) {
-      print(e);
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
     }
   }
 
   // Handles downloading media files (video or image)
   void downloadMedia(Map<String, dynamic> data) {
-    if (data['video'] != null && data['video'].isNotEmpty) {
-      for (var file in data['video']) {
-        downloadController.downloadFile(
-            file['video'],
-            "ReelVideo-${Random().nextInt(900000) + 100000}.mp4",
-            file['thumbnail']);
+    try {
+      if (data['video'] != null && data['video'].isNotEmpty) {
+        for (var file in data['video']) {
+          downloadController.downloadFile(
+              file['video'],
+              "ReelVideo-${Random().nextInt(900000) + 100000}.mp4",
+              file['thumbnail']);
+        }
       }
-    }
 
-    if (data['image'] != null && data['image'].isNotEmpty) {
-      for (var url in data['image']) {
-        downloadController.downloadFile(
-            url, "ReelImage-${Random().nextInt(900000) + 100000}.jpg", url);
+      if (data['image'] != null && data['image'].isNotEmpty) {
+        for (var url in data['image']) {
+          downloadController.downloadFile(
+              url, "ReelImage-${Random().nextInt(900000) + 100000}.jpg", url);
+        }
       }
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
     }
   }
 
   // Handles post reel media
   void postReel(Map<String, dynamic> data) {
-    if (data['items'] != null) {
-      Items post = Items.fromJson(data);
-      var files = post.files;
-      if (files != null) {
-        for (var file in files) {
-          downloadController.downloadFile(
-              file.fileUrl!, file.fileName!, file.fileDisplayUrl);
+    try {
+      if (data['items'] != null) {
+        Items post = Items.fromJson(data);
+        var files = post.files;
+        if (files != null) {
+          for (var file in files) {
+            downloadController.downloadFile(
+                file.fileUrl!, file.fileName!, file.fileDisplayUrl);
+          }
+        }
+      } else if (data['graphql'] != null) {
+        Graphql post = Graphql.fromJson(data);
+        var files = post.files;
+        if (files != null) {
+          for (var file in files) {
+            downloadController.downloadFile(
+                file.fileUrl!, file.fileName!, file.fileDisplayUrl);
+          }
         }
       }
-    } else if (data['graphql'] != null) {
-      Graphql post = Graphql.fromJson(data);
-      var files = post.files;
-      if (files != null) {
-        for (var file in files) {
-          downloadController.downloadFile(
-              file.fileUrl!, file.fileName!, file.fileDisplayUrl);
-        }
-      }
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
     }
   }
 }

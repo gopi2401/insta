@@ -1,4 +1,7 @@
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:flutter/material.dart';
+
+import '../main.dart';
 
 String title(String title) {
   return title
@@ -37,4 +40,15 @@ String decrypt(String encryptedHex) {
   final decrypted = encrypter.decrypt(encryptedBytes, iv: iv);
 
   return decrypted;
+}
+
+void catchInfo(dynamic e, dynamic stackTrace) {
+  // Show SnackBar with the error, function name, and line number
+  MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
+    SnackBar(
+      content: Text(
+          'Error in ${stackTrace.toString().split("\n")[0]}: ${e.toString()}'),
+      duration: const Duration(seconds: 5),
+    ),
+  );
 }
