@@ -21,6 +21,7 @@ class IssueFormState extends State<IssueForm> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
   String option = 'Issue';
+
   Future<void> createIssue(
       String title, String body, String? label, File? imageFile) async {
     List<String> labels = label == 'Issue'
@@ -57,7 +58,34 @@ class IssueFormState extends State<IssueForm> {
 
     if (response.statusCode == 201) {
       // Success
-      print('Issue created: ${jsonDecode(response.body)['html_url']}');
+      String issueUrl = jsonDecode(response.body)['html_url'];
+
+      // Clear inputs
+      _nameController.clear();
+      _titleController.clear();
+      _bodyController.clear();
+      setState(() {
+        _imageFile = null;
+      });
+
+      // Show success dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Success'),
+            content: Text('Issue created: $issueUrl'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     } else {
       // Error handling
       print('Failed to create issue: ${response.statusCode}');
@@ -208,13 +236,15 @@ class IssueFormState extends State<IssueForm> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
                   isLoading = true;
                 });
                 final title = _titleController.text;
                 final body = _bodyController.text;
-                createIssue(title, body, option, _imageFile);
+                if (title.isNotEmpty && body.isNotEmpty) {
+                  await createIssue(title, body, option, _imageFile);
+                }
                 setState(() {
                   isLoading = false;
                 });
