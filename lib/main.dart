@@ -38,15 +38,16 @@ class ReceivedNotification {
 
 String? selectedNotificationPayload;
 
-@pragma('vm:entry-point')
-void notificationTapBackground(NotificationResponse notificationResponse) {
-  print('notification(${notificationResponse.id}) action tapped: '
-      '${notificationResponse.actionId} with payload: ${notificationResponse.payload}');
-}
+// @pragma('vm:entry-point')
+// void notificationTapBackground(NotificationResponse notificationResponse) {
+//   print('notification(${notificationResponse.id}) action tapped: '
+//       '${notificationResponse.actionId} with payload: ${notificationResponse.payload}');
+// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Android notification settings
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('ic_launcher');
 
@@ -54,6 +55,7 @@ void main() async {
     android: initializationSettingsAndroid,
   );
 
+  // Initialize notifications
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse:
@@ -65,17 +67,24 @@ void main() async {
         selectNotificationStream.add(notificationResponse.payload);
       }
     },
-    onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+    // onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
+
+  // For Android, request notification permission
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.requestNotificationsPermission();
 
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  // Define a global key for the ScaffoldMessenger
+
   static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
