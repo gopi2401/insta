@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:insta/main.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../utils/appdata.dart';
 import '../utils/function.dart';
 
 class FileDownload extends GetxController {
@@ -26,7 +27,7 @@ class FileDownload extends GetxController {
       if (!(await dir.exists())) {
         await dir.create(recursive: true);
       }
-
+      isLoading = false;
       // Start file download
       await dio.download(
         url,

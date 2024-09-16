@@ -8,7 +8,7 @@ class DistribUrl extends GetxController {
   InstaDownloadController instaController = Get.put(InstaDownloadController());
   YTDownloadController ytController = Get.put(YTDownloadController());
 
-  void handleUrl(String url) {
+  handleUrl(String url) async {
     try {
       // Instagram URL patterns
       RegExp ins = RegExp(r'instagram.com');
@@ -25,7 +25,7 @@ class DistribUrl extends GetxController {
         if (segments.length > 3) {
           var option = segments[3];
           if (option == 'p' || option == 'reel') {
-            instaController.downloadReal(url);
+            return await instaController.downloadReal(url);
           } else if (option == 'stories' && segments.length > 5) {
             var userId = segments[4];
             var storyId = segments[5];

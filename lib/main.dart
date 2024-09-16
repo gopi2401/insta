@@ -196,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (url.isNotEmpty) {
                       final Uri uri = Uri.parse(url);
                       if (uri.hasAbsolutePath) {
-                        downloadController.handleUrl(url);
+                        await downloadController.handleUrl(url);
                       } else {
                         setState(() {
                           isLoading = false;
@@ -211,10 +211,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       });
                       showToast();
                     }
+                  } catch (e, stackTrace) {
                     setState(() {
                       isLoading = false;
                     });
-                  } catch (e, stackTrace) {
                     catchInfo(e, stackTrace);
                   }
                 }

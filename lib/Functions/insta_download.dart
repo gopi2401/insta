@@ -47,9 +47,11 @@ class InstaDownloadController extends GetxController {
                     var responseData = jsonDecode(json);
                     downloadMedia(responseData);
                   } else {
+                    isLoading = false;
                     Get.to(() => const InstaLogin());
                   }
                 } catch (e, stackTrace) {
+                  isLoading = false;
                   catchInfo(e, stackTrace);
                 }
               } else {
@@ -114,7 +116,7 @@ class InstaDownloadController extends GetxController {
   }
 
   // Handles post reel media
-  void postReel(Map<String, dynamic> data) {
+  bool postReel(Map<String, dynamic> data) {
     try {
       if (data['items'] != null) {
         Items post = Items.fromJson(data);
@@ -124,6 +126,9 @@ class InstaDownloadController extends GetxController {
             downloadController.downloadFile(
                 file.fileUrl!, file.fileName!, file.fileDisplayUrl);
           }
+          return true;
+        } else {
+          return false;
         }
       } else if (data['graphql'] != null) {
         Graphql post = Graphql.fromJson(data);
@@ -133,10 +138,16 @@ class InstaDownloadController extends GetxController {
             downloadController.downloadFile(
                 file.fileUrl!, file.fileName!, file.fileDisplayUrl);
           }
+          return true;
+        } else {
+          return false;
         }
+      } else {
+        return false;
       }
     } catch (e, stackTrace) {
       catchInfo(e, stackTrace);
+      return false;
     }
   }
 }
