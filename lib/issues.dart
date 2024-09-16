@@ -39,7 +39,7 @@ class IssueFormState extends State<IssueForm> {
     final issueBody = body +
         (imageUrl.isNotEmpty ? '\n\n![Screenshot]($imageUrl)' : '') +
         (_nameController.text.isNotEmpty
-            ? '\n\nby ${_nameController.text.trim()}.'
+            ? '\n\n$option raised by ${_nameController.text.trim()}.'
             : '');
 
     final response = await http.post(
