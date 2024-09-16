@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -46,6 +47,9 @@ String? selectedNotificationPayload;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // dotenv file load
+  await dotenv.load(fileName: ".env");
 
   // Android notification settings
   const AndroidInitializationSettings initializationSettingsAndroid =

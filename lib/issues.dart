@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'utils/appdata.dart';
 
 class IssueForm extends StatefulWidget {
@@ -45,7 +45,7 @@ class IssueFormState extends State<IssueForm> {
     final response = await http.post(
       Uri.parse('$githubApi/issues'),
       headers: {
-        'Authorization': 'token $githubToken',
+        'Authorization': 'token ${dotenv.env['githubToken']}',
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json',
       },
@@ -100,7 +100,7 @@ class IssueFormState extends State<IssueForm> {
     final response = await http.put(
       Uri.parse('$githubApi/contents/$fileName'),
       headers: {
-        'Authorization': 'token $githubToken',
+        'Authorization': 'token ${dotenv.env['githubToken']}',
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json',
       },
