@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:insta/issues.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
+
+import 'utils/function.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -16,7 +15,6 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  late String version;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +36,39 @@ class _AboutPageState extends State<AboutPage> {
                         style: const TextStyle(
                           fontSize: 18,
                         )),
-                    onPressed: () => checkUpdate(context),
+                    onPressed: () async {
+                      var newVersion = await checkUpdate();
+                      if (snapshot.data == newVersion) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Already updated! 😉',
+                                style: TextStyle(fontSize: 18)),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: RichText(
+                                text: TextSpan(children: [
+                              const TextSpan(
+                                text: 'New version download',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white),
+                              ),
+                              TextSpan(
+                                  text: 'Link',
+                                  style: const TextStyle(
+                                      fontSize: 20, color: Colors.blue),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      launchUrl(Uri.parse(
+                                          'https:gopi2401.github.io/download/'));
+                                    })
+                            ])),
+                          ),
+                        );
+                      }
+                    },
                   );
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
@@ -116,59 +146,5 @@ class _AboutPageState extends State<AboutPage> {
         ),
       ),
     );
-  }
-
-  Future<void> checkUpdate(context) async {
-    final response = await http
-        .get(Uri.parse('https://api.github.com/repos/gopi2401/insta/releases'));
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      var version1 = jsonData[0]['tag_name'];
-      if (version1.startsWith("v")) {
-        version1 = version1.substring(1);
-      }
-      if (version == version1) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content:
-                Text('Already updated! 😉', style: TextStyle(fontSize: 18)),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: RichText(
-                text: TextSpan(children: [
-              const TextSpan(
-                text: 'New version download',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-              TextSpan(
-                  text: 'Link',
-                  style: const TextStyle(fontSize: 20, color: Colors.blue),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      launchUrl(
-                          Uri.parse('https:gopi2401.github.io/download/'));
-                    })
-            ])),
-          ),
-        );
-      }
-    } else {
-      // If the server did not return a 200 OK response,
-      // throw an exception or handle the error
-      throw Exception('Failed to load data');
-    }
-  }
-
-  Future<String> getAppVersion() async {
-    const platform = MethodChannel('app.channel.shared.data');
-    try {
-      version = await platform.invokeMethod('getAppVersion');
-      return version;
-    } on PlatformException catch (e) {
-      return 'Failed to get app version: ${e.message}';
-    }
   }
 }

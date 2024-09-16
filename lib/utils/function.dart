@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../main.dart';
 
@@ -51,4 +55,31 @@ void catchInfo(dynamic e, dynamic stackTrace) {
       duration: const Duration(seconds: 5),
     ),
   );
+}
+
+Future<String> getAppVersion() async {
+  const platform = MethodChannel('app.channel.shared.data');
+  try {
+    return await platform.invokeMethod('getAppVersion');
+  } on PlatformException catch (e, stackTrace) {
+    catchInfo(e, stackTrace);
+    return 'Failed to get app version: ${e.message}';
+  }
+}
+
+Future<String?> checkUpdate() async {
+  final response = await http
+      .get(Uri.parse('https://api.github.com/repos/gopi2401/insta/releases'));
+  if (response.statusCode == 200) {
+    final jsonData = jsonDecode(response.body);
+    var version1 = jsonData[0]['tag_name'];
+    if (version1.startsWith("v")) {
+      version1 = version1.substring(1);
+      return version1;
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
 }

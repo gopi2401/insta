@@ -1,15 +1,19 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:insta/functions/distrib_url.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
 import 'package:insta/utils/function.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'functions/permissions.dart';
 import 'additional.dart';
 
@@ -39,11 +43,11 @@ class ReceivedNotification {
 
 String? selectedNotificationPayload;
 
-// @pragma('vm:entry-point')
-// void notificationTapBackground(NotificationResponse notificationResponse) {
-//   print('notification(${notificationResponse.id}) action tapped: '
-//       '${notificationResponse.actionId} with payload: ${notificationResponse.payload}');
-// }
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  print('notification(${notificationResponse.id}) action tapped: '
+      '${notificationResponse.actionId} with payload: ${notificationResponse.payload}');
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,7 +75,7 @@ void main() async {
         selectNotificationStream.add(notificationResponse.payload);
       }
     },
-    // onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+    onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
 
   // For Android, request notification permission
@@ -125,7 +129,31 @@ class _MyHomePageState extends State<MyHomePage> {
     Permissions.requestStoragePermission(context);
     fToast = FToast();
     fToast.init(context);
+    appUpdate();
     downloadController = Get.put(DistribUrl());
+  }
+
+  appUpdate() async {
+    var appVersion = await getAppVersion();
+    var newVersion = await checkUpdate();
+    if (appVersion != newVersion) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: RichText(
+            text: TextSpan(children: [
+          const TextSpan(
+            text: 'New version download',
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
+          TextSpan(
+              text: 'Link',
+              style: const TextStyle(fontSize: 20, color: Colors.blue),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  launchUrl(Uri.parse('https:gopi2401.github.io/download/'));
+                })
+        ])),
+      ));
+    }
   }
 
   Widget toast = Container(
