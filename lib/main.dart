@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:insta/functions/distrib_url.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
@@ -16,6 +14,7 @@ import 'package:insta/utils/function.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'functions/permissions.dart';
 import 'additional.dart';
+import 'utils/appdata.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -120,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
   late DistribUrl downloadController;
   int id = 0;
 
-  bool isLoading = false;
   String? errorMessage;
 
   @override
@@ -130,7 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
     fToast = FToast();
     fToast.init(context);
     appUpdate();
-    downloadController = Get.put(DistribUrl());
   }
 
   appUpdate() async {
@@ -228,7 +225,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (url.isNotEmpty) {
                       final Uri uri = Uri.parse(url);
                       if (uri.hasAbsolutePath) {
+                        downloadController = Get.put(DistribUrl());
                         await downloadController.handleUrl(url);
+                        reelController.clear();
+                        setState(() {
+                          isLoading = false;
+                        });
                       } else {
                         setState(() {
                           isLoading = false;
