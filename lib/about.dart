@@ -104,9 +104,14 @@ class _AboutPageState extends State<AboutPage> {
             const SizedBox(height: 10),
             RichText(
                 text: TextSpan(children: [
-              const TextSpan(
+              TextSpan(
                 text: 'Author:',
-                style: TextStyle(fontSize: 18, color: Colors.black),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
               ),
               TextSpan(
                   text: ' gopi ❤️',
