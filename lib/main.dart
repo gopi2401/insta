@@ -186,6 +186,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: Builder(
+          builder: (context) => IconButton(
+              onPressed: () => {Scaffold.of(context).openDrawer()},
+              icon: const Icon(Icons.menu)),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
