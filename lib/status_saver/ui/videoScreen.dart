@@ -75,9 +75,10 @@ class _VideoGridState extends State<VideoGrid> {
           child: GridView.builder(
             itemCount: videoList.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              childAspectRatio: 1.0,
-              mainAxisSpacing: 8.0,
+              crossAxisCount: 2,
+              childAspectRatio: 0.6,
+              crossAxisSpacing: 5.0,
+              mainAxisSpacing: 5.0,
             ),
             itemBuilder: (context, index) {
               return InkWell(
@@ -90,7 +91,7 @@ class _VideoGridState extends State<VideoGrid> {
                   ),
                 ),
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
                   child: Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
@@ -130,13 +131,11 @@ class _VideoGridState extends State<VideoGrid> {
                               tag: videoList[index],
                               child: SizedBox(
                                 height: 280.0,
-                                child: Image.asset(
-                                    'assets/images/video_loader.gif'),
+                                child: Image.asset('assets/loading.gif'),
                               ),
                             );
                           }
                         }),
-                    //new cod
                   ),
                 ),
               );
