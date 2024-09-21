@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:insta/utils/function.dart';
 import 'package:video_player/video_player.dart';
-
+import 'package:path/path.dart' as path;
 import 'video_controller.dart';
 
 class PlayStatus extends StatefulWidget {
@@ -108,10 +108,8 @@ class _PlayStatusState extends State<PlayStatus> {
         Directory('/storage/emulated/0/Download/Insta/Status')
             .createSync(recursive: true);
       }
-      // final path = directory.path;
-      final curDate = DateTime.now().toString();
       final newFileName =
-          '/storage/emulated/0/Download/Insta/Status/VIDEO-$curDate.mp4';
+          '/storage/emulated/0/Download/Insta/Status/${path.basename(originalVideoFile.path)}';
       await originalVideoFile.copy(newFileName);
 
       _onLoading(
