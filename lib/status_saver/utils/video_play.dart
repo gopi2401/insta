@@ -27,7 +27,7 @@ class _PlayStatusState extends State<PlayStatus> {
     super.dispose();
   }
 
-  void _onLoading(bool t, String str) {
+  void _onLoading(bool t, String? str) {
     if (t) {
       showDialog(
           context: context,
@@ -43,7 +43,7 @@ class _PlayStatusState extends State<PlayStatus> {
               ],
             );
           });
-    } else {
+    } else if (str != null) {
       Navigator.pop(context);
       showDialog(
           context: context,
@@ -93,6 +93,8 @@ class _PlayStatusState extends State<PlayStatus> {
               ),
             );
           });
+    } else {
+      Navigator.pop(context);
     }
   }
 
@@ -117,6 +119,7 @@ class _PlayStatusState extends State<PlayStatus> {
         'If Video not available in gallary\n\nYou can find all videos at',
       );
     } catch (e, stackTrace) {
+      _onLoading(false, null);
       catchInfo(e, stackTrace);
     }
   }
