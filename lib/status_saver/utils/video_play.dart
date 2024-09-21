@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:insta/utils/function.dart';
 import 'package:video_player/video_player.dart';
 
 import 'video_controller.dart';
@@ -95,6 +96,31 @@ class _PlayStatusState extends State<PlayStatus> {
     }
   }
 
+  void save() async {
+    try {
+      _onLoading(true, '');
+
+      final originalVideoFile = File(widget.videoFile);
+      if (!Directory('/storage/emulated/0/Download/Insta/Status')
+          .existsSync()) {
+        Directory('/storage/emulated/0/Download/Insta/Status')
+            .createSync(recursive: true);
+      }
+      // final path = directory.path;
+      final curDate = DateTime.now().toString();
+      final newFileName =
+          '/storage/emulated/0/Download/Insta/Status/VIDEO-$curDate.mp4';
+      await originalVideoFile.copy(newFileName);
+
+      _onLoading(
+        false,
+        'If Video not available in gallary\n\nYou can find all videos at',
+      );
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,6 +136,16 @@ class _PlayStatusState extends State<PlayStatus> {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          IconButton(
+            color: Colors.white,
+            icon: const Icon(
+              Icons.save,
+              color: Colors.white,
+            ),
+            onPressed: () => save(),
+          ),
+        ],
       ),
       body: StatusVideo(
         videoPlayerController:
@@ -117,30 +153,6 @@ class _PlayStatusState extends State<PlayStatus> {
         looping: true,
         videoSrc: widget.videoFile,
       ),
-      // ),
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.teal,
-          child: const Icon(Icons.save),
-          onPressed: () async {
-            _onLoading(true, '');
-
-            final originalVideoFile = File(widget.videoFile);
-            if (!Directory('/storage/emulated/0/wa_status_saver')
-                .existsSync()) {
-              Directory('/storage/emulated/0/wa_status_saver')
-                  .createSync(recursive: true);
-            }
-            // final path = directory.path;
-            final curDate = DateTime.now().toString();
-            final newFileName =
-                '/storage/emulated/0/wa_status_saver/VIDEO-$curDate.mp4';
-            await originalVideoFile.copy(newFileName);
-
-            _onLoading(
-              false,
-              'If Video not available in gallary\n\nYou can find all videos at',
-            );
-          }),
     );
   }
 }

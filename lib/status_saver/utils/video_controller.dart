@@ -28,11 +28,11 @@ class _StatusVideoState extends State<StatusVideo> {
     super.initState();
     _chewieController = ChewieController(
       videoPlayerController: widget.videoPlayerController,
+      showOptions: false,
       autoInitialize: true,
       looping: widget.looping,
       allowFullScreen: true,
-      aspectRatio:
-          widget.aspectRatio ?? widget.videoPlayerController.value.aspectRatio,
+      aspectRatio: 0.55,
       errorBuilder: (context, errorMessage) {
         return Center(
           child: Text(errorMessage),
