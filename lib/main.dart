@@ -281,17 +281,10 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                ),
-                child: Text(
-                  'Drawer Header',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          scale: 0.8, image: AssetImage('assets/logo.png'))),
+                  child: null),
               ListTile(
                 leading: const Icon(
                   Icons.home,
