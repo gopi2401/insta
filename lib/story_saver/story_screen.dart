@@ -37,24 +37,8 @@ class StoryScreenState extends State<StoryScreen> {
     var stories = widget.stories.stories;
     return Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          titleSpacing: 0,
-          actions: [
-            IconButton(
-                icon: const Icon(Icons.download, color: Colors.white),
-                onPressed: () {
-                  var url = stories[storyindex].storie.isNotEmpty
-                      ? stories[storyindex].storie
-                      : stories[storyindex].img;
-                  downloadController.downloadFile(
-                      url,
-                      url.split('?').first.split('/').last,
-                      stories[storyindex].img);
-                }),
-          ],
-        ),
+        appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(120), child: SizedBox(height: 65)),
         body: Stack(
           children: [
             Center(
@@ -81,20 +65,40 @@ class StoryScreenState extends State<StoryScreen> {
                 controller: storyController,
               ),
             ),
-            // Positioned(
-            //   top:
-            //       kToolbarHeight, // This places the progress bar below the AppBar
-            //   left: 0,
-            //   right: 0,
-            //   child: Padding(
-            //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            //     child: StoryProgressIndicator(
-            //       storyController: storyController,
-            //       itemCount: stories.length,
-            //       currentIndex: onStoryShowIndex,
-            //     ),
-            //   ),
-            // ),
+            Positioned(
+              top: kToolbarHeight +
+                  25,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.download,
+                      ),
+                      onPressed: () {
+                        var url = stories[storyindex].storie.isNotEmpty
+                            ? stories[storyindex].storie
+                            : stories[storyindex].img;
+                        downloadController.downloadFile(
+                            url,
+                            url.split('?').first.split('/').last,
+                            stories[storyindex].img);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ));
   }
