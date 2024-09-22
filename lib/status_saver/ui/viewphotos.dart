@@ -2,8 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-// import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:speed_dial_fab/speed_dial_fab.dart';
 import 'package:path/path.dart' as path;
 
 class ViewPhotos extends StatefulWidget {
@@ -29,14 +27,6 @@ class _ViewPhotosState extends State<ViewPhotos> {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
-
-  final _fabMiniMenuItemList = [
-    Icons.sd_card,
-    Icons.share,
-    Icons.reply,
-    Icons.wallpaper,
-    Icons.delete_outline,
-  ];
 
   void _onLoading(bool t, String str) {
     if (t) {
