@@ -23,7 +23,6 @@ class StoryScreenState extends State<StoryScreen> {
   void initState() {
     super.initState();
     storyController = StoryController();
-    downloadController = Get.put(FileDownload());
   }
 
   @override
@@ -66,8 +65,7 @@ class StoryScreenState extends State<StoryScreen> {
               ),
             ),
             Positioned(
-              top: kToolbarHeight +
-                  25,
+              top: kToolbarHeight + 25,
               left: 0,
               right: 0,
               child: Container(
@@ -86,6 +84,7 @@ class StoryScreenState extends State<StoryScreen> {
                         Icons.download,
                       ),
                       onPressed: () {
+                        downloadController = Get.put(FileDownload());
                         var url = stories[storyindex].storie.isNotEmpty
                             ? stories[storyindex].storie
                             : stories[storyindex].img;
