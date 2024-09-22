@@ -227,6 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       final Uri uri = Uri.parse(url);
                       if (uri.hasAbsolutePath) {
                         downloadController = Get.put(DistribUrl());
+                        contexts = context;
                         await downloadController.handleUrl(url);
                         reelController.clear();
                         setState(() {

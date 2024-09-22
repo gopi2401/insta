@@ -100,7 +100,12 @@ class InstaDownloadController extends GetxController {
 
       if (response.statusCode == 200) {
         var stories = Story.fromJson(jsonDecode(response.body));
-        Get.to(() => StoryScreen(stories: stories));
+        Navigator.push(
+          contexts,
+          MaterialPageRoute(
+              builder: (context) => StoryScreen(stories: stories)),
+        );
+        contexts = null;
       }
     } catch (e, stackTrace) {
       catchInfo(e, stackTrace);
