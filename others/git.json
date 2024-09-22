@@ -1,0 +1,69 @@
+fetch("https://github.com/upload/policies/assets", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "multipart/form-data; boundary=----WebKitFormBoundary1dAIMMnovLI7pkNd",
+    "priority": "u=1, i",
+    "sec-ch-ua": "\"Chromium\";v=\"128\", \"Not;A=Brand\";v=\"24\", \"Google Chrome\";v=\"128\"",
+    "sec-ch-ua-mobile": "?1",
+    "sec-ch-ua-platform": "\"Android\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "x-requested-with": "XMLHttpRequest",
+    "cookie": "_octo=GH1.1.366926344.1723894092; _device_id=6eebc9d4f7e9c408b4757b8de06212c6; logged_in=yes; dotcom_user=gopi2401; saved_user_sessions=117622182%3AJVmJFOyqt6fDFe9mfgbPV_HXEwClF2Px4tyfcPK6K-JqDqTp; user_session=JVmJFOyqt6fDFe9mfgbPV_HXEwClF2Px4tyfcPK6K-JqDqTp; __Host-user_session_same_site=JVmJFOyqt6fDFe9mfgbPV_HXEwClF2Px4tyfcPK6K-JqDqTp; color_mode=%7B%22color_mode%22%3A%22auto%22%2C%22light_theme%22%3A%7B%22name%22%3A%22light%22%2C%22color_mode%22%3A%22light%22%7D%2C%22dark_theme%22%3A%7B%22name%22%3A%22dark%22%2C%22color_mode%22%3A%22dark%22%7D%7D; preferred_color_mode=light; tz=Asia%2FCalcutta; _gh_sess=GYiyihv0B8GbK74QOgQa%2FRgjpZXq3VByEwJh%2B4WvuCpfo667S%2BxUHrTmcCOL%2B9rpL2BYJFv0BheRT9zKTMQjgsh6gDtsZmoGIa9yNtQvhO%2FUQ3xTXz5s%2FqZTR8vCfIKPa0nYyTcYZh7fC%2FddQxz77OW%2BgO9N78mgKLMOMoS8GOnpylwp6CW33tgFkCDAtzElmVM1DrsS9gvkHKChkxA7qxQrHv7mXlFzQuBwISFQwvwUVnDNdnbbSsba7ZfnupLM3qmN9ssFATMt1ceGqmolxqqXiR5YHYhvSgTwGDDhV884DjdE8ooJPGA6zb84w5Kb6KMZLdEAa4HVqrnl--OHavw6acIHdEBUG7--F18vWjql563OVqkhIXGzzw%3D%3D",
+    "Referer": "https://github.com/gopi2401/insta/issues/13",
+    "Referrer-Policy": "no-referrer-when-downgrade"
+  },
+  "body": "------WebKitFormBoundary1dAIMMnovLI7pkNd\r\nContent-Disposition: form-data; name=\"name\"\r\n\r\nScreenshot_20240919_210823.png\r\n------WebKitFormBoundary1dAIMMnovLI7pkNd\r\nContent-Disposition: form-data; name=\"size\"\r\n\r\n102596\r\n------WebKitFormBoundary1dAIMMnovLI7pkNd\r\nContent-Disposition: form-data; name=\"content_type\"\r\n\r\nimage/png\r\n------WebKitFormBoundary1dAIMMnovLI7pkNd\r\nContent-Disposition: form-data; name=\"authenticity_token\"\r\n\r\npI0ofw7XcMozJW4ZcpOZn9PE_3MIlKgFqhxbAJKkCc97fVP_cEWhKkoBNyyWnW3kwcJ08VsgNaoZ9EhzgmdX5g\r\n------WebKitFormBoundary1dAIMMnovLI7pkNd\r\nContent-Disposition: form-data; name=\"repository_id\"\r\n\r\n695377855\r\n------WebKitFormBoundary1dAIMMnovLI7pkNd--\r\n",
+  "method": "POST"
+});
+
+
+{"upload_url":"https://github-production-user-asset-6210df.s3.amazonaws.com","header":{},"asset":{"id":369265215,"name":"Screenshot_20240919_210823.png","size":102596,"content_type":"image/png","href":"https://github.com/user-attachments/assets/d53d1c96-728e-4b3e-a295-0dd0546986b7","original_name":"Screenshot_20240919_210823.png"},"form":{"key":"117622182/369265215-d53d1c96-728e-4b3e-a295-0dd0546986b7.png","acl":"private","policy":"eyJleHBpcmF0aW9uIjoiMjAyNC0wOS0yMFQwNTozMDo1N1oiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJnaXRodWItcHJvZHVjdGlvbi11c2VyLWFzc2V0LTYyMTBkZiJ9LHsia2V5IjoiMTE3NjIyMTgyLzM2OTI2NTIxNS1kNTNkMWM5Ni03MjhlLTRiM2UtYTI5NS0wZGQwNTQ2OTg2YjcucG5nIn0seyJhY2wiOiJwcml2YXRlIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMTAyNTk2LDEwMjU5Nl0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQVZDT0RZTFNBNTNQUUs0WkEvMjAyNDA5MjAvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMjQwOTIwVDAwMDAwMFoifSx7IkNvbnRlbnQtVHlwZSI6ImltYWdlL3BuZyJ9LHsiQ2FjaGUtQ29udHJvbCI6Im1heC1hZ2U9MjU5MjAwMCJ9LHsieC1hbXotbWV0YS1TdXJyb2dhdGUtQ29udHJvbCI6Im1heC1hZ2U9MzE1NTc2MDAifV19","X-Amz-Algorithm":"AWS4-HMAC-SHA256","X-Amz-Credential":"AKIAVCODYLSA53PQK4ZA/20240920/us-east-1/s3/aws4_request","X-Amz-Date":"20240920T000000Z","X-Amz-Signature":"6c781c014ef13956e63f6adbf369a7390244ae24aa06ac69b58331c13778008f","Content-Type":"image/png","Cache-Control":"max-age=2592000","x-amz-meta-Surrogate-Control":"max-age=31557600"},"same_origin":false,"asset_upload_url":"/upload/assets/369265215","upload_authenticity_token":"6ys_CNDeZxeQCGKR7-ZdlDBiSDJJXg0gyd7x8TMV2ZzYqdDPM8PToazjG5coqkhXJfPsruHc8Tv62Bn5LDx2kg","asset_upload_authenticity_token":"MwnfgykcVUgAVtkQThneAOIQhFP8mv933ioiX0omThgG2SCP_Eld_N7HojeNSnv0gHR7tXUHvWyxHhRELyYEuQ"}
+
+fetch("https://github-production-user-asset-6210df.s3.amazonaws.com/", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "multipart/form-data; boundary=----WebKitFormBoundaryPumnhMCEoHxbDRYH",
+    "sec-ch-ua": "\"Chromium\";v=\"128\", \"Not;A=Brand\";v=\"24\", \"Google Chrome\";v=\"128\"",
+    "sec-ch-ua-mobile": "?1",
+    "sec-ch-ua-platform": "\"Android\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "cross-site",
+    "Referer": "https://github.com/gopi2401/insta/issues/13",
+    "Referrer-Policy": "no-referrer-when-downgrade"
+  },
+  "body": "------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"key\"\r\n\r\n117622182/369265215-d53d1c96-728e-4b3e-a295-0dd0546986b7.png\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"acl\"\r\n\r\nprivate\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"policy\"\r\n\r\neyJleHBpcmF0aW9uIjoiMjAyNC0wOS0yMFQwNTozMDo1N1oiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJnaXRodWItcHJvZHVjdGlvbi11c2VyLWFzc2V0LTYyMTBkZiJ9LHsia2V5IjoiMTE3NjIyMTgyLzM2OTI2NTIxNS1kNTNkMWM5Ni03MjhlLTRiM2UtYTI5NS0wZGQwNTQ2OTg2YjcucG5nIn0seyJhY2wiOiJwcml2YXRlIn0sWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMTAyNTk2LDEwMjU5Nl0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQVZDT0RZTFNBNTNQUUs0WkEvMjAyNDA5MjAvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMjQwOTIwVDAwMDAwMFoifSx7IkNvbnRlbnQtVHlwZSI6ImltYWdlL3BuZyJ9LHsiQ2FjaGUtQ29udHJvbCI6Im1heC1hZ2U9MjU5MjAwMCJ9LHsieC1hbXotbWV0YS1TdXJyb2dhdGUtQ29udHJvbCI6Im1heC1hZ2U9MzE1NTc2MDAifV19\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"X-Amz-Algorithm\"\r\n\r\nAWS4-HMAC-SHA256\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"X-Amz-Credential\"\r\n\r\nAKIAVCODYLSA53PQK4ZA/20240920/us-east-1/s3/aws4_request\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"X-Amz-Date\"\r\n\r\n20240920T000000Z\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"X-Amz-Signature\"\r\n\r\n6c781c014ef13956e63f6adbf369a7390244ae24aa06ac69b58331c13778008f\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"Content-Type\"\r\n\r\nimage/png\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"Cache-Control\"\r\n\r\nmax-age=2592000\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"x-amz-meta-Surrogate-Control\"\r\n\r\nmax-age=31557600\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH\r\nContent-Disposition: form-data; name=\"file\"; filename=\"Screenshot_20240919_210823.png\"\r\nContent-Type: image/png\r\n\r\n\r\n------WebKitFormBoundaryPumnhMCEoHxbDRYH--\r\n",
+  "method": "POST"
+});
+
+
+fetch("https://github.com/upload/assets/369265215", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "multipart/form-data; boundary=----WebKitFormBoundary0lHc17yEnFYymFMA",
+    "priority": "u=1, i",
+    "sec-ch-ua": "\"Chromium\";v=\"128\", \"Not;A=Brand\";v=\"24\", \"Google Chrome\";v=\"128\"",
+    "sec-ch-ua-mobile": "?1",
+    "sec-ch-ua-platform": "\"Android\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "x-requested-with": "XMLHttpRequest",
+    "cookie": "_octo=GH1.1.366926344.1723894092; _device_id=6eebc9d4f7e9c408b4757b8de06212c6; logged_in=yes; dotcom_user=gopi2401; saved_user_sessions=117622182%3AJVmJFOyqt6fDFe9mfgbPV_HXEwClF2Px4tyfcPK6K-JqDqTp; user_session=JVmJFOyqt6fDFe9mfgbPV_HXEwClF2Px4tyfcPK6K-JqDqTp; __Host-user_session_same_site=JVmJFOyqt6fDFe9mfgbPV_HXEwClF2Px4tyfcPK6K-JqDqTp; color_mode=%7B%22color_mode%22%3A%22auto%22%2C%22light_theme%22%3A%7B%22name%22%3A%22light%22%2C%22color_mode%22%3A%22light%22%7D%2C%22dark_theme%22%3A%7B%22name%22%3A%22dark%22%2C%22color_mode%22%3A%22dark%22%7D%7D; preferred_color_mode=light; tz=Asia%2FCalcutta; _gh_sess=oel2eB7cL1JjLM%2BpWi%2FNBxIE3t4eNeGUK1VPGV2zBIU78i0mXJO1bKWJiHfDx27CQO2wyypqo6yzLpOYXCQUWGfDpT3H5p9zRP%2BOG9PVv3klAvLuaSq0Ng3sR43ITRow5Fm07ir9A7jY%2FXkrEoBBkBaMAWHzCIfKlvPSb4auGIRygzWXOkWn6SPHOkpp5pG73bBPxBxFGm6gvu%2F3WBp6tAPGSAsThXNeGcBDoVBombqS2wsJZg4fcSJ40ydY3ukDHf%2BOaL0WgR8jAm80zFbHP8YGk9AFj%2BEbj5bZRkudCYVDvXoMRPMmhvVSPXRYywGfz2o%2BBeeyeMUYV46swUR5HYALfDPW1v0kV7tpuwKsqmE%2F7Hq3VBhkdgOIdmJGN%2FmNhnApHeCqDbykrs3ipxkQ9lVBwyKei%2BjtYbXLRZj4GUAyjNP1A6iDSmVp3XTLQkSGohiSze5pzdg2p%2FWgfOj%2FxrYqtd8XTHGiDmav0LgIUKM%3D--DPwvLmLF%2FooRpKU%2F--TguUYlv7UaoMXiaYfxQz9A%3D%3D",
+    "Referer": "https://github.com/gopi2401/insta/issues/13",
+    "Referrer-Policy": "no-referrer-when-downgrade"
+  },
+  "body": "------WebKitFormBoundary0lHc17yEnFYymFMA\r\nContent-Disposition: form-data; name=\"authenticity_token\"\r\n\r\nMwnfgykcVUgAVtkQThneAOIQhFP8mv933ioiX0omThgG2SCP_Eld_N7HojeNSnv0gHR7tXUHvWyxHhRELyYEuQ\r\n------WebKitFormBoundary0lHc17yEnFYymFMA--\r\n",
+  "method": "PUT"
+});
+
+{"id":369265215,"name":"Screenshot_20240919_210823.png","size":102596,"content_type":"image/png","href":"https://github.com/user-attachments/assets/d53d1c96-728e-4b3e-a295-0dd0546986b7","original_name":null}
+<p dir="auto">this url to not download  <a href="https://www.instagram.com/reel/DAGLR94yKHD/?utm_source=ig_web_copy_link" rel="nofollow">https://www.instagram.com/reel/DAGLR94yKHD/?utm_source=ig_web_copy_link</a><br>
+mentioned 👇below screenshot</p>
+<p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/gopi2401/insta/main/1000000049.png"><img src="https://raw.githubusercontent.com/gopi2401/insta/main/1000000049.png" width="250/" style="max-width: 100%;"></a></p>
+<p dir="auto">Issue raised by gopi.</p>
