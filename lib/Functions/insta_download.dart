@@ -10,6 +10,7 @@ import '../instagram_login_page.dart';
 import '../models/graphql.dart';
 import '../models/items.dart';
 import '../models/story_model.dart';
+import '../story_saver/story_screen.dart';
 import '../utils/appdata.dart';
 import '../utils/function.dart';
 import 'file_download.dart';
@@ -86,6 +87,20 @@ class InstaDownloadController extends GetxController {
                 video.isNotEmpty ? video : image, 'story_$sId', image);
           }
         }
+      }
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
+    }
+  }
+
+  Future<void> highlight(String id) async {
+    try {
+      final uri = Uri.parse('${igs}highlightStories/highlight:$id');
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        var stories = Story.fromJson(jsonDecode(response.body));
+        Get.to(() => StoryScreen(stories: stories));
       }
     } catch (e, stackTrace) {
       catchInfo(e, stackTrace);

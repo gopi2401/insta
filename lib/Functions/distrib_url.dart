@@ -28,12 +28,16 @@ class DistribUrl extends GetxController {
           if (option == 'p' || option == 'reel') {
             return await instaController.downloadReal(url);
           } else if (option == 'stories' && segments.length > 5) {
-            var userId = segments[4];
-            var storyId = segments[5];
-            RegExp regExp = RegExp(r'^(\d+)');
-            var match = regExp.firstMatch(storyId);
-            if (match != null) {
-              instaController.stories(userId, match.group(0)!);
+            if (segments[4] == 'highlights') {
+              await instaController.highlight(segments[5]);
+            } else {
+              var userId = segments[4];
+              var storyId = segments[5];
+              RegExp regExp = RegExp(r'^(\d+)');
+              var match = regExp.firstMatch(storyId);
+              if (match != null) {
+                instaController.stories(userId, match.group(0)!);
+              }
             }
           }
         }
