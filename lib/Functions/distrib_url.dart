@@ -5,8 +5,8 @@ import 'package:insta/functions/yt_download.dart';
 import '../utils/function.dart';
 
 class DistribUrl extends GetxController {
-  InstaDownloadController instaController = Get.put(InstaDownloadController());
-  YTDownloadController ytController = Get.put(YTDownloadController());
+  late InstaDownloadController instaController;
+  late YTDownloadController ytController;
 
   handleUrl(String url) async {
     try {
@@ -21,6 +21,7 @@ class DistribUrl extends GetxController {
       bool isYouTubeShort = youm.hasMatch(url);
 
       if (isInstagram) {
+        instaController = Get.put(InstaDownloadController());
         var segments = url.split("/");
         if (segments.length > 3) {
           var option = segments[3];
@@ -37,10 +38,10 @@ class DistribUrl extends GetxController {
           }
         }
       } else if (isYouTube || isYouTubeShort) {
+        ytController = Get.put(YTDownloadController());
         ytController.youtube(url);
       }
     } catch (e, stackTrace) {
-      // Log the error and the stack trace
       catchInfo(e, stackTrace);
     }
   }

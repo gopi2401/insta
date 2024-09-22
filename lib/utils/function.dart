@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../main.dart';
+import 'appdata.dart';
 
 String title(String title) {
   return title
@@ -47,11 +49,27 @@ String decrypt(String encryptedHex) {
 }
 
 void catchInfo(dynamic e, dynamic stackTrace) {
-  // Show SnackBar with the error, function name, and line number
   MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
     SnackBar(
-      content: Text(
-          'Error in ${stackTrace.toString().split("\n")[0]}: ${e.toString()}'),
+      content: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Error in ${stackTrace.toString().split("\n")[0]}: ${e.toString()}',
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              var body = """
+**${e.toString()}**
+
+`${stackTrace.toString()}`""";
+              await createIssue(e.toString().split(':')[0], body);
+            },
+            child: const Text('Send issue'),
+          ),
+        ],
+      ),
       duration: const Duration(seconds: 5),
     ),
   );
@@ -81,5 +99,37 @@ Future<String?> checkUpdate() async {
     }
   } else {
     return null;
+  }
+}
+
+Future<void> createIssue(String title, String body) async {
+  final issueBody = body;
+
+  final response = await http.post(
+    Uri.parse('$githubApi/issues'),
+    headers: {
+      'Authorization': 'token ${dotenv.env['githubToken']}',
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'title': title,
+      'body': issueBody,
+      'labels': ['bug'],
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    // Success
+    MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
+      const SnackBar(
+        content: Expanded(
+          child: Text('You rock! thanks for your feedback.👍'),
+        ),
+      ),
+    );
+  } else {
+    print('Failed to create issue: ${response.statusCode}');
+    print(response.body);
   }
 }

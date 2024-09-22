@@ -97,15 +97,23 @@ class InstaProfileState extends State<InstaProfile> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     text: '${user.mediaCount}\n',
-                    style: const TextStyle(
-                        color: Colors.black,
+                    style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 17.0),
-                    children: const <TextSpan>[
+                    children: <TextSpan>[
                       TextSpan(
                           text: 'posts',
                           style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 14.0)),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.0,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          )),
                     ],
                   ),
                 ),
@@ -113,15 +121,23 @@ class InstaProfileState extends State<InstaProfile> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     text: '${user.followerCount}\n',
-                    style: const TextStyle(
-                        color: Colors.black,
+                    style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 17.0),
-                    children: const <TextSpan>[
+                    children: <TextSpan>[
                       TextSpan(
                           text: 'followers',
                           style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 14.0)),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.0,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          )),
                     ],
                   ),
                 ),
@@ -129,15 +145,23 @@ class InstaProfileState extends State<InstaProfile> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     text: '${user.followingCount}\n',
-                    style: const TextStyle(
-                        color: Colors.black,
+                    style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 17.0),
-                    children: const <TextSpan>[
+                    children: <TextSpan>[
                       TextSpan(
                           text: 'following',
                           style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 14.0)),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.0,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          )),
                     ],
                   ),
                 ),

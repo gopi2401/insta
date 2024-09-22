@@ -107,7 +107,7 @@ class IssueFormState extends State<IssueForm> {
       body: jsonEncode({
         'message': 'Uploading screenshot',
         'content': base64Image,
-        'branch': 'main',
+        'branch': 'assets',
       }),
     );
 

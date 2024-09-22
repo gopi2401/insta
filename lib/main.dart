@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:insta/functions/distrib_url.dart';
 import 'package:insta/about.dart';
 import 'package:insta/instagram_login_page.dart';
@@ -16,6 +14,7 @@ import 'package:insta/utils/function.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'functions/permissions.dart';
 import 'additional.dart';
+import 'utils/appdata.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -120,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
   late DistribUrl downloadController;
   int id = 0;
 
-  bool isLoading = false;
   String? errorMessage;
 
   @override
@@ -130,7 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
     fToast = FToast();
     fToast.init(context);
     appUpdate();
-    downloadController = Get.put(DistribUrl());
   }
 
   appUpdate() async {
@@ -189,6 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(leading: const DrawerButton()),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +226,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     if (url.isNotEmpty) {
                       final Uri uri = Uri.parse(url);
                       if (uri.hasAbsolutePath) {
+                        downloadController = Get.put(DistribUrl());
                         await downloadController.handleUrl(url);
+                        reelController.clear();
+                        setState(() {
+                          isLoading = false;
+                        });
                       } else {
                         setState(() {
                           isLoading = false;
@@ -265,62 +268,80 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: Container(
-          color: Colors.black45,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                ),
-                child: Text(
-                  'Drawer Header',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
+      drawer: DrawerWidget(),
+    );
+  }
+}
+
+class DrawerWidget extends StatelessWidget {
+  const DrawerWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          const DrawerHeader(
+              duration: Duration(seconds: 1),
+              curve: Curves.easeInCubic,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      scale: 2.5, image: AssetImage('assets/logo.png'))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Welcome!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 33),
+                  )
+                ],
+              )),
+          Expanded(
+            child: ListView(
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    Icons.home,
                   ),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.home,
-                  color: Colors.white,
-                ),
-                title: const Text(
-                  'Home',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
+                  title: const Text(
+                    'Home',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
+                  onTap: () {
+                    // Add your navigation logic here
+                  },
                 ),
-                onTap: () {
-                  // Add your navigation logic here
-                },
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.error_outline,
-                  color: Colors.white,
-                ),
-                title: const Text(
-                  'About',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
+                ListTile(
+                  leading: const Icon(
+                    Icons.error_outline,
                   ),
+                  title: const Text(
+                    'About',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AboutPage()),
+                    );
+                  },
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AboutPage()),
-                  );
-                },
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+          const Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Text('Made with 💙 by gopi'),
+            ),
+          ),
+        ],
       ),
     );
   }

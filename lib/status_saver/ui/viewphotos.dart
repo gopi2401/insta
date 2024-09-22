@@ -107,6 +107,28 @@ class _ViewPhotosState extends State<ViewPhotos> {
     }
   }
 
+  save() async {
+    _onLoading(true, '');
+
+    final myUri = Uri.parse(widget.imgPath);
+    final originalImageFile = File.fromUri(myUri);
+
+    // Read the file as bytes
+    Uint8List bytes = await originalImageFile.readAsBytes();
+
+    // Create the directory if it doesn't exist
+    final dir = await Directory('/storage/emulated/0/Download/Insta/status')
+        .create(recursive: true);
+
+    // Write the bytes to a new file
+    final newFile = File(path.join(dir.path, path.basename(widget.imgPath)));
+    await newFile.writeAsBytes(bytes);
+
+    // await ImageGallerySaver.saveImage(Uint8List.fromList(bytes));
+    _onLoading(false,
+        'If Image not available in gallary\n\nYou can find all images at');
+  }
+
   @override
   Widget build(BuildContext context) {
     //The list of FabMiniMenuItems that we are going to use
@@ -124,59 +146,25 @@ class _ViewPhotosState extends State<ViewPhotos> {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                save();
+              },
+              icon: const Icon(Icons.save))
+        ],
       ),
       body: Center(
-        child: Image.file(
-          File(widget.imgPath),
-          fit: BoxFit.cover,
+        child: InteractiveViewer(
+          panEnabled: true, // Allows panning
+          minScale: 0.5, // Minimum scale to zoom out
+          maxScale: 4.0, // Maximum scale to zoom in
+          child: Image.file(
+            File(widget.imgPath),
+            fit: BoxFit.contain,
+          ),
         ),
       ),
-      floatingActionButton: SpeedDialFabWidget(
-        secondaryIconsList: _fabMiniMenuItemList,
-        secondaryIconsText: const [
-          "Save",
-          "Share",
-          "Repost",
-          "Set As",
-          "Delete",
-        ],
-        secondaryIconsOnPress: [
-          () async {
-            _onLoading(true, '');
-
-            final myUri = Uri.parse(widget.imgPath);
-            final originalImageFile = File.fromUri(myUri);
-
-            // Read the file as bytes
-            Uint8List bytes = await originalImageFile.readAsBytes();
-
-            // Create the directory if it doesn't exist
-            final dir =
-                await Directory('/storage/emulated/0/Download/Insta/status')
-                    .create(recursive: true);
-
-            // Write the bytes to a new file
-            final newFile =
-                File(path.join(dir.path, path.basename(widget.imgPath)));
-            await newFile.writeAsBytes(bytes);
-
-            // await ImageGallerySaver.saveImage(Uint8List.fromList(bytes));
-            _onLoading(false,
-                'If Image not available in gallary\n\nYou can find all images at');
-          },
-          () => {},
-          () => {},
-          () => {},
-          () => {},
-        ],
-        primaryIconExpand: Icons.add,
-        primaryIconCollapse: Icons.add,
-        secondaryBackgroundColor: Colors.teal,
-        secondaryForegroundColor: Colors.white,
-        primaryBackgroundColor: Colors.teal,
-        primaryForegroundColor: Colors.white,
-      ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

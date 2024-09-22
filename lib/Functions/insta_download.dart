@@ -15,7 +15,7 @@ import '../utils/function.dart';
 import 'file_download.dart';
 
 class InstaDownloadController extends GetxController {
-  final WebViewController controller = WebViewController();
+  late final WebViewController webViewController;
   final FileDownload downloadController = Get.put(FileDownload());
 
   // Downloads media from the provided link
@@ -23,14 +23,14 @@ class InstaDownloadController extends GetxController {
     try {
       final url =
           "${link.trim().split("/").sublist(0, 5).join("/")}/?__a=1&__d=dis";
-
-      controller
+      webViewController = WebViewController();
+      webViewController
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setBackgroundColor(const Color(0x00000000))
         ..setNavigationDelegate(NavigationDelegate(
           onPageFinished: (String url) async {
             try {
-              final cook = await controller.runJavaScriptReturningResult(
+              final cook = await webViewController.runJavaScriptReturningResult(
                   'JSON.parse(document.documentElement.innerText)') as String;
               var data = jsonDecode(cook);
               debugPrint('Page finished loading: $cook');
