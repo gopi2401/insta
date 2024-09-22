@@ -186,13 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) => IconButton(
-              onPressed: () => {Scaffold.of(context).openDrawer()},
-              icon: const Icon(Icons.menu)),
-        ),
-      ),
+      appBar: AppBar(leading: const DrawerButton()),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -274,55 +268,80 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: Container(
-          color: Colors.black45,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          scale: 0.8, image: AssetImage('assets/logo.png'))),
-                  child: null),
-              ListTile(
-                leading: const Icon(
-                  Icons.home,
-                  color: Colors.white,
-                ),
-                title: const Text(
-                  'Home',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
+      drawer: DrawerWidget(),
+    );
+  }
+}
+
+class DrawerWidget extends StatelessWidget {
+  const DrawerWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          const DrawerHeader(
+              duration: Duration(seconds: 1),
+              curve: Curves.easeInCubic,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      scale: 2.5, image: AssetImage('assets/logo.png'))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Welcome!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 33),
+                  )
+                ],
+              )),
+          Expanded(
+            child: ListView(
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    Icons.home,
                   ),
-                ),
-                onTap: () {
-                  // Add your navigation logic here
-                },
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.error_outline,
-                  color: Colors.white,
-                ),
-                title: const Text(
-                  'About',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
+                  title: const Text(
+                    'Home',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
                   ),
+                  onTap: () {
+                    // Add your navigation logic here
+                  },
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AboutPage()),
-                  );
-                },
-              ),
-            ],
+                ListTile(
+                  leading: const Icon(
+                    Icons.error_outline,
+                  ),
+                  title: const Text(
+                    'About',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AboutPage()),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
+          const Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Text('Made with 💙 by gopi'),
+            ),
+          ),
+        ],
       ),
     );
   }
