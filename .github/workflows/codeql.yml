@@ -1,4 +1,4 @@
-name: "CodeQL"
+name: "Dart and Flutter Static Analysis"
 
 on:
   push:
@@ -8,48 +8,27 @@ on:
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
-    # Use macOS runner for Swift, and Ubuntu for others
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    permissions:
-      # Required for all workflows
-      security-events: write
-      # Required to fetch internal or private CodeQL packs
-      packages: read
-      # Only required for workflows in private repositories
-      actions: read
-      contents: read
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - language: dart
-          build-mode: manual
-        # You can add other languages supported by CodeQL if needed.
+    name: Analyze Dart Code
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+    # Set up Flutter environment
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
       with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # queries: security-extended,security-and-quality
+        flutter-version: 'stable'
 
-    # Manually build the Flutter project (as autobuild might not work for Dart/Flutter)
-    - if: matrix.build-mode == 'manual'
-      name: Build Flutter project
-      run: |
-        flutter pub get
-        flutter build apk
+    # Install dependencies
+    - name: Install dependencies
+      run: flutter pub get
 
-    # Perform CodeQL Analysis
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{ matrix.language }}"
+    # Run Dart/Flutter static analysis
+    - name: Run Flutter Analyze
+      run: flutter analyze
+
+    # Run Dart Unit tests
+    - name: Run Flutter tests
+      run: flutter test
