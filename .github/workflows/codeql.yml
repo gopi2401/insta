@@ -11,16 +11,16 @@ jobs:
     name: Analyze Dart Code
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    # Set up Flutter with a specific version
+ # Set up Flutter with a specific version
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.10.5'
 
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
     # Install dependencies
     - name: Install dependencies
       run: flutter pub get
