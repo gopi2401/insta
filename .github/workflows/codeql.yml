@@ -1,4 +1,4 @@
-name: "Dart and Flutter Static Analysis"
+name: Dart and Flutter Static Analysis
 
 on:
   push:
@@ -15,11 +15,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Set up Flutter environment
+    # Clean Flutter cache (optional)
+    - name: Clean Flutter cache
+      run: flutter clean
+
+    # Set up Flutter with a specific version
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: 'stable'
+        flutter-version: '3.10.5'
 
     # Install dependencies
     - name: Install dependencies
