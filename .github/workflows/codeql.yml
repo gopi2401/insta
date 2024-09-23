@@ -14,11 +14,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    # Clean Flutter cache (optional)
-    - name: Clean Flutter cache
-      run: flutter clean
-
+      
     # Set up Flutter with a specific version
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
