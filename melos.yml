@@ -1,0 +1,4 @@
+name: insta
+
+packages:
+  - packages/**
