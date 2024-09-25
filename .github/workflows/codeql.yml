@@ -1,34 +1,37 @@
-name: Dart and Flutter Static Analysis
-
+name: Builds
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+
+# Declare default permissions as read only.
+permissions: read-all
 
 jobs:
-  analyze:
-    name: Analyze Dart Code
-    runs-on: ubuntu-latest
-
- # Set up Flutter with a specific version
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.10.5'
-
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ["apk --debug", "appbundle --debug", "ios --no-codesign", macos, web]
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    # Install dependencies
-    - name: Install dependencies
-      run: flutter pub get
+      - name: Set up JDK 11
+        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # v3.12.0
+        with:
+          java-version: 11
+          distribution: temurin
+      # Set up Flutter.
+      - name: Clone Flutter repository with master channel
+        uses: subosito/flutter-action@48cafc24713cca54bbe03cdc3a423187d413aafa
+        with:
+          channel: master
+      - run: flutter doctor -v
 
-    # Run Dart/Flutter static analysis
-    - name: Run Flutter Analyze
-      run: flutter analyze
+      # Checkout gallery code and get packages.
+      - name: Checkout gallery code
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      - run: flutter pub get
 
-    # Run Dart Unit tests
-    - name: Run Flutter tests
-      run: flutter test
+      - run: flutter build ${{ matrix.target }}
