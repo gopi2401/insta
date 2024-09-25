@@ -2,7 +2,7 @@ name: Code QL
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   analyze:
@@ -16,45 +16,45 @@ jobs:
       - name: Activate melos
         run: |
           echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-          dart pub global activate melos 
+          dart pub global activate melos
       - name: Bootstrap melos
         run: melos bs
       - name: Analyze package
         run: melos exec -- flutter analyze --no-fatal-infos
 
-  # format:
-  #   name: Format Dart Code
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 5
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: subosito/flutter-action@v2
-  #       with:
-  #         channel: beta
-  #     - name: Activate melos
-  #       run: |
-  #         echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-  #         dart pub global activate melos 2.9.0
-  #     - name: Bootstrap melos
-  #       run: melos bs
-  #     - name: Validate formatting
-  #       run: |
-  #         melos exec -- dart format -o write .
-  #         ./.github/workflows/scripts/validate-formatting.sh
+  format:
+    name: Format Dart Code
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: beta
+      - name: Activate melos
+        run: |
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+          dart pub global activate melos 2.9.0
+      - name: Bootstrap melos
+        run: melos bs
+      - name: Validate formatting
+        run: |
+          melos exec -- dart format -o write .
+          ./.github/workflows/scripts/validate-formatting.sh
 
-  # test:
-  #   name: Test Dart Code
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: subosito/flutter-action@v2
-  #       with:
-  #         channel: beta
-  #     - name: Activate melos
-  #       run: |
-  #         echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-  #         dart pub global activate melos 2.9.0
-  #     - name: Bootstrap melos
-  #       run: melos bs
-  #     - name: Run tests
-  #       run: melos exec --dir-exists=test -- flutter test
+  test:
+    name: Test Dart Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: beta
+      - name: Activate melos
+        run: |
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+          dart pub global activate melos 2.9.0
+      - name: Bootstrap melos
+        run: melos bs
+      - name: Run tests
+        run: melos exec --dir-exists=test -- flutter test

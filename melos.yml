@@ -2,7 +2,7 @@ name: insta
 
 # Define the packages to include in the workspace
 packages:
-  - packages/**
+  - .
 
 # Command configuration section
 command:
