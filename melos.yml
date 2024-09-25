@@ -1,4 +1,22 @@
 name: insta
 
+# Define the packages to include in the workspace
 packages:
   - packages/**
+
+# Command configuration section
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+# Scripts section for common commands
+scripts:
+  build:
+    description: "Run build_runner to generate code"
+    run: |
+      melos exec -- flutter pub run build_runner build --delete-conflicting-outputs
+    # You don’t need select-package with depends-on here. Build runner should be run in relevant packages automatically.
+  analyze:
+    description: "Analyze the codebase"
+    run: |
+      melos exec -- flutter analyze --no-fatal-infos
