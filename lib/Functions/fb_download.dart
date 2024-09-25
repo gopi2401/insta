@@ -28,8 +28,8 @@ class YTDownloadController extends GetxController {
       // Handle the response
       var response = await request.close();
       if (response.statusCode == 200) {
-        var json = await response.transform(utf8.decoder).join();
-        var decodedResponse = jsonDecode(json);
+        // var json = await response.transform(utf8.decoder).join();
+        // var decodedResponse = jsonDecode(json);
         // Further handling of the decoded response
         // Add download logic here if necessary, depending on response content
       } else {

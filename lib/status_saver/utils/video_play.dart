@@ -13,10 +13,10 @@ class PlayStatus extends StatefulWidget {
     required this.videoFile,
   }) : super(key: key);
   @override
-  _PlayStatusState createState() => _PlayStatusState();
+  PlayStatusState createState() => PlayStatusState();
 }
 
-class _PlayStatusState extends State<PlayStatus> {
+class PlayStatusState extends State<PlayStatus> {
   @override
   void initState() {
     super.initState();

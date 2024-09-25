@@ -11,7 +11,7 @@ class Graphql {
       if (media['__typename'] == 'GraphSidecar') {
         var arr = media['edge_sidecar_to_children']['edges'];
         arr.forEach((jso) {
-          var n = "_" + jso['node']['id'].substring(15);
+          var n = "_${jso['node']['id'].substring(15)}";
           files!.add(FileJson.fromJson(jso['node'], fName + n));
         });
       } else {

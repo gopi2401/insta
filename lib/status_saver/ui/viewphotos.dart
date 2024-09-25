@@ -12,11 +12,10 @@ class ViewPhotos extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ViewPhotosState createState() => _ViewPhotosState();
+  ViewPhotosState createState() => ViewPhotosState();
 }
 
-class _ViewPhotosState extends State<ViewPhotos> {
-  var filePath;
+class ViewPhotosState extends State<ViewPhotos> {
   final String imgShare = 'Image.file(File(widget.imgPath),)';
 
   final LinearGradient backgroundGradient = const LinearGradient(

@@ -17,10 +17,10 @@ class StatusVideo extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _StatusVideoState createState() => _StatusVideoState();
+  StatusVideoState createState() => StatusVideoState();
 }
 
-class _StatusVideoState extends State<StatusVideo> {
+class StatusVideoState extends State<StatusVideo> {
   late ChewieController _chewieController;
 
   @override

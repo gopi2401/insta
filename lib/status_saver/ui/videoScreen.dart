@@ -48,10 +48,10 @@ class VideoGrid extends StatefulWidget {
   const VideoGrid({Key? key, this.directory}) : super(key: key);
 
   @override
-  _VideoGridState createState() => _VideoGridState();
+  VideoGridState createState() => VideoGridState();
 }
 
-class _VideoGridState extends State<VideoGrid> {
+class VideoGridState extends State<VideoGrid> {
   Future<String?> _getImage(videoPathUrl) async {
     //await Future.delayed(Duration(milliseconds: 500));
     final thumb = await VideoThumbnail.thumbnailFile(video: videoPathUrl);

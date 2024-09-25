@@ -97,7 +97,7 @@ class FileDownload extends GetxController {
   Future<void> _showNotificationMediaStyle(
       String notificationBody, String? notificationImg, int idno) async {
     try {
-      var largeIconPath;
+      dynamic largeIconPath;
       if (notificationImg != null) {
         largeIconPath =
             await _downloadAndSaveFile(notificationImg, 'largeIcon');
@@ -165,7 +165,7 @@ class FileDownload extends GetxController {
     } catch (e, stackTrace) {
       print('Error downloading and saving file: $e');
       catchInfo(e, stackTrace);
-      throw e;
+      rethrow;
     }
   }
 }
