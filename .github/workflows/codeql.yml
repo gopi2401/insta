@@ -1,34 +1,60 @@
-name: Dart and Flutter Static Analysis
+name: Code QL
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   analyze:
     name: Analyze Dart Code
     runs-on: ubuntu-latest
-
- # Set up Flutter with a specific version
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.10.5'
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    # Install dependencies
-    - name: Install dependencies
-      run: flutter pub get
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: beta
+      - name: Activate melos
+        run: |
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+          dart pub global activate melos
+      - name: Bootstrap melos
+        run: melos bs
+      - name: Analyze package
+        run: melos exec -- flutter analyze --no-fatal-infos
 
-    # Run Dart/Flutter static analysis
-    - name: Run Flutter Analyze
-      run: flutter analyze
+  format:
+    name: Format Dart Code
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: beta
+      - name: Activate melos
+        run: |
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+          dart pub global activate melos 2.9.0
+      - name: Bootstrap melos
+        run: melos bs
+      - name: Validate formatting
+        run: |
+          melos exec -- dart format -o write .
+          ./.github/workflows/scripts/validate-formatting.sh
 
-    # Run Dart Unit tests
-    - name: Run Flutter tests
-      run: flutter test
+  test:
+    name: Test Dart Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: beta
+      - name: Activate melos
+        run: |
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+          dart pub global activate melos 2.9.0
+      - name: Bootstrap melos
+        run: melos bs
+      - name: Run tests
+        run: melos exec --dir-exists=test -- flutter test
