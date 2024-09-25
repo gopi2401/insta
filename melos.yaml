@@ -20,3 +20,6 @@ scripts:
     description: "Analyze the codebase"
     run: |
       melos exec -- flutter analyze --no-fatal-infos
+  format:
+    run: dart format -o write .
+    description: Run Dart formatter.
