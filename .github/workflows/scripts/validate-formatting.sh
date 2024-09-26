@@ -1,8 +1,14 @@
 #!/bin/bash
+
+# Format the files first
+echo "🔧 Attempting to auto-format files..."
+melos run format
+
+# Check for any remaining modified files
 if [[ $(git ls-files --modified) ]]; then
   echo ""
   echo ""
-  echo "These files are not formatted correctly:"
+  echo "These files are still not formatted correctly:"
   for f in $(git ls-files --modified); do
     echo ""
     echo ""
@@ -22,7 +28,7 @@ if [[ $(git ls-files --modified) ]]; then
   echo ""
   echo "❌ Some files are incorrectly formatted, see above output."
   echo ""
-  echo "To fix these locally, run: 'melos run format'."
+  echo "To manually fix these, run: 'melos run format' again or inspect the changes."
   exit 1
 else
   echo ""
