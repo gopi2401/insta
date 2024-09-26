@@ -4,7 +4,7 @@
 
 At insta, we take the security of our code and systems seriously. If you believe you have found a security vulnerability, we encourage you to report it to us as soon as possible in a responsible manner.
 
-To report a vulnerability, please email us at [gopicoc2401@gmail.com](mailto:gopicoc2401@gmail.com) with a detailed description of the vulnerability and steps to reproduce it. Please refrain from publicly disclosing the vulnerability until we have had an opportunity to address it.
+To r eport a vulnerability, please email us at [gopicoc2401@gmail.com](mailto:gopicoc2401@gmail.com) with a detailed description of the vulnerability and steps to reproduce it. Please refrain from publicly disclosing the vulnerability until we have had an opportunity to address it.
 
 We appreciate your efforts in helping us maintain the security of our software and will do our best to respond to and resolve reported vulnerabilities in a timely manner.
 
