@@ -29,7 +29,7 @@ class YTDownloadController extends GetxController {
 
         const jobCheckUrl =
             "28092c5adf73dfe1043e22afc831a9630f64a4da5e3ff0e33ce8f4c48fb2ec78a429ae8534d4463fb501aef3331ac7ea";
-        var payload;
+        dynamic payload;
 
         // Polling for the job result
         do {

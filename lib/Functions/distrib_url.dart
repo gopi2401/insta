@@ -5,8 +5,8 @@ import 'package:insta/functions/yt_download.dart';
 import '../utils/function.dart';
 
 class DistribUrl extends GetxController {
-  InstaDownloadController instaController = Get.put(InstaDownloadController());
-  YTDownloadController ytController = Get.put(YTDownloadController());
+  late InstaDownloadController instaController;
+  late YTDownloadController ytController;
 
   handleUrl(String url) async {
     try {
@@ -21,26 +21,34 @@ class DistribUrl extends GetxController {
       bool isYouTubeShort = youm.hasMatch(url);
 
       if (isInstagram) {
+        instaController = Get.put(InstaDownloadController());
         var segments = url.split("/");
         if (segments.length > 3) {
           var option = segments[3];
           if (option == 'p' || option == 'reel') {
-            return await instaController.downloadReal(url);
+            await instaController.downloadReal(url);
+            instaController.onClose();
           } else if (option == 'stories' && segments.length > 5) {
-            var userId = segments[4];
-            var storyId = segments[5];
-            RegExp regExp = RegExp(r'^(\d+)');
-            var match = regExp.firstMatch(storyId);
-            if (match != null) {
-              instaController.stories(userId, match.group(0)!);
+            if (segments[4] == 'highlights') {
+              await instaController.highlight(segments[5]);
+              instaController.onClose();
+            } else {
+              var userId = segments[4];
+              var storyId = segments[5];
+              RegExp regExp = RegExp(r'^(\d+)');
+              var match = regExp.firstMatch(storyId);
+              if (match != null) {
+                await instaController.stories(userId, match.group(0)!);
+                instaController.onClose();
+              }
             }
           }
         }
       } else if (isYouTube || isYouTubeShort) {
+        ytController = Get.put(YTDownloadController());
         ytController.youtube(url);
       }
     } catch (e, stackTrace) {
-      // Log the error and the stack trace
       catchInfo(e, stackTrace);
     }
   }

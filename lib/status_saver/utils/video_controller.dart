@@ -17,10 +17,10 @@ class StatusVideo extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _StatusVideoState createState() => _StatusVideoState();
+  StatusVideoState createState() => StatusVideoState();
 }
 
-class _StatusVideoState extends State<StatusVideo> {
+class StatusVideoState extends State<StatusVideo> {
   late ChewieController _chewieController;
 
   @override
@@ -28,11 +28,11 @@ class _StatusVideoState extends State<StatusVideo> {
     super.initState();
     _chewieController = ChewieController(
       videoPlayerController: widget.videoPlayerController,
+      showOptions: false,
       autoInitialize: true,
       looping: widget.looping,
       allowFullScreen: true,
-      aspectRatio:
-          widget.aspectRatio ?? widget.videoPlayerController.value.aspectRatio,
+      aspectRatio: 0.55,
       errorBuilder: (context, errorMessage) {
         return Center(
           child: Text(errorMessage),

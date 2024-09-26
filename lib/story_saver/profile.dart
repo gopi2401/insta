@@ -6,6 +6,7 @@ import 'package:insta/models/highlight_model.dart';
 import 'package:insta/models/story_model.dart';
 import 'package:insta/models/user_info_model.dart';
 import 'package:insta/story_saver/image_screen.dart';
+import 'package:insta/utils/function.dart';
 import '../functions/file_download.dart';
 import '../utils/appdata.dart';
 import 'story_screen.dart';
@@ -28,7 +29,6 @@ class InstaProfileState extends State<InstaProfile> {
   void initState() {
     super.initState();
     profileController = TextEditingController();
-    downloadController = Get.put(FileDownload());
 
     // Fetch highlights and stories only if the profile is public
     highlightsFuture = widget.data.isPrivate
@@ -37,6 +37,29 @@ class InstaProfileState extends State<InstaProfile> {
 
     storiesFuture =
         widget.data.isPrivate ? Future.value(null) : apiStories(widget.data.id);
+  }
+
+  void _onLoading(bool t) {
+    if (t) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return SimpleDialog(
+              backgroundColor: Colors.transparent,
+              children: <Widget>[
+                Center(
+                  child: Image.asset(
+                    'assets/loading.gif',
+                    width: 45,
+                  ),
+                )
+              ],
+            );
+          });
+    } else {
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -97,15 +120,23 @@ class InstaProfileState extends State<InstaProfile> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     text: '${user.mediaCount}\n',
-                    style: const TextStyle(
-                        color: Colors.black,
+                    style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 17.0),
-                    children: const <TextSpan>[
+                    children: <TextSpan>[
                       TextSpan(
                           text: 'posts',
                           style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 14.0)),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.0,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          )),
                     ],
                   ),
                 ),
@@ -113,15 +144,23 @@ class InstaProfileState extends State<InstaProfile> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     text: '${user.followerCount}\n',
-                    style: const TextStyle(
-                        color: Colors.black,
+                    style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 17.0),
-                    children: const <TextSpan>[
+                    children: <TextSpan>[
                       TextSpan(
                           text: 'followers',
                           style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 14.0)),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.0,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          )),
                     ],
                   ),
                 ),
@@ -129,15 +168,23 @@ class InstaProfileState extends State<InstaProfile> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     text: '${user.followingCount}\n',
-                    style: const TextStyle(
-                        color: Colors.black,
+                    style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 17.0),
-                    children: const <TextSpan>[
+                    children: <TextSpan>[
                       TextSpan(
                           text: 'following',
                           style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 14.0)),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.0,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                          )),
                     ],
                   ),
                 ),
@@ -148,6 +195,9 @@ class InstaProfileState extends State<InstaProfile> {
               children: [
                 Text('${user.fullname}\n${user.category}\n${user.biography}')
               ],
+            ),
+            const SizedBox(
+              height: 15,
             ),
             SizedBox(
               child: FutureBuilder<Highlight?>(
@@ -174,11 +224,24 @@ class InstaProfileState extends State<InstaProfile> {
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: highlights.map((highlight) {
-                          return SizedBox(
-                            child: Column(
-                              children: [
-                                CircleAvatar(
+                          return Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  _onLoading(true);
+                                  final stories =
+                                      await highlightStories(highlight.id);
+                                  _onLoading(false);
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (_) {
+                                    return StoryScreen(
+                                      stories: stories!,
+                                    );
+                                  }));
+                                },
+                                child: CircleAvatar(
                                   radius: 37,
                                   backgroundColor: Colors.grey,
                                   child: CircleAvatar(
@@ -187,9 +250,9 @@ class InstaProfileState extends State<InstaProfile> {
                                         NetworkImage(highlight.coverMedia),
                                   ),
                                 ),
-                                Text(highlight.title),
-                              ],
-                            ),
+                              ),
+                              Text(highlight.title),
+                            ],
                           );
                         }).toList(),
                       ),
@@ -238,7 +301,25 @@ class InstaProfileState extends State<InstaProfile> {
     }
   }
 
+  Future<Story?> highlightStories(String id) async {
+    try {
+      final uri = Uri.parse('${igs}highlightStories/$id');
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        return Story.fromJson(jsonDecode(response.body));
+      } else {
+        print('Failed to load stories. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
+      return null;
+    }
+  }
+
   void profilePicDownload() {
+    downloadController = Get.put(FileDownload());
     downloadController.downloadFile(
         widget.data.hdProfilePicUrl,
         widget.data.hdProfilePicUrl.split('?').first.split('/').last,

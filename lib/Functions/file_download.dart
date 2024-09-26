@@ -8,12 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:insta/main.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../utils/appdata.dart';
 import '../utils/function.dart';
 
 class FileDownload extends GetxController {
   // Download File and Show Progress
-  void downloadFile(
+  Future<dynamic> downloadFile(
       String url, String fileName, String? notificationImg) async {
     Dio dio = Dio();
     try {
@@ -27,7 +26,6 @@ class FileDownload extends GetxController {
       if (!(await dir.exists())) {
         await dir.create(recursive: true);
       }
-      isLoading = false;
       // Start file download
       await dio.download(
         url,
@@ -97,7 +95,7 @@ class FileDownload extends GetxController {
   Future<void> _showNotificationMediaStyle(
       String notificationBody, String? notificationImg, int idno) async {
     try {
-      var largeIconPath;
+      dynamic largeIconPath;
       if (notificationImg != null) {
         largeIconPath =
             await _downloadAndSaveFile(notificationImg, 'largeIcon');
@@ -165,7 +163,7 @@ class FileDownload extends GetxController {
     } catch (e, stackTrace) {
       print('Error downloading and saving file: $e');
       catchInfo(e, stackTrace);
-      throw e;
+      rethrow;
     }
   }
 }

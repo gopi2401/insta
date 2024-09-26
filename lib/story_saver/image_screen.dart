@@ -8,6 +8,7 @@ class ImageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -28,19 +29,16 @@ class ImageScreen extends StatelessWidget {
           Navigator.pop(context);
         },
         child: Center(
-          child: Hero(
-            tag: imgUrl,
-            child: InteractiveViewer(
-              panEnabled: true, // Allows panning
-              boundaryMargin: const EdgeInsets.all(
-                  20), // Shrink the margin for easier panning
-              minScale: 0.5, // Minimum scale to zoom out
-              maxScale: 4.0, // Maximum scale to zoom in
-              child: Image.network(
-                imgUrl,
-                fit: BoxFit
-                    .contain, // Ensures the image maintains its aspect ratio
-              ),
+          child: InteractiveViewer(
+            panEnabled: true, // Allows panning
+            // boundaryMargin: const EdgeInsets.all(
+            //     20), // Shrink the margin for easier panning
+            minScale: 0.5, // Minimum scale to zoom out
+            maxScale: 4.0, // Maximum scale to zoom in
+            child: Image.network(
+              imgUrl,
+              fit: BoxFit
+                  .fitWidth, // Ensures the image maintains its aspect ratio
             ),
           ),
         ),

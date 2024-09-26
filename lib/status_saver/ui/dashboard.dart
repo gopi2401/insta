@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'imageScreen.dart';
-import 'videoScreen.dart';
+import 'imagescreen.dart';
+import 'videoscreen.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);

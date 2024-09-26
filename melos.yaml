@@ -1,0 +1,35 @@
+name: insta
+
+repository: https://github.com/gopi2401/insta
+# Define the packages to include in the workspace
+packages:
+  - .
+
+# Command configuration section
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+# Scripts section for common commands
+scripts:
+
+  build:
+    description: "Run build_runner to generate code"
+    run: |
+      melos exec -- flutter pub run build_runner build --delete-conflicting-outputs
+    # You don’t need select-package with depends-on here. Build runner should be run in relevant packages automatically.
+
+  analyze:
+    run: dart analyze --fatal-infos --fatal-warnings .
+    description: Run Dart analyzer.
+
+  format:
+    run: dart format -o write .
+    description: Run Dart formatter.
+
+  # test:
+  #   run: dart run melos exec -- "dart test"
+  #   description: Run Dart tests.
+  #   select-package:
+  #     dir-exists: "test"
+  #     depends-on: "test"

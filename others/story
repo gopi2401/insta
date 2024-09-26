@@ -60,6 +60,9 @@ static Future<InstaProfile> storyFromUrl(String userUrl) async {
  // https://igs.sf-converter.com/api/userInfoByUsername/phoenix_queen_25
       // https://igs.sf-converter.com/api/stories/50839057408
       // https://igs.sf-converter.com/api/highlights/50839057408
+// https://igs.sf-converter.com/api/highlightStories/highlight:17991492164446320
 
 
+// https://api-ig.storiesig.info/api/highlights/4744334141
+// https://api-ig.storiesig.info/api/highlightStories/highlight:17991492
       // https://api.akuari.my.id/downloader/yt1?link=

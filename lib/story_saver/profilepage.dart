@@ -44,7 +44,7 @@ class ProfilePageState extends State<ProfilePage> {
               child: TextField(
                 controller: profileController,
                 decoration: const InputDecoration(
-                  hintText: "Profile Name",
+                  hintText: "profile name or url",
                 ),
               ),
             ),
@@ -102,6 +102,10 @@ class ProfilePageState extends State<ProfilePage> {
 
   Future<UserInfo?> apiUserData(String name) async {
     try {
+      Uri url = Uri.parse(name);
+      if (url.hasAbsolutePath) {
+        name = name.split('/')[3];
+      }
       final uri = Uri.parse('${igs}userInfoByUsername/$name');
       http.Response response = await http.get(uri);
 

@@ -10,19 +10,21 @@ A new instagram videos download app.
 
 [<img src="https://img.shields.io/badge/Website-blue"
      alt="Website"
-     height="50">](https://gopi2401.github.io/)
-     
-[<img src="https://img.shields.io/badge/GitHub-8A2BE2"
+     height="50">](https://gopi2401.github.io/) [<img src="https://img.shields.io/badge/GitHub-8A2BE2"
      alt="GitHub"
      height="50">](https://github.com/gopi2401/insta-app/releases)
-     
+
 ### Don't forget to :star: the repo
 
 [![GitHub stars](https://img.shields.io/github/stars/gopi2401/insta.svg?style=social&label=Star)](https://github.com//gopi2401/insta) ![GitHub forks](https://img.shields.io/github/forks/gopi2401/insta.svg?style=social&label=Forks) ![GitHub followers](https://img.shields.io/github/followers/gopi2401.svg?style=social&label=Follow)
 
 ## Features
+
 - Download Photos and Videos
 - Story Saver
+- Instagram Profile Viewer
+- Whatsapp Status Saver
+- Highlights View & Save
 - Youtube Video Shorts
 - Multiple Downloads
 - Fast Downloads
@@ -31,3 +33,7 @@ A new instagram videos download app.
 - No Subscription
 - No Watermarks
 - No Ads
+
+## Screenshots
+
+<img src="https://github.com/user-attachments/assets/443896eb-942c-4c3e-9ec0-852dd4c1c12c" width="250"> <img src="https://github.com/user-attachments/assets/80e6b517-730d-46f5-90bc-232f78a2da70" width="250"> <img src="https://github.com/user-attachments/assets/ea63628c-27d7-4430-a52f-87f322c757bc" width="250">
