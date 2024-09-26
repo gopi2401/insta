@@ -9,10 +9,11 @@ jobs:
     name: Analyze Dart Code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          channel: beta
+          channel: stable
+      - run: flutter --version
       - uses: bluefireteam/melos-action@v3
       - name: Activate melos
         run: |
@@ -28,11 +29,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
       - run: flutter --version
+      - uses: bluefireteam/melos-action@v3
       - name: Activate melos
         run: |
           echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
