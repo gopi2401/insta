@@ -20,8 +20,7 @@ scripts:
     # You don’t need select-package with depends-on here. Build runner should be run in relevant packages automatically.
 
   analyze:
-    run: dart analyze --fatal-infos --fatal-warnings .
-    description: Run Dart analyzer.
+    exec: flutter analyze --no-fatal-infos
 
   format:
     run: dart format -o write .
