@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -50,6 +51,21 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // call kotlin native share intent
+  const MethodChannel channel = MethodChannel('app.channel.shared.data');
+  channel.setMethodCallHandler((call) async {
+    try {
+      if (call.method == 'getSharedText') {
+        String sharedText = call.arguments;
+        if (sharedText != '') {
+          await DistribUrl().handleUrl(sharedText);
+        }
+      }
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
+    }
+  });
 
   // dotenv file load
   await dotenv.load(fileName: ".env");
