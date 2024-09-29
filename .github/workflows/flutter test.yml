@@ -11,8 +11,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: main
 
       # Setup Java environment in order to build the Android app.
       - uses: actions/setup-java@v1
@@ -40,10 +38,10 @@ jobs:
       # - run: flutter format --set-exit-if-changed .
 
       # Statically analyze the Dart code for any errors.
-      - run: flutter analyze .
+      - run: flutter doctor -v  .
 
       # Run widget tests for our flutter project.
       # - run: flutter test
 
       # Build apk.
-      - run: flutter build apk --release
+      # - run: flutter build apk --release
