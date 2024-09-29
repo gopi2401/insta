@@ -4,7 +4,7 @@
 
 A new instagram videos download app.
 
-[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-1f425f.svg)](https://flutter.dev/) ![Release](https://img.shields.io/github/v/release/gopi2401/insta) ![Downloads](https://img.shields.io/github/downloads/gopi2401/insta/total)
+[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-1f425f.svg)](https://flutter.dev/) ![Release](https://img.shields.io/github/v/release/gopi2401/insta) ![Downloads](https://img.shields.io/github/downloads/gopi2401/insta/total) ![GitHub repo size](https://img.shields.io/github/repo-size/gopi2401/insta?style=flat)
 
 ## Download
 
