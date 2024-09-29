@@ -8,14 +8,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:insta/functions/distrib_url.dart';
-import 'package:insta/about.dart';
-import 'package:insta/instagram_login_page.dart';
-import 'package:insta/utils/function.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'about.dart';
+import 'functions/distrib_url.dart';
 import 'functions/permissions.dart';
 import 'additional.dart';
+import 'instagram_login_page.dart';
 import 'utils/appdata.dart';
+import 'utils/function.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
