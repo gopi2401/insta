@@ -41,7 +41,7 @@ jobs:
       - run: flutter doctor -v  .
 
       # Run widget tests for our flutter project.
-      # - run: flutter test
+      - run: ls -C -b
 
       # Build apk.
-      # - run: flutter build apk --release
+      - run: flutter build apk --release
