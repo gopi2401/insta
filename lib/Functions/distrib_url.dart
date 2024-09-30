@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:insta/functions/insta_download.dart';
-import 'package:insta/functions/yt_download.dart';
 
 import '../utils/function.dart';
+import 'insta_download.dart';
+import 'yt_download.dart';
 
 class DistribUrl extends GetxController {
   late InstaDownloadController instaController;

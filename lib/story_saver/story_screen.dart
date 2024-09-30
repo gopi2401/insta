@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:insta/functions/file_download.dart';
 import 'package:story_view/story_view.dart';
 
+import '../functions/file_download.dart';
 import '../models/story_model.dart';
 
 class StoryScreen extends StatefulWidget {

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../utils/function.dart';
 import 'file_download.dart';
 
-class YTDownloadController extends GetxController {
+class FbDownloadController extends GetxController {
   FileDownload downloadController = Get.put(FileDownload());
 
   // Method to handle Facebook video download
