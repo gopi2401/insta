@@ -21,14 +21,14 @@ jobs:
           pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache of dart pub get dependencies
           pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
       - run: flutter --version
-      # - uses: bluefireteam/melos-action@v3
-      # - name: Activate melos
-      #   run: |
-      #     dart pub global activate melos
-      # - name: Bootstrap melos
-      #   run: melos bs
-      # - name: Analyze package
-      #   run: melos exec -- flutter analyze --no-fatal-infos
+      - uses: bluefireteam/melos-action@v3
+      - name: Activate melos
+        run: |
+          dart pub global activate melos
+      - name: Bootstrap melos
+        run: melos bs
+      - name: Analyze package
+        run: melos exec -- flutter analyze --no-fatal-infos
 
   # format:
   #   name: Format Dart Code
