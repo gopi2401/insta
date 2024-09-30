@@ -5,9 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:insta/main.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../main.dart';
 import '../utils/function.dart';
 
 class FileDownload extends GetxController {

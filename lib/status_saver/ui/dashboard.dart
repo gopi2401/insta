@@ -12,7 +12,7 @@ class DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return const TabBarView(
-      children: [
+      children: <Widget>[
         ImageScreen(),
         VideoScreen(),
       ],

@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:insta/issues.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'issues.dart';
 import 'utils/function.dart';
 
 class AboutPage extends StatefulWidget {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insta/status_saver/ui/dashboard.dart';
+
+import 'ui/dashboard.dart';
 
 class WhatsApp extends StatefulWidget {
   const WhatsApp({Key? key}) : super(key: key);

@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:insta/models/user_info_model.dart';
-import 'package:insta/utils/function.dart';
+
+import '../models/user_info_model.dart';
 import '../utils/appdata.dart';
+import '../utils/function.dart';
 import 'profile.dart';
 
 class ProfilePage extends StatefulWidget {

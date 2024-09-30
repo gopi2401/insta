@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:insta/models/highlight_model.dart';
-import 'package:insta/models/story_model.dart';
-import 'package:insta/models/user_info_model.dart';
-import 'package:insta/story_saver/image_screen.dart';
-import 'package:insta/utils/function.dart';
+
 import '../functions/file_download.dart';
+import '../models/highlight_model.dart';
+import '../models/story_model.dart';
+import '../models/user_info_model.dart';
 import '../utils/appdata.dart';
+import '../utils/function.dart';
+import 'image_screen.dart';
 import 'story_screen.dart';
 
 class InstaProfile extends StatefulWidget {

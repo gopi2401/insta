@@ -8,7 +8,6 @@
 // import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:get/get.dart';
 // import 'package:get_storage/get_storage.dart';
-// import 'package:insta/main.dart';
 // import 'package:path_provider/path_provider.dart';
 // import 'package:permission_handler/permission_handler.dart';
 // import 'package:webview_cookie_manager/webview_cookie_manager.dart' as wb;
