@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run : git clean -dfx
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
