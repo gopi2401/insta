@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'imagescreen.dart';
+import 'image_gridview.dart';
 import 'video_screen.dart';
 
 class Dashboard extends StatefulWidget {
