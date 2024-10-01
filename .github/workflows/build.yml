@@ -19,7 +19,7 @@ jobs:
           distribution: "temurin"
 
       # Gradle cache for faster builds
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -35,8 +35,11 @@ jobs:
       # Get flutter dependencies.
       - run: flutter pub get
 
-    #   # Statically analyze the Dart code for any errors.
-    #   - run: flutter doctor -v  .
+      - name: Create .env file
+        run: |
+          cat > .env <<EOF
+          githubToken=${{ secrets.GITHUBTOKEN }}
+          EOF
 
       # Build apk.
       - run: flutter build apk --release
