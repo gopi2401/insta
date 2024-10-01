@@ -14,7 +14,7 @@ class IssueForm extends StatefulWidget {
   IssueFormState createState() => IssueFormState();
 }
 
-    class IssueFormState extends State<IssueForm> {
+class IssueFormState extends State<IssueForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
