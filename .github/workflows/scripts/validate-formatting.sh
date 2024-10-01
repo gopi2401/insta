@@ -2,6 +2,9 @@
 
 # Format the files first
 echo "🔧 Attempting to auto-format files..."
+cd ..
+cd ..
+cd ..
 melos run format
 
 # Check for any remaining modified files
