@@ -14,11 +14,7 @@ A new instagram videos download app.
      alt="GitHub"
      height="50">](https://github.com/gopi2401/insta-app/releases)
 
-### Don't forget to :star: the repo
-
-[![GitHub stars](https://img.shields.io/github/stars/gopi2401/insta.svg?style=social&label=Star)](https://github.com//gopi2401/insta) ![GitHub forks](https://img.shields.io/github/forks/gopi2401/insta.svg?style=social&label=Forks) ![GitHub followers](https://img.shields.io/github/followers/gopi2401.svg?style=social&label=Follow)
-
-## Features
+## ✨ Features
 
 - Download Photos and Videos
 - Story Saver
@@ -34,6 +30,32 @@ A new instagram videos download app.
 - No Watermarks
 - No Ads
 
-## Screenshots
+## 📸 Screenshots
 
 <img src="https://github.com/user-attachments/assets/443896eb-942c-4c3e-9ec0-852dd4c1c12c" width="250"> <img src="https://github.com/user-attachments/assets/80e6b517-730d-46f5-90bc-232f78a2da70" width="250"> <img src="https://github.com/user-attachments/assets/ea63628c-27d7-4430-a52f-87f322c757bc" width="250">
+
+## 🔖 LICENCE
+
+                    GNU GENERAL PUBLIC LICENSE
+                     Version 3, 29 June 2007
+
+       Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+    Everyone is permitted to copy and distribute verbatim copies
+    of this license document, but changing it is not allowed.
+
+      The licenses for most software and other practical works are designed
+    to take away your freedom to share and change the works.  By contrast,
+    the GNU General Public License is intended to guarantee your freedom to
+    share and change all versions of a program--to make sure it remains free
+    software for all its users.  We, the Free Software Foundation, use the
+    GNU General Public License for most of our software; it applies also to
+    any other work released this way by its authors.  You can apply it to
+    your programs, too.
+
+## 🤝 Support
+
+Contributions, issues, and feature requests are welcome!
+
+Give a ⭐️ if you like this project!
+
+[![GitHub stars](https://img.shields.io/github/stars/gopi2401/insta.svg?style=social&label=Star)](https://github.com//gopi2401/insta) ![GitHub forks](https://img.shields.io/github/forks/gopi2401/insta.svg?style=social&label=Forks) ![GitHub followers](https://img.shields.io/github/followers/gopi2401.svg?style=social&label=Follow)
