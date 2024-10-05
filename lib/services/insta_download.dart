@@ -18,7 +18,19 @@ import 'file_download.dart';
 class InstaDownloadController extends GetxController {
   // Initialize the WebViewController
   // final WebViewController webViewController = WebViewController();
-  final FileDownload downloadController = Get.put(FileDownload());
+  late FileDownload downloadController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    downloadController = Get.put(FileDownload());
+  }
+
+  @override
+  void dispose() {
+    downloadController.dispose();
+    super.dispose();
+  }
 
   // Downloads media from the provided link
   Future<void> downloadReal(String link) async {
