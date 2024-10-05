@@ -56,4 +56,11 @@ jobs:
           EOF
 
       # Build APK with additional flags for optimization
-      - run: flutter build apk --release --split-per-abi
+      - run: flutter build apk --release
+
+      - name: Upload to Telegram
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
+          -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+          -F document=@build/app/outputs/flutter-apk/app-release.apk  # adjust the path if needed
+
