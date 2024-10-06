@@ -31,18 +31,17 @@ jobs:
             ${{ runner.os }}-gradle-
             ${{ runner.os }}-
 
+      - uses: actions/cache@v4
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
+
       # Setup Flutter environment
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          cache: true
-          # optional parameters follow
-          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
-          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
-          pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache of dart pub get dependencies
-          pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
 
-      # Flutter cache for faster builds
+      # Flutter cache for faster builds (uncomment if needed)
       # - uses: actions/cache@v4
       #   with:
       #     path: |
@@ -64,9 +63,10 @@ jobs:
       # Build APK with additional flags for optimization
       - run: flutter build apk --release
 
+      # Upload to Telegram
       - name: Upload to Telegram
         run: |
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
           -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -F document=@build/app/outputs/flutter-apk/app-release.apk  # adjust the path if needed
-          -F caption=app
+          -F document=@build/app/outputs/flutter-apk/app-release.apk \
+          -F caption="app" || echo "Upload failed"
