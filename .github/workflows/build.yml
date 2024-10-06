@@ -18,6 +18,7 @@ jobs:
         with:
           java-version: "17"
           distribution: "adopt" # You can keep 'temurin' if needed
+          cache: "gradle"
 
       # Gradle cache for faster builds
       - uses: actions/cache@v4
@@ -31,24 +32,15 @@ jobs:
             ${{ runner.os }}-gradle-
             ${{ runner.os }}-
 
-      - uses: actions/cache@v4
-        with:
-          path: /opt/hostedtoolcache/flutter
-          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
-
       # Setup Flutter environment
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-
-      # Flutter cache for faster builds (uncomment if needed)
-      # - uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ${{ env.FLUTTER_ROOT }}/bin/cache
-      #     key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-flutter-
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+          pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:"
+          pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
       # Get Flutter dependencies
       - run: flutter pub get
@@ -59,6 +51,11 @@ jobs:
           cat <<EOF > .env
           GITHUBTOKEN=${{ secrets.GITHUBTOKEN }}
           EOF
+
+      - uses: actions/cache@v4
+        with:
+          path: /usr/local/lib/android/sdk
+          key: ${{ runner.os }}-android-sdk
 
       # Build APK with additional flags for optimization
       - run: flutter build apk --release
