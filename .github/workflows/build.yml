@@ -18,7 +18,6 @@ jobs:
         with:
           java-version: "17"
           distribution: "adopt" # You can keep 'temurin' if needed
-          cache: "gradle"
 
       # Gradle cache for faster builds
       - uses: actions/cache@v4
@@ -31,6 +30,11 @@ jobs:
             ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
             ${{ runner.os }}-gradle-
             ${{ runner.os }}-
+
+      - uses: actions/cache@v4
+        with:
+          path: /usr/local/lib/android/sdk
+          key: ${{ runner.os }}-android-sdk-cache
 
       # Setup Flutter environment
       - uses: subosito/flutter-action@v2
@@ -52,11 +56,6 @@ jobs:
           GITHUBTOKEN=${{ secrets.GITHUBTOKEN }}
           EOF
 
-      - uses: actions/cache@v4
-        with:
-          path: /usr/local/lib/android/sdk
-          key: ${{ runner.os }}-android-sdk
-
       # Build APK with additional flags for optimization
       - run: flutter build apk --release
 
@@ -66,4 +65,4 @@ jobs:
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
           -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
           -F document=@build/app/outputs/flutter-apk/app-release.apk \
-          -F caption="app" || echo "Upload failed"
+          -F caption=app
