@@ -37,7 +37,7 @@ class IssueFormState extends State<IssueForm> {
     }
 
     final issueBody = body +
-        (imageUrl.isNotEmpty ? '\n\n![Screenshot]($imageUrl)' : '') +
+        (imageUrl.isNotEmpty ? '\n\n<img src="$imageUrl" width=250/>' : '') +
         (_nameController.text.isNotEmpty
             ? '\n\n$option raised by ${_nameController.text.trim()}.'
             : '');
