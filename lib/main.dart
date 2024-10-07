@@ -153,9 +153,14 @@ class MyHomePageState extends State<MyHomePage> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: RichText(
             text: TextSpan(children: [
-          const TextSpan(
+          TextSpan(
             text: 'New version download',
-            style: TextStyle(fontSize: 18, color: Colors.white),
+            style: TextStyle(
+              fontSize: 18,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
           ),
           TextSpan(
               text: 'Link',
@@ -197,6 +202,11 @@ class MyHomePageState extends State<MyHomePage> {
     reelController.dispose();
     downloadController.dispose();
     super.dispose();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
   }
 
   @override
