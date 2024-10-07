@@ -6,13 +6,18 @@ A new instagram videos download app.
 
 [![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-1f425f.svg)](https://flutter.dev/) ![Release](https://img.shields.io/github/v/release/gopi2401/insta) ![Downloads](https://img.shields.io/github/downloads/gopi2401/insta/total) ![GitHub repo size](https://img.shields.io/github/repo-size/gopi2401/insta?style=flat)
 
-## Download
+## ⬇️ Download
 
 [<img src="https://img.shields.io/badge/Website-blue"
      alt="Website"
      height="50">](https://gopi2401.github.io/) [<img src="https://img.shields.io/badge/GitHub-8A2BE2"
      alt="GitHub"
      height="50">](https://github.com/gopi2401/insta-app/releases)
+
+### 🧪 Beta version available
+
+[<img src="https://github.com/user-attachments/assets/08c915d9-d7af-4461-bc33-dea35036c6a7"
+height="50">](https://t.me/insta_beta)
 
 ## ✨ Features
 
