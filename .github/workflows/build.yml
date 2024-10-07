@@ -2,11 +2,12 @@ name: Build
 
 on:
   push:
+    paths:
+      - 'android/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
     branches:
       - main
-    paths: -'android/**'
-      -'lib/**'
-      -'pubspec.yaml'
 
 jobs:
   build:
