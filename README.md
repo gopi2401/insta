@@ -4,7 +4,9 @@
 
 A new instagram videos download app.
 
-[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-1f425f.svg)](https://flutter.dev/) ![Release](https://img.shields.io/github/v/release/gopi2401/insta) ![Downloads](https://img.shields.io/github/downloads/gopi2401/insta/total) ![GitHub repo size](https://img.shields.io/github/repo-size/gopi2401/insta?style=flat)
+[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-1f425f.svg)](https://flutter.dev/) ![Release](https://img.shields.io/github/v/release/gopi2401/insta) ![Downloads](https://img.shields.io/github/downloads/gopi2401/insta/total) ![GitHub issues](https://img.shields.io/github/issues/gopi2401/insta) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=gopi2401.insta)
+
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/gopi2401/insta) ![GitHub repo size](https://img.shields.io/github/repo-size/gopi2401/insta?style=flat)
 
 ## ⬇️ Download
 
@@ -57,6 +59,12 @@ height="50">](https://t.me/insta_beta)
     any other work released this way by its authors.  You can apply it to
     your programs, too.
 
+<!-- ## ♾️ Contributors
+
+<a href = "https://github.com/gopi2401/insta/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=gopi2401/insta"/>
+</a> -->
+
 ## 🤝 Support
 
 Contributions, issues, and feature requests are welcome!
@@ -64,3 +72,5 @@ Contributions, issues, and feature requests are welcome!
 Give a ⭐️ if you like this project!
 
 [![GitHub stars](https://img.shields.io/github/stars/gopi2401/insta.svg?style=social&label=Star)](https://github.com//gopi2401/insta) ![GitHub forks](https://img.shields.io/github/forks/gopi2401/insta.svg?style=social&label=Forks) ![GitHub followers](https://img.shields.io/github/followers/gopi2401.svg?style=social&label=Follow)
+
+[![gopi2401/insta](https://reporoster.com/stars/gopi2401/insta)](https://github.com/gopi2401/insta/stargazers)
