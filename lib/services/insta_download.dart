@@ -109,35 +109,8 @@ class InstaDownloadController extends GetxController {
       } else {
         await postReel(data);
       }
-
-      // // Set JavaScript mode, background color, and navigation delegate
-      // webViewController
-      //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      //   ..setBackgroundColor(const Color(0x00000000))
-      //   ..setNavigationDelegate(NavigationDelegate(
-      //     onPageFinished: (String url) async {
-      //       // Run JavaScript to retrieve JSON content from the page
-      //       final cook = await webViewController.runJavaScriptReturningResult(
-      //           'JSON.parse(document.documentElement.innerText)');
-
-      //       // Ensure that the result is a String
-      //       if (cook is String) {
-      //         var data = jsonDecode(cook);
-      //         debugPrint('Page finished loading: $cook');
-      //         // Check if login is required
-      //       } else {
-      //         throw Exception("JavaScript did not return a valid JSON string.");
-      //       }
-      //     },
-      //   ));
-
-      // Load the constructed URL
-      // await webViewController.loadRequest(Uri.parse(url));
-
-      // Close the client
       client.close();
     } catch (e, stackTrace) {
-      // Handle any errors in the initial function execution
       catchInfo(e, stackTrace);
     }
   }
@@ -147,16 +120,24 @@ class InstaDownloadController extends GetxController {
     try {
       final userResponse =
           await http.get(Uri.parse('${igs}userInfoByUsername/$uName'));
+      if (userResponse.statusCode != 200) {
+        throw Exception('Failed to load user info');
+      }
       var userId = jsonDecode(userResponse.body)['result']['user']['id'];
+
       final storiesResponse =
           await http.get(Uri.parse('${igs}stories/$userId'));
+      if (storiesResponse.statusCode != 200) {
+        throw Exception('Failed to load stories');
+      }
       var storiesData = Story.fromJson(jsonDecode(storiesResponse.body));
+
       if (storiesData.stories.isNotEmpty) {
         for (var story in storiesData.stories) {
           if (story.pk == sId) {
             var image = story.img;
             var video = story.storie;
-            downloadController.downloadFile(
+            await downloadController.downloadFile(
                 video.isNotEmpty ? video : image, 'story_$sId', image);
           }
         }

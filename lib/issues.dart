@@ -21,6 +21,7 @@ class IssueFormState extends State<IssueForm> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
   String option = 'Issue';
+  bool isLoading = false;
 
   Future<void> createIssue(
       String title, String body, String? label, File? imageFile) async {

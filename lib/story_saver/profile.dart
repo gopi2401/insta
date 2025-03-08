@@ -30,6 +30,7 @@ class InstaProfileState extends State<InstaProfile> {
   void initState() {
     super.initState();
     profileController = TextEditingController();
+    downloadController = Get.put(FileDownload());
 
     // Fetch highlights and stories only if the profile is public
     highlightsFuture = widget.data.isPrivate
@@ -66,7 +67,9 @@ class InstaProfileState extends State<InstaProfile> {
   @override
   void dispose() {
     profileController.dispose();
-    downloadController.dispose();
+    if (Get.isRegistered<FileDownload>()) {
+      downloadController.dispose();
+    }
     super.dispose();
   }
 

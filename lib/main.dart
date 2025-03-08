@@ -200,7 +200,9 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     reelController.dispose();
-    downloadController.dispose();
+    if (Get.isRegistered<DistribUrl>()) {
+      downloadController.dispose();
+    }
     super.dispose();
   }
 
@@ -236,16 +238,16 @@ class MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ElevatedButton(
-              child: isLoading
+              child: downloading
                   ? const CircularProgressIndicator(
                       color: Colors.white,
                     )
                   : const Text('Download'),
               onPressed: () async {
-                if (!isLoading) {
+                if (!downloading) {
                   try {
                     setState(() {
-                      isLoading = true;
+                      downloading = true;
                       errorMessage = null;
                     });
                     var url = reelController.text.trim();
@@ -257,25 +259,25 @@ class MyHomePageState extends State<MyHomePage> {
                         await downloadController.handleUrl(url);
                         reelController.clear();
                         setState(() {
-                          isLoading = false;
+                          downloading = false;
                         });
                       } else {
                         setState(() {
-                          isLoading = false;
+                          downloading = false;
                           errorMessage = "Please enter valid url";
                         });
                         showToast();
                       }
                     } else {
                       setState(() {
-                        isLoading = false;
+                        downloading = false;
                         errorMessage = "url not found!. please enter url";
                       });
                       showToast();
                     }
                   } catch (e, stackTrace) {
                     setState(() {
-                      isLoading = false;
+                      downloading = false;
                     });
                     catchInfo(e, stackTrace);
                   }
