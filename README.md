@@ -74,3 +74,7 @@ Give a ⭐️ if you like this project!
 [![GitHub stars](https://img.shields.io/github/stars/gopi2401/insta.svg?style=social&label=Star)](https://github.com//gopi2401/insta) ![GitHub forks](https://img.shields.io/github/forks/gopi2401/insta.svg?style=social&label=Forks) ![GitHub followers](https://img.shields.io/github/followers/gopi2401.svg?style=social&label=Follow)
 
 [![gopi2401/insta](https://reporoster.com/stars/gopi2401/insta)](https://github.com/gopi2401/insta/stargazers)
+
+## Project Activities
+
+![Alt](https://repobeats.axiom.co/api/embed/78335f551e48dba7277dac9e7d59727009161903.svg "Repobeats analytics image")
