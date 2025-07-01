@@ -34,85 +34,88 @@ class InstaDownloadController extends GetxController {
 
   // Downloads media from the provided link
   Future<void> downloadReal(String link) async {
+    // try {
+    // final insta = link.trim().split("/").sublist(0, 3).join("/");
+    // final url =
+    //     "${link.trim().split("/").sublist(0, 5).join("/")}/?__a=1&__d=dis";
+
+    // final headers = {
+    //   'accept': 'text/html,application/xhtml+xml,application/xml',
+    //   'user-agent':
+    //       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+    // };
+
+    // // First request (GET)
+    HttpClient client = HttpClient();
+    // HttpClientRequest request = await client.getUrl(Uri.parse(insta));
+
+    // // Set initial headers
+    // headers.forEach((name, value) {
+    //   request.headers.set(name, value);
+    // });
+
+    // HttpClientResponse response = await request.close();
+
+    // // Extract cookies from the response headers
+    // List<String> rawCookies = response.headers['set-cookie'] ?? [];
+    // String cookieHeader = rawCookies.map((cookie) {
+    //   return cookie.split(';')[0]; // Take only the cookie name=value pair
+    // }).join('; ');
+
+    // // Add cookies to the headers for the next request
+    // headers['cookie'] = cookieHeader;
+
+    // // Make the GET request
+    // request = await client.getUrl(Uri.parse(url));
+
+    // // Set headers for GET request
+    // headers.forEach((name, value) {
+    //   request.headers.set(name, value);
+    // });
+
+    // // Send request and get response
+    // response = await request.close();
+    // if (response.statusCode != HttpStatus.ok) {
+    //   throw response.statusCode;
+    // }
+    // String responseBody = await response.transform(utf8.decoder).join();
+    // var data = jsonDecode(responseBody);
+
+    // if (data == null ||
+    //     (data['require_login'] != null && data['require_login'])) {
     try {
-      final insta = link.trim().split("/").sublist(0, 3).join("/");
-      final url =
-          "${link.trim().split("/").sublist(0, 5).join("/")}/?__a=1&__d=dis";
-
-      final headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml',
-        'user-agent':
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
-      };
-
-      // First request (GET)
-      HttpClient client = HttpClient();
-      HttpClientRequest request = await client.getUrl(Uri.parse(insta));
-
-      // Set initial headers
-      headers.forEach((name, value) {
-        request.headers.set(name, value);
-      });
+      const instaallinone =
+          "7e65999c1fcfd42c07ef9d3456f234ee39e52aa88f4dedc610ae5972decec4ab072c6f2d17e6e123b097eddaee9a63f5";
+      HttpClientRequest request =
+          await client.getUrl(Uri.parse(decrypt(instaallinone)));
+      request.headers.add('url', encryption(link));
 
       HttpClientResponse response = await request.close();
 
-      // Extract cookies from the response headers
-      List<String> rawCookies = response.headers['set-cookie'] ?? [];
-      String cookieHeader = rawCookies.map((cookie) {
-        return cookie.split(';')[0]; // Take only the cookie name=value pair
-      }).join('; ');
-
-      // Add cookies to the headers for the next request
-      headers['cookie'] = cookieHeader;
-
-      // Make the GET request
-      request = await client.getUrl(Uri.parse(url));
-
-      // Set headers for GET request
-      headers.forEach((name, value) {
-        request.headers.set(name, value);
-      });
-
-      // Send request and get response
-      response = await request.close();
-      if (response.statusCode != HttpStatus.ok) {
-        throw response.statusCode;
-      }
-      String responseBody = await response.transform(utf8.decoder).join();
-      var data = jsonDecode(responseBody);
-
-      if (data == null ||
-          (data['require_login'] != null && data['require_login'])) {
-        try {
-          HttpClientRequest request =
-              await client.getUrl(Uri.parse(decrypt(insta)));
-          request.headers.add('url', encryption(link));
-
-          HttpClientResponse response = await request.close();
-
-          // Handle HTTP response
-          if (response.statusCode == HttpStatus.ok) {
-            var json = await response.transform(utf8.decoder).join();
-            var responseData = jsonDecode(json);
-            await downloadMedia(responseData);
-          } else {
-            Navigator.push(
-              contexts,
-              MaterialPageRoute(builder: (context) => const InstaLogin()),
-            );
-            contexts = null;
-          }
-        } catch (e, stackTrace) {
-          isLoading = false;
-          catchInfo(e, stackTrace);
-        }
+      // Handle HTTP response
+      if (response.statusCode == HttpStatus.ok) {
+        var json = await response.transform(utf8.decoder).join();
+        var responseData = jsonDecode(json);
+        await downloadMedia(responseData);
       } else {
-        await postReel(data);
+        Navigator.push(
+          contexts,
+          MaterialPageRoute(builder: (context) => const InstaLogin()),
+        );
+        contexts = null;
       }
-      client.close();
     } catch (e, stackTrace) {
+      isLoading = false;
       catchInfo(e, stackTrace);
     }
+    // }
+    // else {
+    //   await postReel(data);
+    // }
+    // client.close();
+    // } catch (e, stackTrace) {
+    //   catchInfo(e, stackTrace);
+    // }
   }
 
   // Fetches and downloads Instagram stories
