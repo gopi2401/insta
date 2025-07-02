@@ -17,13 +17,14 @@ class FbDownloadController extends GetxController {
       // Construct the request
       var request = await httpClient.postUrl(Uri.parse(decrypt(data)));
       request.headers.set('content-type', 'application/json');
-      request.add(utf8.encode(json.encode({"url": link})));
-      request.add(utf8.encode(json.encode({"ts": 1706350101780})));
-      request.add(utf8.encode(json.encode({"_ts": 1706136626989})));
-      request.add(utf8.encode(json.encode({"_tsc": 0})));
-      request.add(utf8.encode(json.encode({
+      final body = {
+        "url": link,
+        "ts": 1706350101780,
+        "_ts": 1706136626989,
+        "_tsc": 0,
         "_s": "9d0d423e9443dffe0d8d746e06c248499890200cbdb49dfed4f63b452fc8b805"
-      })));
+      };
+      request.add(utf8.encode(json.encode(body)));
 
       // Handle the response
       var response = await request.close();
