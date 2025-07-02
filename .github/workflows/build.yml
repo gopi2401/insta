@@ -3,9 +3,16 @@ name: Build
 on:
   push:
     paths:
-      - 'android/**'
-      - 'lib/**'
-      - 'pubspec.yaml'
+      - "android/**"
+      - "lib/**"
+      - "pubspec.yaml"
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "android/**"
+      - "lib/**"
+      - "pubspec.yaml"
     branches:
       - main
 
@@ -14,28 +21,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       # Setup Java environment for Android build
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
-          java-version: "17"
-          distribution: "adopt" # You can keep 'temurin' if needed
+          java-version: '21'
+          distribution: "adopt"
+          cache: 'gradle'
 
       # Gradle cache for faster builds
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-            ${{ runner.os }}-gradle-
-            ${{ runner.os }}-
+      # - uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       ~/.gradle/caches
+      #       ~/.gradle/wrapper
+      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+      #       ${{ runner.os }}-gradle-
+      #       ${{ runner.os }}-
 
-      # Setup Flutter environment
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
@@ -45,8 +52,11 @@ jobs:
           pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:"
           pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
-      # Get Flutter dependencies
-      - run: flutter pub get
+      - name: Accept Android Licenses
+        run: yes | flutter doctor --android-licenses
+
+      - name: Install dependencies
+        run: flutter pub get
 
       # Create .env file for environment variables
       - name: Create .env file
