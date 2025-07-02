@@ -16,6 +16,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,9 +30,9 @@ jobs:
       # Setup Java environment for Android build
       - uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: "21"
           distribution: "adopt"
-          cache: 'gradle'
+          cache: "gradle"
 
       # Gradle cache for faster builds
       # - uses: actions/cache@v4
