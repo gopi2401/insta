@@ -78,7 +78,7 @@ class _AboutPageState extends State<AboutPage> {
             const SizedBox(height: 10),
             ElevatedButton(
               style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),
               ))),
@@ -134,7 +134,7 @@ class _AboutPageState extends State<AboutPage> {
             const SizedBox(height: 10),
             ElevatedButton(
               style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),
               ))),

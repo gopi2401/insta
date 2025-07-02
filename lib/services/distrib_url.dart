@@ -26,7 +26,7 @@ class DistribUrl extends GetxController {
         if (segments.length > 3) {
           var option = segments[3];
           if (option == 'p' || option == 'reel') {
-            await instaController.downloadReal(url);
+            await instaController.downloadReal(url, null);
             instaController.onClose();
           } else if (option == 'stories' && segments.length > 5) {
             if (segments[4] == 'highlights') {
