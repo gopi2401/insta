@@ -68,13 +68,14 @@ jobs:
 
       # ndk;19.2.5345600
 
-      # - name: Accept Android Licenses
-      #   run: yes | flutter doctor --android-licenses
+      - name: Accept Android Licenses
+        run: yes | flutter doctor --android-licenses
 
       - name: Install dependencies
         run: flutter pub get
 
       - run: flutter doctor -v
+      - run: flutter analyze --seggestions
       # Create .env file for environment variables
       # - name: Create .env file
       #   run: |
