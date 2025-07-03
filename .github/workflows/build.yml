@@ -74,20 +74,21 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - run: flutter doctor -v
       # Create .env file for environment variables
-      - name: Create .env file
-        run: |
-          cat <<EOF > .env
-          GITHUBTOKEN=${{ secrets.GITHUBTOKEN }}
-          EOF
+      # - name: Create .env file
+      #   run: |
+      #     cat <<EOF > .env
+      #     GITHUBTOKEN=${{ secrets.GITHUBTOKEN }}
+      #     EOF
 
-      # Build APK with additional flags for optimization
-      - run: flutter build apk --release
+      # # Build APK with additional flags for optimization
+      # - run: flutter build apk --release
 
-      # Upload to Telegram
-      - name: Upload to Telegram
-        run: |
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
-          -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -F document=@build/app/outputs/flutter-apk/app-release.apk \
-          -F caption=app
+      # # Upload to Telegram
+      # - name: Upload to Telegram
+      #   run: |
+      #     curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
+      #     -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+      #     -F document=@build/app/outputs/flutter-apk/app-release.apk \
+      #     -F caption=app
