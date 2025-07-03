@@ -51,12 +51,12 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun getAppVersion(): String {
-        try {
+        return try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
-            return pInfo.versionName
+            pInfo.versionName ?: "Unknown"
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
+            "Unknown"
         }
-        return "Unknown"
     }
 }
