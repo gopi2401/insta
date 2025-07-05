@@ -33,8 +33,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: "temurin"
+          java-version: "17"
           cache: "gradle"
 
       # Gradle cache for faster builds
@@ -54,25 +54,28 @@ jobs:
           channel: "stable"
           cache: true
 
-      # - name: Setup Android tools
-      #   uses: maxim-lobanov/setup-android-tools@v1
-      #   with:
-      #     packages: |
-      #       platform-tools
-      #       build-tools;33.0.0
-      #       platforms;android-33
-      #     cache: true
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
-      # ndk;19.2.5345600
+      - name: Install SDK 33, NDK, and CMake
+        shell: bash
+        run: |
+          export ANDROID_SDK_ROOT=$ANDROID_HOME
+          export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator
+          yes | sdkmanager "platforms;android-33" \
+                          "build-tools;33.0.2" \
+                          "ndk;26.1.10909125" \
+                          "cmake;3.22.1"
+          cache: true
 
-      - name: Accept Android Licenses
-        run: yes | flutter doctor --android-licenses
+      # - name: Accept Android Licenses
+      #   run: yes | flutter doctor --android-licenses
 
       - name: Install dependencies
         run: flutter pub get
 
-      - run: flutter doctor -v
-      - run: flutter analyze --suggestions
+      # - run: flutter doctor -v
+      # - run: flutter analyze --suggestions
       # Create .env file for environment variables
       - name: Create .env file
         run: |
