@@ -29,7 +29,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Setup Java environment for Android build
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -37,59 +36,48 @@ jobs:
           java-version: "17"
           cache: "gradle"
 
-      # Gradle cache for faster builds
-      # - uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ~/.gradle/caches
-      #       ~/.gradle/wrapper
-      #     key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-      #       ${{ runner.os }}-gradle-
-      #       ${{ runner.os }}-
-
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: "stable"
           cache: true
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Cache Android SDK components
+        uses: actions/cache@v4
+        with:
+          path: |
+            $ANDROID_HOME/platforms
+            $ANDROID_HOME/build-tools
+            $ANDROID_HOME/ndk
+            $ANDROID_HOME/cmake
+          key: ${{ runner.os }}-android-sdk-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-android-sdk-
 
-      - name: Install SDK 33, NDK, and CMake
-        shell: bash
+      - name: Install Android SDK, NDK, and CMake
         run: |
-          export ANDROID_SDK_ROOT=$ANDROID_HOME
-          export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator
-          yes | sdkmanager "platforms;android-33" \
-                          "build-tools;33.0.2" \
-                          "ndk;26.1.10909125" \
-                          "cmake;3.22.1"
-          cache: true
+          yes | sdkmanager --licenses
+          sdkmanager --install \
+            "platforms;android-33" \
+            "build-tools;33.0.2" \
+            "ndk;27.0.12077973" \
+            "cmake;3.22.1"
 
-      # - name: Accept Android Licenses
-      #   run: yes | flutter doctor --android-licenses
-
-      - name: Install dependencies
+      - name: Install Flutter dependencies
         run: flutter pub get
 
-      # - run: flutter doctor -v
-      # - run: flutter analyze --suggestions
-      # Create .env file for environment variables
       - name: Create .env file
         run: |
           cat <<EOF > .env
           GITHUBTOKEN=${{ secrets.GITHUBTOKEN }}
           EOF
 
-      # # Build APK with additional flags for optimization
-      - run: flutter build apk --release
+      - name: Build APK (Release)
+        run: flutter build apk --release
 
-      # Upload to Telegram
       - name: Upload to Telegram
         run: |
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
           -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
           -F document=@build/app/outputs/flutter-apk/app-release.apk \
-          -F caption=app
+          -F caption="New release from GitHub Actions"
