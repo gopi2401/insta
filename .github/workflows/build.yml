@@ -56,8 +56,11 @@ jobs:
 
       - name: Install Android SDK, NDK, and CMake
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager --install \
+          export ANDROID_SDK_ROOT=$ANDROID_HOME
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --install \
             "platforms;android-33" \
             "build-tools;33.0.2" \
             "ndk;27.0.12077973" \
