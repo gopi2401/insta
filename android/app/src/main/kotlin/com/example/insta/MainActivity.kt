@@ -46,7 +46,7 @@ class MainActivity : FlutterActivity() {
         sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
         if (sharedText != null) {
             MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL)
-                    .invokeMethod("getSharedText", sharedText)
+                .invokeMethod("getSharedText", sharedText)
         }
     }
 

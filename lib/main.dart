@@ -24,9 +24,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
     StreamController<ReceivedNotification>.broadcast();
 
-final StreamController<String?> selectNotificationStream =
-    StreamController<String?>.broadcast();
-
+final StreamController<NotificationResponse> selectNotificationStream =
+StreamController<NotificationResponse>.broadcast();
 class ReceivedNotification {
   ReceivedNotification({
     required this.id,
@@ -72,7 +71,7 @@ void main() async {
 
   // Android notification settings
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('ic_launcher');
+      AndroidInitializationSettings('@mipmap/ic_launcher');
 
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
@@ -81,15 +80,7 @@ void main() async {
   // Initialize notifications
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onDidReceiveNotificationResponse:
-        (NotificationResponse notificationResponse) {
-      if (notificationResponse.notificationResponseType ==
-          NotificationResponseType.selectedNotification) {
-        selectNotificationStream.add(notificationResponse.payload);
-      } else if (notificationResponse.actionId == 'navigation') {
-        selectNotificationStream.add(notificationResponse.payload);
-      }
-    },
+    onDidReceiveNotificationResponse: selectNotificationStream.add,
     onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
   );
 
