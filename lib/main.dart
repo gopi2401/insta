@@ -30,7 +30,8 @@ final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
     StreamController<ReceivedNotification>.broadcast();
 
 final StreamController<NotificationResponse> selectNotificationStream =
-StreamController<NotificationResponse>.broadcast();
+    StreamController<NotificationResponse>.broadcast();
+
 class ReceivedNotification {
   ReceivedNotification({
     required this.id,
@@ -49,8 +50,10 @@ String? selectedNotificationPayload;
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
-  print('notification(${notificationResponse.id}) action tapped: '
-      '${notificationResponse.actionId} with payload: ${notificationResponse.payload}');
+  print(
+    'notification(${notificationResponse.id}) action tapped: '
+    '${notificationResponse.actionId} with payload: ${notificationResponse.payload}',
+  );
 }
 
 void main() async {
@@ -92,7 +95,8 @@ void main() async {
   // For Android, request notification permission
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+        AndroidFlutterLocalNotificationsPlugin
+      >()
       ?.requestNotificationsPermission();
 
   // Initialize GetX services
@@ -109,10 +113,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   final AdaptiveThemeMode? savedThemeMode;
 
-  const MyApp({
-    super.key,
-    this.savedThemeMode,
-  });
+  const MyApp({super.key, this.savedThemeMode});
 
   static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -122,8 +123,8 @@ class MyApp extends StatelessWidget {
     final themeService = ThemeService.to;
 
     return AdaptiveTheme(
-      light: themeService.getLightTheme(),
-      dark: themeService.getDarkTheme(),
+      light: themeService.lightTheme,
+      dark: themeService.darkTheme,
       initial: savedThemeMode ?? AdaptiveThemeMode.light,
       builder: (lightTheme, darkTheme) => MaterialApp(
         title: 'insta',
@@ -133,8 +134,8 @@ class MyApp extends StatelessWidget {
         themeMode: savedThemeMode == null
             ? ThemeMode.system
             : savedThemeMode == AdaptiveThemeMode.dark
-                ? ThemeMode.dark
-                : ThemeMode.light,
+            ? ThemeMode.dark
+            : ThemeMode.light,
         debugShowCheckedModeBanner: false,
         home: const MyHomePage(),
       ),
@@ -171,35 +172,41 @@ class MyHomePageState extends State<MyHomePage> {
     var appVersion = await getAppVersion();
     var newVersion = await checkUpdate();
     if (appVersion != newVersion) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: RichText(
-            text: TextSpan(children: [
-          TextSpan(
-            text: 'New version download',
-            style: TextStyle(
-              fontSize: 18,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'New version download',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Link',
+                  style: const TextStyle(fontSize: 20, color: Colors.blue),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      launchUrl(
+                        Uri.parse('https:gopi2401.github.io/download/'),
+                      );
+                    },
+                ),
+              ],
             ),
           ),
-          TextSpan(
-              text: 'Link',
-              style: const TextStyle(fontSize: 20, color: Colors.blue),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  launchUrl(Uri.parse('https:gopi2401.github.io/download/'));
-                })
-        ])),
-      ));
+        ),
+      );
     }
   }
 
   Widget toast = Container(
     padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(25.0),
-    ),
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.0)),
     child: const Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -245,9 +252,7 @@ class MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.all(20.0),
               child: TextField(
                 controller: reelController,
-                decoration: const InputDecoration(
-                  hintText: "Url",
-                ),
+                decoration: const InputDecoration(hintText: "Url"),
               ),
             ),
             if (errorMessage != null)
@@ -260,9 +265,7 @@ class MyHomePageState extends State<MyHomePage> {
               ),
             ElevatedButton(
               child: downloading
-                  ? const CircularProgressIndicator(
-                      color: Colors.white,
-                    )
+                  ? const CircularProgressIndicator(color: Colors.white)
                   : const Text('Download'),
               onPressed: () async {
                 if (!downloading) {
@@ -335,53 +338,44 @@ class DrawerWidget extends StatelessWidget {
       child: Column(
         children: [
           const DrawerHeader(
-              duration: Duration(seconds: 1),
-              curve: Curves.easeInCubic,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      scale: 2.5, image: AssetImage('assets/logo.png'))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'Welcome!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 33),
-                  )
-                ],
-              )),
+            duration: Duration(seconds: 1),
+            curve: Curves.easeInCubic,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                scale: 2.5,
+                image: AssetImage('assets/logo.png'),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'Welcome!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 33),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: ListView(
               children: [
                 ListTile(
-                  leading: const Icon(
-                    Icons.home,
-                  ),
-                  title: const Text(
-                    'Home',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
+                  leading: const Icon(Icons.home),
+                  title: const Text('Home', style: TextStyle(fontSize: 18)),
                   onTap: () {
                     Navigator.of(context).pop();
                   },
                 ),
                 ListTile(
-                  leading: const Icon(
-                    Icons.error_outline,
-                  ),
-                  title: const Text(
-                    'About',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
+                  leading: const Icon(Icons.error_outline),
+                  title: const Text('About', style: TextStyle(fontSize: 18)),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const AboutPage()),
+                        builder: (context) => const AboutPage(),
+                      ),
                     );
                   },
                 ),
@@ -397,7 +391,9 @@ class DrawerWidget extends StatelessWidget {
                     () => recoveryService.deletedFiles.isNotEmpty
                         ? Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.orange,
                               borderRadius: BorderRadius.circular(12),
@@ -428,16 +424,14 @@ class DrawerWidget extends StatelessWidget {
                 ListTile(
                   leading: Obx(
                     () => Icon(
-                      themeService.isDarkMode.value
+                      themeService.isDarkMode
                           ? Icons.light_mode
                           : Icons.dark_mode,
                     ),
                   ),
                   title: Obx(
                     () => Text(
-                      themeService.isDarkMode.value
-                          ? 'Light Mode'
-                          : 'Dark Mode',
+                      themeService.isDarkMode ? 'Light Mode' : 'Dark Mode',
                       style: const TextStyle(fontSize: 18),
                     ),
                   ),
