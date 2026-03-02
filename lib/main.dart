@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -12,8 +13,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'about.dart';
 import 'services/distrib_url.dart';
 import 'services/permissions.dart';
+import 'services/theme_service.dart';
+import 'services/notification_service.dart';
+import 'services/recovery_service.dart';
 import 'additional.dart';
 import 'instagram_login_page.dart';
+import 'screens/recovery_screen.dart';
 import 'utils/appdata.dart';
 import 'utils/function.dart';
 
@@ -90,24 +95,49 @@ void main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.requestNotificationsPermission();
 
-  runApp(const MyApp());
+  // Initialize GetX services
+  Get.put(ThemeService(), permanent: true);
+  Get.put(NotificationService(), permanent: true);
+  Get.put(RecoveryService(), permanent: true);
+
+  // Get saved theme mode
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
+
+  runApp(MyApp(savedThemeMode: savedThemeMode));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AdaptiveThemeMode? savedThemeMode;
+
+  const MyApp({
+    super.key,
+    this.savedThemeMode,
+  });
 
   static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'insta',
-      scaffoldMessengerKey: scaffoldMessengerKey, // Assigning the key
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      debugShowCheckedModeBanner: false,
-      home: const MyHomePage(),
+    final themeService = ThemeService.to;
+
+    return AdaptiveTheme(
+      light: themeService.getLightTheme(),
+      dark: themeService.getDarkTheme(),
+      initial: savedThemeMode ?? AdaptiveThemeMode.light,
+      builder: (lightTheme, darkTheme) => MaterialApp(
+        title: 'insta',
+        scaffoldMessengerKey: scaffoldMessengerKey,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: savedThemeMode == null
+            ? ThemeMode.system
+            : savedThemeMode == AdaptiveThemeMode.dark
+                ? ThemeMode.dark
+                : ThemeMode.light,
+        debugShowCheckedModeBanner: false,
+        home: const MyHomePage(),
+      ),
     );
   }
 }
@@ -298,6 +328,9 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeService = ThemeService.to;
+    final recoveryService = RecoveryService.to;
+
     return Drawer(
       child: Column(
         children: [
@@ -352,6 +385,66 @@ class DrawerWidget extends StatelessWidget {
                     );
                   },
                 ),
+                const Divider(),
+                // Recovery Bin
+                ListTile(
+                  leading: const Icon(Icons.restore_from_trash),
+                  title: const Text(
+                    'Recovery Bin',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  trailing: Obx(
+                    () => recoveryService.deletedFiles.isNotEmpty
+                        ? Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              recoveryService.deletedFiles.length.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RecoveryScreenWrapper(),
+                      ),
+                    );
+                  },
+                ),
+                const Divider(),
+                // Theme Toggle
+                ListTile(
+                  leading: Obx(
+                    () => Icon(
+                      themeService.isDarkMode.value
+                          ? Icons.light_mode
+                          : Icons.dark_mode,
+                    ),
+                  ),
+                  title: Obx(
+                    () => Text(
+                      themeService.isDarkMode.value
+                          ? 'Light Mode'
+                          : 'Dark Mode',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  onTap: () {
+                    themeService.toggleTheme();
+                  },
+                ),
               ],
             ),
           ),
@@ -364,5 +457,14 @@ class DrawerWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class RecoveryScreenWrapper extends StatelessWidget {
+  const RecoveryScreenWrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const RecoveryScreen();
   }
 }

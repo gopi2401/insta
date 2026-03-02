@@ -9,11 +9,20 @@ import 'package:path_provider/path_provider.dart';
 
 import '../main.dart';
 import '../utils/function.dart';
+import 'notification_service.dart';
+import 'recovery_service.dart';
 
 class FileDownload extends GetxController {
+  final notificationService = NotificationService.to;
+  final recoveryService = RecoveryService.to;
+
   // Download File and Show Progress
   Future<dynamic> downloadFile(
-      String url, String fileName, String? notificationImg) async {
+    String url,
+    String fileName,
+    String? notificationImg, {
+    DownloadType downloadType = DownloadType.other,
+  }) async {
     Dio dio = Dio();
     try {
       // Random ID for notifications
@@ -26,10 +35,13 @@ class FileDownload extends GetxController {
       if (!(await dir.exists())) {
         await dir.create(recursive: true);
       }
+      
+      final filePath = '${dir.path}/$fileName';
+      
       // Start file download
       await dio.download(
         url,
-        '${dir.path}/$fileName',
+        filePath,
         onReceiveProgress: (received, total) async {
           try {
             if (total != -1) {
@@ -38,9 +50,18 @@ class FileDownload extends GetxController {
                 progress = progressValue;
                 print('$progressValue% downloaded');
 
+                // Calculate speed and ETA
+                final speed = _calculateSpeed(received, total);
+                final eta = _calculateETA(received, total);
+
                 // Show notification at specific progress points
-                if (progress == 0 || progress == 50 || progress == 85) {
-                  await _showProgressNotification(progress, progressId);
+                if (progress == 0 || progress % 10 == 0) {
+                  await notificationService.showProgressNotification(
+                    id: progressId,
+                    title: fileName,
+                    progress: progress,
+                    type: downloadType,
+                  );
                 }
               }
             }
@@ -51,104 +72,41 @@ class FileDownload extends GetxController {
       );
 
       // Download complete, show the completion notification
-      await _showNotificationMediaStyle(
-          '$fileName downloaded', notificationImg, progressId);
+      await notificationService.showCompletionNotification(
+        id: progressId,
+        title: 'Download Complete',
+        fileName: fileName,
+        type: downloadType,
+        imagePath: notificationImg,
+      );
     } catch (e, stackTrace) {
       print('Error during download: $e');
-      // Optionally show error notification
-      await _showErrorNotification();
-      // Log the error with stack trace
+      await notificationService.showErrorNotification(
+        id: Random().nextInt(100),
+        title: 'Download Failed',
+        errorMessage: 'Failed to download $fileName',
+      );
       catchInfo(e, stackTrace);
     }
   }
 
-  // Show progress notification
-  Future<void> _showProgressNotification(int progress, int progressId) async {
-    try {
-      const AndroidNotificationDetails androidNotificationDetails =
-          AndroidNotificationDetails(
-        'progress_channel',
-        'Progress Channel',
-        channelDescription: 'Shows the progress of the download',
-        importance: Importance.max,
-        priority: Priority.high,
-        showProgress: true,
-        maxProgress: 100,
-        onlyAlertOnce: true,
-      );
-      const NotificationDetails notificationDetails =
-          NotificationDetails(android: androidNotificationDetails);
-
-      await flutterLocalNotificationsPlugin.show(
-        progressId,
-        'Download in progress',
-        '$progress% downloaded',
-        notificationDetails,
-      );
-    } catch (e, stackTrace) {
-      print('Error in progress notification: $e');
-      catchInfo(e, stackTrace);
-    }
+  String _calculateSpeed(int received, int total) {
+    // Simplified speed calculation in KB/s
+    final speedKbps = (received / 1024).toStringAsFixed(2);
+    return '$speedKbps KB/s';
   }
 
-  // Show download complete notification with media style
-  Future<void> _showNotificationMediaStyle(
-      String notificationBody, String? notificationImg, int idno) async {
-    try {
-      dynamic largeIconPath;
-      if (notificationImg != null) {
-        largeIconPath =
-            await _downloadAndSaveFile(notificationImg, 'largeIcon');
-      }
-
-      final AndroidNotificationDetails androidNotificationDetails =
-          AndroidNotificationDetails(
-        'media_channel',
-        'Media Channel',
-        channelDescription: 'Media style notification for downloads',
-        largeIcon:
-            largeIconPath != null ? FilePathAndroidBitmap(largeIconPath) : null,
-        styleInformation: const MediaStyleInformation(),
-      );
-      final NotificationDetails notificationDetails =
-          NotificationDetails(android: androidNotificationDetails);
-
-      await flutterLocalNotificationsPlugin.show(
-        idno,
-        'Download Complete',
-        notificationBody,
-        notificationDetails,
-      );
-    } catch (e, stackTrace) {
-      print('Error in showing notification: $e');
-      catchInfo(e, stackTrace);
+  String _calculateETA(int received, int total) {
+    if (received == 0) return 'calculating...';
+    // Simplified ETA calculation
+    const estimatedTimePerMB = 5; // seconds, adjust based on actual speed
+    final remainingBytes = total - received;
+    final remainingSeconds =
+        (remainingBytes / (1024 * 1024) * estimatedTimePerMB).toInt();
+    if (remainingSeconds > 60) {
+      return '${(remainingSeconds / 60).toStringAsFixed(1)}m';
     }
-  }
-
-  // Show error notification (optional)
-  Future<void> _showErrorNotification() async {
-    try {
-      const AndroidNotificationDetails androidNotificationDetails =
-          AndroidNotificationDetails(
-        'error_channel',
-        'Error Channel',
-        channelDescription: 'Channel for download errors',
-        importance: Importance.high,
-        priority: Priority.high,
-      );
-      const NotificationDetails notificationDetails =
-          NotificationDetails(android: androidNotificationDetails);
-
-      await flutterLocalNotificationsPlugin.show(
-        0,
-        'Download Failed',
-        'An error occurred during download',
-        notificationDetails,
-      );
-    } catch (e, stackTrace) {
-      print('Error in showing error notification: $e');
-      catchInfo(e, stackTrace);
-    }
+    return '${remainingSeconds}s';
   }
 
   // Helper to download and save a file (e.g., for large icon)
@@ -166,4 +124,15 @@ class FileDownload extends GetxController {
       rethrow;
     }
   }
+
+  // Delete file with recovery option
+  Future<void> deleteFileWithRecovery(String filePath) async {
+    try {
+      await recoveryService.deleteFileForRecovery(filePath);
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
+      rethrow;
+    }
+  }
 }
+
