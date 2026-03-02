@@ -43,3 +43,33 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Gradle / build directories
+/.gradle
+**/outputs/
+**/generated/
+
+# Android artifacts
+*.apk
+*.ap_
+*.aab
+*.dex
+
+# Keystore and key files
+*.keystore
+*.jks
+key.properties
+
+# VS Code settings (uncomment if you want to keep them in repo)
+.vscode/
+
+# Misc OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Flutter build artifacts
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter_build/
+.flutter-*
