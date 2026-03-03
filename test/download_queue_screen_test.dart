@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:insta/models/download_job.dart';
-import 'package:insta/screens/download_queue_screen.dart';
-import 'package:insta/services/download_queue_service.dart';
-import 'package:insta/services/notification_service.dart';
+import 'package:insta/core/services/notification_service.dart';
+import 'package:insta/features/downloader/download_job_model.dart';
+import 'package:insta/features/downloader/download_queue_controller.dart';
+import 'package:insta/features/downloader/download_queue_page.dart';
 
 class _FakeDownloadQueueService extends DownloadQueueService {
   @override

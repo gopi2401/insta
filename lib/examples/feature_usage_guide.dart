@@ -9,10 +9,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../screens/download_progress_screen.dart';
-import '../services/recovery_service.dart';
-import '../services/notification_service.dart';
-import '../services/file_download_service.dart';
+import 'package:insta/features/downloader/download_progress_page.dart';
+import 'package:insta/features/recovery/recovery_controller.dart';
+import 'package:insta/core/services/notification_service.dart';
+import 'package:insta/features/downloader/file_download_service.dart';
 
 /// FEATURE 1: Dark/Light Theme Toggle
 ///
@@ -299,3 +299,5 @@ class IntegrationExample extends StatelessWidget {
     }
   }
 }
+
+

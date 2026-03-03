@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:insta/models/download_job.dart';
-import 'package:insta/services/notification_service.dart';
+import 'package:insta/core/services/notification_service.dart';
+import 'package:insta/features/downloader/download_job_model.dart';
 
 void main() {
   test('DownloadJob serializes and deserializes', () {

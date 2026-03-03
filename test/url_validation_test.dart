@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:insta/utils/url_validation.dart';
+import 'package:insta/core/utils/url_validation.dart';
 
 void main() {
   group('isValidHttpUrl', () {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:insta/services/feedback_service.dart';
+import 'package:insta/core/services/feedback_service.dart';
 
 void main() {
   group('FeedbackService issue body', () {
