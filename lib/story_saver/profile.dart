@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-import '../services/file_download.dart';
+import '../services/file_download_service.dart';
 import '../models/highlight_model.dart';
 import '../models/story_model.dart';
 import '../models/user_info_model.dart';
 import '../utils/appdata.dart';
-import '../utils/function.dart';
+import '../utils/app_utils.dart';
 import 'image_screen.dart';
 import 'story_screen.dart';
 

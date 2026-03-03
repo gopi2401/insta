@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/user_info_model.dart';
 import '../utils/appdata.dart';
-import '../utils/function.dart';
+import '../utils/app_utils.dart';
 import 'profile.dart';
 
 class ProfilePage extends StatefulWidget {

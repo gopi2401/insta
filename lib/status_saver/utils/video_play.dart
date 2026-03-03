@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:path/path.dart' as path;
-import '../../utils/function.dart';
+import '../../utils/app_utils.dart';
 import 'video_controller.dart';
 
 class PlayStatus extends StatefulWidget {

@@ -4,8 +4,8 @@ import 'dart:math';
 
 import 'package:get/get.dart';
 
-import '../utils/function.dart';
-import 'file_download.dart';
+import '../utils/app_utils.dart';
+import 'file_download_service.dart';
 
 class YTDownloadController extends GetxController {
   FileDownload downloadController = Get.put(FileDownload());

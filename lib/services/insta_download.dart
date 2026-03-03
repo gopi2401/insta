@@ -12,8 +12,8 @@ import '../models/items.dart';
 import '../models/story_model.dart';
 import '../story_saver/story_screen.dart';
 import '../utils/appdata.dart';
-import '../utils/function.dart';
-import 'file_download.dart';
+import '../utils/app_utils.dart';
+import 'file_download_service.dart';
 
 class InstaDownloadController extends GetxController {
   // Initialize the WebViewController

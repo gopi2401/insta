@@ -20,7 +20,7 @@ import 'additional.dart';
 import 'instagram_login_page.dart';
 import 'screens/recovery_screen.dart';
 import 'utils/appdata.dart';
-import 'utils/function.dart';
+import 'utils/app_utils.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -50,7 +50,7 @@ String? selectedNotificationPayload;
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
-  print(
+  debugPrint(
     'notification(${notificationResponse.id}) action tapped: '
     '${notificationResponse.actionId} with payload: ${notificationResponse.payload}',
   );
@@ -73,11 +73,10 @@ void main() async {
   channel.setMethodCallHandler((call) async {
     try {
       if (call.method == 'getSharedText') {
-        String sharedText = call.arguments;
+        final String sharedText = (call.arguments as String).trim();
         debugPrint('shared text = $sharedText');
         Get.snackbar('shared', sharedText);
-        await DistribUrl().handleUrl(sharedText);
-        if (sharedText != '') {
+        if (sharedText.isNotEmpty) {
           await DistribUrl().handleUrl(sharedText);
         }
       }
@@ -172,7 +171,6 @@ class MyHomePageState extends State<MyHomePage> {
   TextEditingController reelController = TextEditingController();
   late FToast fToast;
   bool downloading = false;
-  late DistribUrl downloadController;
   int id = 0;
 
   String? errorMessage;
@@ -202,13 +200,19 @@ class MyHomePageState extends State<MyHomePage> {
         showToast();
       } else {
         final uri = Uri.tryParse(url);
-        if (uri == null || !uri.hasAbsolutePath) {
+        final isHttpUrl =
+            uri != null &&
+            (uri.scheme == 'http' || uri.scheme == 'https') &&
+            uri.hasAuthority;
+        if (!isHttpUrl) {
           setState(() {
             errorMessage = 'Please enter a valid URL';
           });
           showToast();
         } else {
-          downloadController = Get.put(DistribUrl());
+          final downloadController = Get.isRegistered<DistribUrl>()
+              ? Get.find<DistribUrl>()
+              : Get.put(DistribUrl());
           contexts = context;
           await downloadController.handleUrl(url);
           reelController.clear();
@@ -247,7 +251,7 @@ class MyHomePageState extends State<MyHomePage> {
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       launchUrl(
-                        Uri.parse('https:gopi2401.github.io/download/'),
+                        Uri.parse('https://gopi2401.github.io/download/'),
                       );
                     },
                 ),
@@ -284,14 +288,9 @@ class MyHomePageState extends State<MyHomePage> {
   void dispose() {
     reelController.dispose();
     if (Get.isRegistered<DistribUrl>()) {
-      downloadController.dispose();
+      Get.delete<DistribUrl>();
     }
     super.dispose();
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
   }
 
   @override
@@ -446,7 +445,7 @@ class DrawerWidget extends StatelessWidget {
                               ),
                             ),
                           )
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                   ),
                   onTap: () {
                     Navigator.of(context).pop();
@@ -483,11 +482,9 @@ class DrawerWidget extends StatelessWidget {
               ],
             ),
           ),
-          const Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Text('Made with 💙 by gopi'),
-            ),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 16),
+            child: Text('Made with love by gopi'),
           ),
         ],
       ),
@@ -503,3 +500,4 @@ class RecoveryScreenWrapper extends StatelessWidget {
     return const RecoveryScreen();
   }
 }
+

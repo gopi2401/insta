@@ -86,18 +86,23 @@ Future<String> getAppVersion() async {
 }
 
 Future<String?> checkUpdate() async {
-  final response = await http
-      .get(Uri.parse('https://api.github.com/repos/gopi2401/insta/releases'));
-  if (response.statusCode == 200) {
-    final jsonData = jsonDecode(response.body);
-    var version1 = jsonData[0]['tag_name'];
-    if (version1.startsWith("v")) {
-      version1 = version1.substring(1);
-      return version1;
-    } else {
-      return null;
+  try {
+    final response = await http.get(
+      Uri.parse('https://api.github.com/repos/gopi2401/insta/releases'),
+    );
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      if (jsonData is List && jsonData.isNotEmpty) {
+        var version1 = jsonData[0]['tag_name'];
+        if (version1.startsWith("v")) {
+          version1 = version1.substring(1);
+          return version1;
+        }
+      }
     }
-  } else {
+    return null;
+  } catch (e, stackTrace) {
+    catchInfo(e, stackTrace);
     return null;
   }
 }
@@ -120,12 +125,9 @@ Future<void> createIssue(String title, String body) async {
   );
 
   if (response.statusCode == 201) {
-    // Success
     MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
       const SnackBar(
-        content: Expanded(
-          child: Text('You rock! thanks for your feedback.👍'),
-        ),
+        content: Text('Thanks for your feedback.'),
       ),
     );
   } else {

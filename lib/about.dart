@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'issues.dart';
-import 'utils/function.dart';
+import 'utils/app_utils.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../utils/function.dart';
+import '../utils/app_utils.dart';
 import 'insta_download.dart';
 import 'yt_download.dart';
 

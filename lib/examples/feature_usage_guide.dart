@@ -12,7 +12,7 @@ import '../screens/download_progress_screen.dart';
 import '../services/theme_service.dart';
 import '../services/recovery_service.dart';
 import '../services/notification_service.dart';
-import '../services/file_download.dart';
+import '../services/file_download_service.dart';
 
 /// FEATURE 1: Dark/Light Theme Toggle
 ///

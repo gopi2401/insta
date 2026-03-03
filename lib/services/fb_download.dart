@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart';
-import '../utils/function.dart';
-import 'file_download.dart';
+import '../utils/app_utils.dart';
+import 'file_download_service.dart';
 
 class FbDownloadController extends GetxController {
   FileDownload downloadController = Get.put(FileDownload());
