@@ -13,8 +13,21 @@ import 'notification_service.dart';
 import 'recovery_service.dart';
 
 class FileDownload extends GetxController {
-  final notificationService = NotificationService.to;
-  final recoveryService = RecoveryService.to;
+  // lazily resolve the notification service; if it's not registered yet we create it
+  NotificationService get notificationService {
+    if (!Get.isRegistered<NotificationService>()) {
+      Get.put(NotificationService(), permanent: true);
+    }
+    return NotificationService.to;
+  }
+
+  // lazily resolve the recovery service; if it's not registered yet we create it
+  RecoveryService get recoveryService {
+    if (!Get.isRegistered<RecoveryService>()) {
+      Get.put(RecoveryService(), permanent: true);
+    }
+    return RecoveryService.to;
+  }
 
   // Download File and Show Progress
   Future<dynamic> downloadFile(

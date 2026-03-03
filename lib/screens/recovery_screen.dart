@@ -10,12 +10,17 @@ class RecoveryScreen extends StatefulWidget {
 }
 
 class _RecoveryScreenState extends State<RecoveryScreen> {
-  final RecoveryService recoveryService = RecoveryService.to;
+  late RecoveryService recoveryService;
   late int totalSize = 0;
 
   @override
   void initState() {
     super.initState();
+    // Lazily initialize the recovery service
+    if (!Get.isRegistered<RecoveryService>()) {
+      Get.put(RecoveryService(), permanent: true);
+    }
+    recoveryService = RecoveryService.to;
     _calculateTotalSize();
   }
 

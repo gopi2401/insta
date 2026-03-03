@@ -59,12 +59,24 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // make sure the notification and recovery services are available immediately
+  // (share-intent handler may create download controllers that depend on them)
+  if (!Get.isRegistered<NotificationService>()) {
+    Get.put(NotificationService(), permanent: true);
+  }
+  if (!Get.isRegistered<RecoveryService>()) {
+    Get.put(RecoveryService(), permanent: true);
+  }
+
   // call kotlin native share intent
   const MethodChannel channel = MethodChannel('app.channel.shared.data');
   channel.setMethodCallHandler((call) async {
     try {
       if (call.method == 'getSharedText') {
         String sharedText = call.arguments;
+        debugPrint('shared text = $sharedText');
+        Get.snackbar('shared', sharedText);
+        await DistribUrl().handleUrl(sharedText);
         if (sharedText != '') {
           await DistribUrl().handleUrl(sharedText);
         }
@@ -101,8 +113,14 @@ void main() async {
 
   // Initialize GetX services
   Get.put(ThemeService(), permanent: true);
-  Get.put(NotificationService(), permanent: true);
-  Get.put(RecoveryService(), permanent: true);
+  // NotificationService may already be registered above; avoid double-putting
+  if (!Get.isRegistered<NotificationService>()) {
+    Get.put(NotificationService(), permanent: true);
+  }
+  // GuardRecoveryService similarly
+  if (!Get.isRegistered<RecoveryService>()) {
+    Get.put(RecoveryService(), permanent: true);
+  }
 
   // Get saved theme mode
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
