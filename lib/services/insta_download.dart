@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:insta/services/notification_service.dart';
 
 import '../instagram_login_page.dart';
 import '../models/graphql.dart';
@@ -88,7 +89,8 @@ class InstaDownloadController extends GetxController {
             var image = story.img;
             var video = story.storie;
             await downloadController.downloadFile(
-                video.isNotEmpty ? video : image, 'story_$sId', image);
+                video.isNotEmpty ? video : image, 'story_$sId', image,
+                downloadType: DownloadType.story);
           }
         }
       }
@@ -124,14 +126,16 @@ class InstaDownloadController extends GetxController {
           await downloadController.downloadFile(
               file['video'],
               "ReelVideo-${Random().nextInt(900000) + 100000}.mp4",
-              file['thumbnail']);
+              file['thumbnail'],
+              downloadType: DownloadType.instagram);
         }
       }
 
       if (data['image'] != null && data['image'].isNotEmpty) {
         for (var url in data['image']) {
           await downloadController.downloadFile(
-              url, "ReelImage-${Random().nextInt(900000) + 100000}.jpg", url);
+              url, "ReelImage-${Random().nextInt(900000) + 100000}.jpg", url,
+              downloadType: DownloadType.instagram);
         }
       }
     } catch (e, stackTrace) {
@@ -148,7 +152,8 @@ class InstaDownloadController extends GetxController {
         if (files != null) {
           for (var file in files) {
             await downloadController.downloadFile(
-                file.fileUrl!, file.fileName!, file.fileDisplayUrl);
+                file.fileUrl!, file.fileName!, file.fileDisplayUrl,
+                downloadType: DownloadType.instagram);
           }
           return true;
         } else {
@@ -160,7 +165,8 @@ class InstaDownloadController extends GetxController {
         if (files != null) {
           for (var file in files) {
             await downloadController.downloadFile(
-                file.fileUrl!, file.fileName!, file.fileDisplayUrl);
+                file.fileUrl!, file.fileName!, file.fileDisplayUrl,
+                downloadType: DownloadType.instagram);
           }
           return true;
         } else {

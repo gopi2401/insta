@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:encrypt/encrypt.dart' as encrypt;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 import '../main.dart';
-import 'appdata.dart';
+import '../services/feedback_service.dart';
 
 String title(String title) {
   return title
@@ -108,30 +108,19 @@ Future<String?> checkUpdate() async {
 }
 
 Future<void> createIssue(String title, String body) async {
-  final issueBody = body;
-
-  final response = await http.post(
-    Uri.parse('$githubApi/issues'),
-    headers: {
-      'Authorization': 'token ${dotenv.env['githubToken']}',
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({
-      'title': title,
-      'body': issueBody,
-      'labels': ['bug'],
-    }),
-  );
-
-  if (response.statusCode == 201) {
-    MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
-      const SnackBar(
-        content: Text('Thanks for your feedback.'),
-      ),
+  try {
+    if (!Get.isRegistered<FeedbackService>()) {
+      Get.put(FeedbackService(), permanent: true);
+    }
+    await FeedbackService.to.createIssue(
+      title: title,
+      body: body,
+      category: FeedbackCategory.issue,
     );
-  } else {
-    debugPrint('Failed to create issue: ${response.statusCode}');
-    debugPrint(response.body);
+    MyApp.scaffoldMessengerKey.currentState?.showSnackBar(
+      const SnackBar(content: Text('Thanks for your feedback.')),
+    );
+  } catch (e) {
+    debugPrint('Failed to create issue: $e');
   }
 }

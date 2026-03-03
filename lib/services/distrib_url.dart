@@ -8,7 +8,7 @@ class DistribUrl extends GetxController {
   late InstaDownloadController instaController;
   late YTDownloadController ytController;
 
-  handleUrl(String url) async {
+  Future<void> handleUrl(String url) async {
     try {
       // If the incoming text contains other words (e.g. "Check this out: https://..."),
       // extract the first http(s) URL found. Fall back to the original string if none.

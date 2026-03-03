@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:get/get.dart';
+import 'package:insta/services/notification_service.dart';
 
 import '../utils/app_utils.dart';
 import 'file_download_service.dart';
@@ -16,7 +17,7 @@ class YTDownloadController extends GetxController {
       const data =
           '28092c5adf73dfe1043e22afc831a963d8926e00376069b4fa6f11f2a749ca71c3858d6b92e169c7eddae27198e9db04';
       var httpClient = HttpClient();
-
+      
       // Sending the initial request
       var request = await httpClient.postUrl(Uri.parse(decrypt(data)));
       request.headers.set('content-type', 'application/json');
@@ -34,8 +35,9 @@ class YTDownloadController extends GetxController {
         // Polling for the job result
         do {
           await Future.delayed(const Duration(seconds: 1));
-          var req = await httpClient
-              .getUrl(Uri.parse(decrypt(jobCheckUrl) + jsons['job_id']));
+          var req = await httpClient.getUrl(
+            Uri.parse(decrypt(jobCheckUrl) + jsons['job_id']),
+          );
           req.headers.set('content-type', 'application/json');
           var res = await req.close();
 
@@ -48,8 +50,12 @@ class YTDownloadController extends GetxController {
         // Handle the result once the job is finished
         if (payload["payload"] != null) {
           var file = payload["payload"][0]['path'];
-          downloadController.downloadFile(file,
-              "YoutubeVideo-${Random().nextInt(900000) + 100000}.mp4", null);
+          downloadController.downloadFile(
+            file,
+            "YoutubeVideo-${Random().nextInt(900000) + 100000}.mp4",
+            null,
+            downloadType: DownloadType.youtube,
+          );
           httpClient.close();
         }
       }

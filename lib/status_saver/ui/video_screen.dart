@@ -7,7 +7,8 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import '../utils/video_play.dart';
 
 final Directory _videoDir = Directory(
-    '/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/.Statuses/');
+  '/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/.Statuses/',
+);
 
 class VideoScreen extends StatefulWidget {
   const VideoScreen({super.key});
@@ -27,10 +28,7 @@ class VideoScreenState extends State<VideoScreen> {
       return const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Install WhatsApp\n',
-            style: TextStyle(fontSize: 18.0),
-          ),
+          Text('Install WhatsApp\n', style: TextStyle(fontSize: 18.0)),
           Text(
             "Your Friend's Status Will Be Available Here",
             style: TextStyle(fontSize: 18.0),
@@ -53,6 +51,7 @@ class VideoGrid extends StatefulWidget {
 }
 
 class VideoGridState extends State<VideoGrid> {
+  // ignore: strict_top_level_inference
   Future<String?> _getImage(videoPathUrl) async {
     //await Future.delayed(Duration(milliseconds: 500));
     final thumb = await VideoThumbnail.thumbnailFile(video: videoPathUrl);
@@ -61,8 +60,8 @@ class VideoGridState extends State<VideoGrid> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.directory);
-    print(widget.directory?.listSync());
+    // print(widget.directory);
+    // print(widget.directory?.listSync());
     final videoList = widget.directory!
         .listSync()
         .map((item) => item.path)
@@ -86,9 +85,8 @@ class VideoGridState extends State<VideoGrid> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PlayStatus(
-                      videoFile: videoList[index],
-                    ),
+                    builder: (context) =>
+                        PlayStatus(videoFile: videoList[index]),
                   ),
                 ),
                 child: ClipRRect(
@@ -110,33 +108,33 @@ class VideoGridState extends State<VideoGrid> {
                       ),
                     ),
                     child: FutureBuilder<String?>(
-                        future: _getImage(videoList[index]),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            if (snapshot.hasData) {
-                              return Hero(
-                                tag: videoList[index],
-                                child: Image.file(
-                                  File(snapshot.data!),
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-                            } else {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                          } else {
+                      future: _getImage(videoList[index]),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasData) {
                             return Hero(
                               tag: videoList[index],
-                              child: SizedBox(
-                                height: 280.0,
-                                child: Image.asset('assets/loading.gif'),
+                              child: Image.file(
+                                File(snapshot.data!),
+                                fit: BoxFit.cover,
                               ),
                             );
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
                           }
-                        }),
+                        } else {
+                          return Hero(
+                            tag: videoList[index],
+                            child: SizedBox(
+                              height: 280.0,
+                              child: Image.asset('assets/loading.gif'),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ),
               );
@@ -152,9 +150,7 @@ class VideoGridState extends State<VideoGrid> {
         );
       }
     } else {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
   }
 }

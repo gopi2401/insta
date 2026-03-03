@@ -46,6 +46,7 @@ dependencies:
   encrypt: ^5.0.0
   url_launcher: ^6.2.4
   adaptive_theme: ^3.7.0
+  shared_preferences: ^2.3.2
   device_info_plus: ^11.5.0
 #  video_thumbnail: ^0.5.3
   speed_dial_fab: ^2.2.1

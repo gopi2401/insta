@@ -11,7 +11,6 @@ class RecoveryScreen extends StatefulWidget {
 
 class _RecoveryScreenState extends State<RecoveryScreen> {
   late RecoveryService recoveryService;
-  late int totalSize = 0;
 
   @override
   void initState() {
@@ -21,15 +20,6 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
       Get.put(RecoveryService(), permanent: true);
     }
     recoveryService = RecoveryService.to;
-    _calculateTotalSize();
-  }
-
-  void _calculateTotalSize() {
-    // Calculate total size of deleted files
-    for (var file in recoveryService.deletedFiles) {
-      // In a real implementation, calculate actual file sizes
-      totalSize += 0; // placeholder
-    }
   }
 
   @override
@@ -39,6 +29,36 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
         title: const Text('Recovery Bin'),
         elevation: 0,
         centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: 'Recover all',
+            onPressed: () async {
+              await recoveryService.recoverAll();
+              if (!mounted) return;
+              Get.snackbar(
+                'Recovered',
+                'All files restored',
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+              );
+            },
+            icon: const Icon(Icons.restore_page),
+          ),
+          IconButton(
+            tooltip: 'Delete all',
+            onPressed: () async {
+              await recoveryService.permanentlyDeleteAll();
+              if (!mounted) return;
+              Get.snackbar(
+                'Deleted',
+                'All recovery files removed',
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+              );
+            },
+            icon: const Icon(Icons.delete_sweep),
+          ),
+        ],
       ),
       body: Obx(
         () => recoveryService.deletedFiles.isEmpty
@@ -104,7 +124,9 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: file.isExpired
+                        // ignore: deprecated_member_use
                         ? Colors.red.withOpacity(0.1)
+                        // ignore: deprecated_member_use
                         : Colors.orange.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -116,6 +138,18 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                ),
+                const SizedBox(width: 8),
+                FutureBuilder<int>(
+                  future: recoveryService.getRecoveredFileSize(file),
+                  builder: (context, snapshot) {
+                    final bytes = snapshot.data ?? 0;
+                    final mb = (bytes / (1024 * 1024)).toStringAsFixed(2);
+                    return Text(
+                      '$mb MB',
+                      style: const TextStyle(fontSize: 11),
+                    );
+                  },
                 ),
               ],
             ),

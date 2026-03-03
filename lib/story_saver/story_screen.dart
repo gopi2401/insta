@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:insta/services/notification_service.dart';
 import 'package:story_view/story_view.dart';
 
 import '../services/file_download_service.dart';
@@ -91,7 +92,8 @@ class StoryScreenState extends State<StoryScreen> {
                         downloadController.downloadFile(
                             url,
                             url.split('?').first.split('/').last,
-                            stories[storyindex].img);
+                            stories[storyindex].img,
+                            downloadType: DownloadType.story);
                       },
                     ),
                   ],

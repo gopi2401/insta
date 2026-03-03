@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import '../utils/app_utils.dart';
 import 'file_download_service.dart';
@@ -34,7 +35,7 @@ class FbDownloadController extends GetxController {
         // Further handling of the decoded response
         // Add download logic here if necessary, depending on response content
       } else {
-        print(
+        debugPrint(
             'Error: Failed to retrieve data with status code ${response.statusCode}');
       }
 

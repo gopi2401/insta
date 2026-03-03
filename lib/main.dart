@@ -15,11 +15,17 @@ import 'services/permissions.dart';
 import 'services/theme_service.dart';
 import 'services/notification_service.dart';
 import 'services/recovery_service.dart';
+import 'services/storage_service.dart';
+import 'services/download_queue_service.dart';
+import 'services/feedback_service.dart';
+import 'services/analytics_service.dart';
 import 'additional.dart';
 import 'instagram_login_page.dart';
 import 'screens/recovery_screen.dart';
+import 'screens/download_queue_screen.dart';
 import 'utils/appdata.dart';
 import 'utils/app_utils.dart';
+import 'utils/url_validation.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -65,6 +71,18 @@ void main() async {
   }
   if (!Get.isRegistered<RecoveryService>()) {
     Get.put(RecoveryService(), permanent: true);
+  }
+  if (!Get.isRegistered<StorageService>()) {
+    Get.put(StorageService(), permanent: true);
+  }
+  if (!Get.isRegistered<DownloadQueueService>()) {
+    Get.put(DownloadQueueService(), permanent: true);
+  }
+  if (!Get.isRegistered<FeedbackService>()) {
+    Get.put(FeedbackService(), permanent: true);
+  }
+  if (!Get.isRegistered<AnalyticsService>()) {
+    Get.put(AnalyticsService(), permanent: true);
   }
 
   // call kotlin native share intent
@@ -118,6 +136,18 @@ void main() async {
   // GuardRecoveryService similarly
   if (!Get.isRegistered<RecoveryService>()) {
     Get.put(RecoveryService(), permanent: true);
+  }
+  if (!Get.isRegistered<StorageService>()) {
+    Get.put(StorageService(), permanent: true);
+  }
+  if (!Get.isRegistered<DownloadQueueService>()) {
+    Get.put(DownloadQueueService(), permanent: true);
+  }
+  if (!Get.isRegistered<FeedbackService>()) {
+    Get.put(FeedbackService(), permanent: true);
+  }
+  if (!Get.isRegistered<AnalyticsService>()) {
+    Get.put(AnalyticsService(), permanent: true);
   }
 
   // Get saved theme mode
@@ -198,11 +228,7 @@ class MyHomePageState extends State<MyHomePage> {
         });
         showToast();
       } else {
-        final uri = Uri.tryParse(url);
-        final isHttpUrl =
-            uri != null &&
-            (uri.scheme == 'http' || uri.scheme == 'https') &&
-            uri.hasAuthority;
+        final isHttpUrl = isValidHttpUrl(url);
         if (!isHttpUrl) {
           setState(() {
             errorMessage = 'Please enter a valid URL';
@@ -226,7 +252,7 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  appUpdate() async {
+  Future<void> appUpdate() async {
     var appVersion = await getAppVersion();
     var newVersion = await checkUpdate();
     if (appVersion != newVersion) {
@@ -452,6 +478,22 @@ class DrawerWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const RecoveryScreenWrapper(),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.download_for_offline),
+                  title: const Text(
+                    'Downloads',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DownloadQueueScreen(),
                       ),
                     );
                   },

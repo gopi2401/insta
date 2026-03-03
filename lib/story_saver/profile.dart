@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:insta/services/notification_service.dart';
 
 import '../services/file_download_service.dart';
 import '../models/highlight_model.dart';
@@ -345,6 +346,7 @@ class InstaProfileState extends State<InstaProfile> {
       widget.data.hdProfilePicUrl,
       widget.data.hdProfilePicUrl.split('?').first.split('/').last,
       widget.data.profilePicUrl,
+      downloadType: DownloadType.instagram,
     );
   }
 }

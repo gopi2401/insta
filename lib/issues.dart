@@ -1,135 +1,85 @@
-import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'utils/appdata.dart';
+
+import 'services/feedback_service.dart';
 
 class IssueForm extends StatefulWidget {
   const IssueForm({super.key});
 
   @override
-  IssueFormState createState() => IssueFormState();
+  State<IssueForm> createState() => _IssueFormState();
 }
 
-class IssueFormState extends State<IssueForm> {
+class _IssueFormState extends State<IssueForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
-  File? _imageFile;
   final ImagePicker _picker = ImagePicker();
-  String option = 'Issue';
+
+  File? _imageFile;
   bool isLoading = false;
+  FeedbackCategory category = FeedbackCategory.issue;
 
-  Future<void> createIssue(
-      String title, String body, String? label, File? imageFile) async {
-    List<String> labels = label == 'Issue'
-        ? ['bug']
-        : label == 'Suggestion'
-            ? ['ui']
-            : ['bug'];
-
-    String imageUrl = '';
-    if (imageFile != null) {
-      // Upload image to GitHub
-      imageUrl = await uploadImageToGitHub(imageFile);
+  FeedbackService get feedbackService {
+    if (!Get.isRegistered<FeedbackService>()) {
+      Get.put(FeedbackService(), permanent: true);
     }
-
-    final issueBody = body +
-        (imageUrl.isNotEmpty ? '\n\n<img src="$imageUrl" width=250/>' : '') +
-        (_nameController.text.isNotEmpty
-            ? '\n\n$option raised by ${_nameController.text.trim()}.'
-            : '');
-
-    final response = await http.post(
-      Uri.parse('$githubApi/issues'),
-      headers: {
-        'Authorization': 'token ${dotenv.env['githubToken']}',
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'title': title,
-        'body': issueBody,
-        'labels': labels, // Optional: Labels for the issue
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      // Success
-      String issueUrl = jsonDecode(response.body)['html_url'];
-
-      // Clear inputs
-      _nameController.clear();
-      _titleController.clear();
-      _bodyController.clear();
-      setState(() {
-        _imageFile = null;
-      });
-
-      // Show success dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Success'),
-            content: Text('Issue created: $issueUrl'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      // Error handling
-      print('Failed to create issue: ${response.statusCode}');
-      print(response.body);
-    }
-  }
-
-  Future<String> uploadImageToGitHub(File imageFile) async {
-    final String base64Image = base64Encode(imageFile.readAsBytesSync());
-    final String fileName = path.basename(imageFile.path);
-
-    final response = await http.put(
-      Uri.parse('$githubApi/contents/$fileName'),
-      headers: {
-        'Authorization': 'token ${dotenv.env['githubToken']}',
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'message': 'Uploading screenshot',
-        'content': base64Image,
-        'branch': 'assets',
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      return jsonDecode(response.body)['content']['download_url'];
-    } else {
-      print('Failed to upload image: ${response.statusCode}');
-      return '';
-    }
+    return FeedbackService.to;
   }
 
   Future<void> pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (!mounted) return;
     setState(() {
-      if (pickedFile != null) {
-        _imageFile = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
+      _imageFile = picked != null ? File(picked.path) : null;
     });
+  }
+
+  Future<void> _submit() async {
+    final title = _titleController.text.trim();
+    final body = _bodyController.text.trim();
+    if (title.isEmpty || body.isEmpty) return;
+
+    setState(() => isLoading = true);
+    try {
+      final issueUrl = await feedbackService.createIssue(
+        title: title,
+        body: body,
+        category: category,
+        reporter: _nameController.text.trim(),
+        screenshot: _imageFile,
+      );
+      if (!mounted) return;
+      _nameController.clear();
+      _titleController.clear();
+      _bodyController.clear();
+      setState(() => _imageFile = null);
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Success'),
+          content: Text('Issue created: ${issueUrl ?? 'N/A'}'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to submit feedback: $e')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 
   @override
@@ -143,41 +93,37 @@ class IssueFormState extends State<IssueForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Feedback'),
-      ),
+      appBar: AppBar(title: const Text('Feedback')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Choose the any option',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              'Choose an option',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            DropdownButton<String>(
-              value: option, // Set the initial value
-              items: <String>['Issue', 'Suggestion'].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+            DropdownButton<FeedbackCategory>(
+              value: category,
+              items: const [
+                DropdownMenuItem(
+                  value: FeedbackCategory.issue,
+                  child: Text('Issue'),
+                ),
+                DropdownMenuItem(
+                  value: FeedbackCategory.suggestion,
+                  child: Text('Suggestion'),
+                ),
+              ],
               onChanged: (newValue) {
-                setState(() {
-                  option = newValue!;
-                });
+                if (newValue == null) return;
+                setState(() => category = newValue);
               },
             ),
+            const SizedBox(height: 10),
             const Text(
               'Your Name',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             TextField(
               controller: _nameController,
@@ -186,33 +132,28 @@ class IssueFormState extends State<IssueForm> {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 20),
             Text(
-              '$option Title',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              '${category == FeedbackCategory.issue ? 'Issue' : 'Suggestion'} Title',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(
-                hintText: 'Enter ${option.toLowerCase()} title',
-                border: const OutlineInputBorder(),
+              decoration: const InputDecoration(
+                hintText: 'Enter title',
+                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              '$option Body',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              '${category == FeedbackCategory.issue ? 'Issue' : 'Suggestion'} Body',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             TextField(
               controller: _bodyController,
-              decoration: InputDecoration(
-                hintText: 'Enter ${option.toLowerCase()} body',
-                border: const OutlineInputBorder(),
+              decoration: const InputDecoration(
+                hintText: 'Enter details',
+                border: OutlineInputBorder(),
               ),
               maxLines: null,
             ),
@@ -227,34 +168,22 @@ class IssueFormState extends State<IssueForm> {
                 if (_imageFile != null)
                   ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                    child: Image.file(
-                      _imageFile!,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.file(_imageFile!, height: 100, fit: BoxFit.cover),
                   ),
               ],
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                final title = _titleController.text;
-                final body = _bodyController.text;
-                if (title.isNotEmpty && body.isNotEmpty) {
-                  await createIssue(title, body, option, _imageFile);
-                }
-                setState(() {
-                  isLoading = false;
-                });
-              },
+              onPressed: isLoading ? null : _submit,
               child: isLoading
-                  ? const CircularProgressIndicator(
-                      color: Colors.white,
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                     )
-                  : Text('Send $option'),
+                  : Text(
+                      'Send ${category == FeedbackCategory.issue ? 'Issue' : 'Suggestion'}',
+                    ),
             ),
           ],
         ),

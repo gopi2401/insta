@@ -96,7 +96,7 @@ class ViewPhotosState extends State<ViewPhotos> {
     }
   }
 
-  save() async {
+  Future<void> save() async {
     _onLoading(true, '');
 
     final myUri = Uri.parse(widget.imgPath);
