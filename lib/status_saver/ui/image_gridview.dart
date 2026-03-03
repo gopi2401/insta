@@ -8,7 +8,7 @@ final Directory _newPhotoDir = Directory(
     '/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/.Statuses');
 
 class ImageScreen extends StatefulWidget {
-  const ImageScreen({Key? key}) : super(key: key);
+  const ImageScreen({super.key});
   @override
   ImageScreenState createState() => ImageScreenState();
 }

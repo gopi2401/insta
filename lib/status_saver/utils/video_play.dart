@@ -9,9 +9,9 @@ import 'video_controller.dart';
 class PlayStatus extends StatefulWidget {
   final String videoFile;
   const PlayStatus({
-    Key? key,
+    super.key,
     required this.videoFile,
-  }) : super(key: key);
+  });
   @override
   PlayStatusState createState() => PlayStatusState();
 }

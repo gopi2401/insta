@@ -13,8 +13,8 @@ class StatusVideo extends StatefulWidget {
     this.looping = false,
     required this.videoSrc,
     this.aspectRatio,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   StatusVideoState createState() => StatusVideoState();

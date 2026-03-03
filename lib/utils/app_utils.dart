@@ -131,7 +131,7 @@ Future<void> createIssue(String title, String body) async {
       ),
     );
   } else {
-    print('Failed to create issue: ${response.statusCode}');
-    print(response.body);
+    debugPrint('Failed to create issue: ${response.statusCode}');
+    debugPrint(response.body);
   }
 }

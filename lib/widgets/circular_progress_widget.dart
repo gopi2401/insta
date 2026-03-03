@@ -8,13 +8,13 @@ class CircularProgressWidget extends StatefulWidget {
   final VoidCallback? onCancel;
 
   const CircularProgressWidget({
-    Key? key,
+    super.key,
     required this.progress,
     required this.fileName,
     this.speed,
     this.eta,
     this.onCancel,
-  }) : super(key: key);
+  });
 
   @override
   State<CircularProgressWidget> createState() => _CircularProgressWidgetState();

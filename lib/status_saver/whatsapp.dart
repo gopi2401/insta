@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'ui/dashboard.dart';
 
 class WhatsApp extends StatefulWidget {
-  const WhatsApp({Key? key}) : super(key: key);
+  const WhatsApp({super.key});
   @override
   WhatsAppState createState() => WhatsAppState();
 }

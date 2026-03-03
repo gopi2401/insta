@@ -5,11 +5,11 @@
 /// 2. Download Progress Animations
 /// 3. Undo/Recovery System
 /// 4. Smart Notifications
+library;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../screens/download_progress_screen.dart';
-import '../services/theme_service.dart';
 import '../services/recovery_service.dart';
 import '../services/notification_service.dart';
 import '../services/file_download_service.dart';
@@ -93,7 +93,7 @@ class ExampleDownloadUsage {
       progressController.reset();
       Get.back();
     } catch (e) {
-      print('Download failed: $e');
+      debugPrint('Download failed: $e');
       Get.back();
     }
   }
@@ -235,7 +235,7 @@ class ExampleNotificationUsage {
 /// Here's how to integrate all features in your download button:
 
 class IntegrationExample extends StatelessWidget {
-  const IntegrationExample({Key? key}) : super(key: key);
+  const IntegrationExample({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -248,8 +248,6 @@ class IntegrationExample extends StatelessWidget {
   Future<void> _downloadWithAllFeatures() async {
     final fileDownload = FileDownload();
     final progressController = DownloadProgressController();
-    final notificationService = NotificationService.to;
-    final recoveryService = RecoveryService.to;
 
     // Show progress dialog
     Get.dialog(

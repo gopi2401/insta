@@ -113,7 +113,7 @@ class ProfilePageState extends State<ProfilePage> {
       if (response.statusCode == 200) {
         return UserInfo.fromJson(jsonDecode(response.body));
       } else {
-        print('Failed to load user data. Status code: ${response.statusCode}');
+        debugPrint('Failed to load user data. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e, stackTrace) {

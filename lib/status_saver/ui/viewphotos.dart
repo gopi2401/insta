@@ -7,9 +7,9 @@ import 'package:path/path.dart' as path;
 class ViewPhotos extends StatefulWidget {
   final String imgPath;
   const ViewPhotos({
-    Key? key,
+    super.key,
     required this.imgPath,
-  }) : super(key: key);
+  });
 
   @override
   ViewPhotosState createState() => ViewPhotosState();

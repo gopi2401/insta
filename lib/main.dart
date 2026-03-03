@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -493,7 +492,7 @@ class DrawerWidget extends StatelessWidget {
 }
 
 class RecoveryScreenWrapper extends StatelessWidget {
-  const RecoveryScreenWrapper({Key? key}) : super(key: key);
+  const RecoveryScreenWrapper({super.key});
 
   @override
   Widget build(BuildContext context) {

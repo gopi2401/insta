@@ -10,7 +10,7 @@ final Directory _videoDir = Directory(
     '/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/.Statuses/');
 
 class VideoScreen extends StatefulWidget {
-  const VideoScreen({Key? key}) : super(key: key);
+  const VideoScreen({super.key});
   @override
   VideoScreenState createState() => VideoScreenState();
 }
@@ -46,7 +46,7 @@ class VideoScreenState extends State<VideoScreen> {
 class VideoGrid extends StatefulWidget {
   final Directory? directory;
 
-  const VideoGrid({Key? key, this.directory}) : super(key: key);
+  const VideoGrid({super.key, this.directory});
 
   @override
   VideoGridState createState() => VideoGridState();

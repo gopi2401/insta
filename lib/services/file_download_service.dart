@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
-import '../main.dart';
 import '../utils/app_utils.dart';
 import 'notification_service.dart';
 import 'recovery_service.dart';

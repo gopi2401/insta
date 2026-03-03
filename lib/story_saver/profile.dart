@@ -37,28 +37,25 @@ class InstaProfileState extends State<InstaProfile> {
         ? Future.value(null)
         : apiHighlight(widget.data.id);
 
-    storiesFuture =
-        widget.data.isPrivate ? Future.value(null) : apiStories(widget.data.id);
+    storiesFuture = widget.data.isPrivate
+        ? Future.value(null)
+        : apiStories(widget.data.id);
   }
 
   void _onLoading(bool t) {
     if (t) {
       showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return SimpleDialog(
-              backgroundColor: Colors.transparent,
-              children: <Widget>[
-                Center(
-                  child: Image.asset(
-                    'assets/loading.gif',
-                    width: 45,
-                  ),
-                )
-              ],
-            );
-          });
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            backgroundColor: Colors.transparent,
+            children: <Widget>[
+              Center(child: Image.asset('assets/loading.gif', width: 45)),
+            ],
+          );
+        },
+      );
     } else {
       Navigator.pop(context);
     }
@@ -77,9 +74,7 @@ class InstaProfileState extends State<InstaProfile> {
   Widget build(BuildContext context) {
     var user = widget.data;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(user.username),
-      ),
+      appBar: AppBar(title: Text(user.username)),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Column(
@@ -91,25 +86,40 @@ class InstaProfileState extends State<InstaProfile> {
                   onTap: () async {
                     final stories = await storiesFuture;
                     if (stories != null && stories.stories.isNotEmpty) {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return StoryScreen(
-                          stories: stories,
-                        );
-                      }));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) {
+                            return StoryScreen(stories: stories);
+                          },
+                        ),
+                      );
                     } else {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return ImageScreen(
-                            imgUrl: user.hdProfilePicUrl,
-                            profilePicDownload: profilePicDownload);
-                      }));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) {
+                            return ImageScreen(
+                              imgUrl: user.hdProfilePicUrl,
+                              profilePicDownload: profilePicDownload,
+                            );
+                          },
+                        ),
+                      );
                     }
                   },
                   onLongPress: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      return ImageScreen(
-                          imgUrl: user.hdProfilePicUrl,
-                          profilePicDownload: profilePicDownload);
-                    }));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) {
+                          return ImageScreen(
+                            imgUrl: user.hdProfilePicUrl,
+                            profilePicDownload: profilePicDownload,
+                          );
+                        },
+                      ),
+                    );
                   },
                   child: CircleAvatar(
                     radius: 54,
@@ -125,22 +135,23 @@ class InstaProfileState extends State<InstaProfile> {
                   text: TextSpan(
                     text: '${user.mediaCount}\n',
                     style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17.0),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
                     children: <TextSpan>[
                       TextSpan(
-                          text: 'posts',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14.0,
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                          )),
+                        text: 'posts',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -149,22 +160,23 @@ class InstaProfileState extends State<InstaProfile> {
                   text: TextSpan(
                     text: '${user.followerCount}\n',
                     style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17.0),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
                     children: <TextSpan>[
                       TextSpan(
-                          text: 'followers',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14.0,
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                          )),
+                        text: 'followers',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -173,22 +185,23 @@ class InstaProfileState extends State<InstaProfile> {
                   text: TextSpan(
                     text: '${user.followingCount}\n',
                     style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17.0),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17.0,
+                    ),
                     children: <TextSpan>[
                       TextSpan(
-                          text: 'following',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14.0,
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                          )),
+                        text: 'following',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14.0,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -197,12 +210,10 @@ class InstaProfileState extends State<InstaProfile> {
             ),
             Row(
               children: [
-                Text('${user.fullname}\n${user.category}\n${user.biography}')
+                Text('${user.fullname}\n${user.category}\n${user.biography}'),
               ],
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
             SizedBox(
               child: FutureBuilder<Highlight?>(
                 future: highlightsFuture,
@@ -235,23 +246,27 @@ class InstaProfileState extends State<InstaProfile> {
                               GestureDetector(
                                 onTap: () async {
                                   _onLoading(true);
-                                  final stories =
-                                      await highlightStories(highlight.id);
+                                  final stories = await highlightStories(
+                                    highlight.id,
+                                  );
                                   _onLoading(false);
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (_) {
-                                    return StoryScreen(
-                                      stories: stories!,
-                                    );
-                                  }));
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) {
+                                        return StoryScreen(stories: stories!);
+                                      },
+                                    ),
+                                  );
                                 },
                                 child: CircleAvatar(
                                   radius: 37,
                                   backgroundColor: Colors.grey,
                                   child: CircleAvatar(
                                     radius: 35,
-                                    backgroundImage:
-                                        NetworkImage(highlight.coverMedia),
+                                    backgroundImage: NetworkImage(
+                                      highlight.coverMedia,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -279,11 +294,13 @@ class InstaProfileState extends State<InstaProfile> {
       if (response.statusCode == 200) {
         return Highlight.fromJson(jsonDecode(response.body));
       } else {
-        print('Failed to load highlights. Status code: ${response.statusCode}');
+        debugPrint(
+          'Failed to load highlights. Status code: ${response.statusCode}',
+        );
         return null;
       }
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return null;
     }
   }
@@ -296,11 +313,11 @@ class InstaProfileState extends State<InstaProfile> {
       if (response.statusCode == 200) {
         return Story.fromJson(jsonDecode(response.body));
       } else {
-        print('Failed to load stories. Status code: ${response.statusCode}');
+        debugPrint('Failed to load stories. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       return null;
     }
   }
@@ -313,7 +330,7 @@ class InstaProfileState extends State<InstaProfile> {
       if (response.statusCode == 200) {
         return Story.fromJson(jsonDecode(response.body));
       } else {
-        print('Failed to load stories. Status code: ${response.statusCode}');
+        debugPrint('Failed to load stories. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e, stackTrace) {
@@ -325,8 +342,9 @@ class InstaProfileState extends State<InstaProfile> {
   void profilePicDownload() {
     downloadController = Get.put(FileDownload());
     downloadController.downloadFile(
-        widget.data.hdProfilePicUrl,
-        widget.data.hdProfilePicUrl.split('?').first.split('/').last,
-        widget.data.profilePicUrl);
+      widget.data.hdProfilePicUrl,
+      widget.data.hdProfilePicUrl.split('?').first.split('/').last,
+      widget.data.profilePicUrl,
+    );
   }
 }

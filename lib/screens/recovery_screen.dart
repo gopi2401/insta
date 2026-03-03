@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../services/recovery_service.dart';
 
 class RecoveryScreen extends StatefulWidget {
-  const RecoveryScreen({Key? key}) : super(key: key);
+  const RecoveryScreen({super.key});
 
   @override
   State<RecoveryScreen> createState() => _RecoveryScreenState();

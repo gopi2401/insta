@@ -44,11 +44,11 @@ class DownloadProgressScreen extends StatelessWidget {
   final DownloadProgressController controller;
 
   const DownloadProgressScreen({
-    Key? key,
+    super.key,
     required this.title,
     this.onCancel,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
