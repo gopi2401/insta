@@ -12,8 +12,8 @@
 // Get the service
 final themeService = ThemeService.to;
 
-// Toggle theme
-await themeService.toggleTheme();
+// Toggle theme (requires a BuildContext when using AdaptiveTheme)
+await themeService.toggleTheme(context);
 
 // Check current theme
 if (themeService.isDarkMode.value) {

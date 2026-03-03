@@ -1,5 +1,7 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeService extends GetxService {
@@ -24,10 +26,25 @@ class ThemeService extends GetxService {
     _isDarkMode.value = savedTheme;
   }
 
-  Future<void> toggleTheme() async {
+  /// Flip the saved boolean and then update both the
+  /// stored preference and the visible theme.  When the app is
+  /// wrapped in `AdaptiveTheme` we also need to drive that
+  /// mechanism; previously we relied on `Get.changeTheme` which
+  /// had no effect because `MaterialApp` was not a
+  /// `GetMaterialApp`.
+  ///
+  /// A [BuildContext] is required so that we can look up the
+  /// `AdaptiveTheme` instance and call its helpers.
+  Future<void> toggleTheme(BuildContext context) async {
     _isDarkMode.toggle();
     await _prefs.setBool('isDarkMode', _isDarkMode.value);
-    Get.changeTheme(_isDarkMode.value ? darkTheme : lightTheme);
+
+    // update AdaptiveTheme so the change is visible and persisted
+    if (_isDarkMode.value) {
+      AdaptiveTheme.of(context).setDark();
+    } else {
+      AdaptiveTheme.of(context).setLight();
+    }
   }
 
   ThemeData get lightTheme {

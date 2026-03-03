@@ -26,6 +26,20 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // If the app is already running and a new share intent arrives,
+    // forward it to the same handler so Dart receives the shared text.
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        val action = intent.action
+        val type = intent.type
+        if (Intent.ACTION_SEND == action && type != null) {
+            if ("text/plain" == type) {
+                handleSendText(intent)
+            }
+        }
+    }
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 

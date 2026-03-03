@@ -36,7 +36,8 @@ Improved the existing `adaptive_theme` implementation with smooth transitions an
 ```dart
 // Toggle theme
 final themeService = ThemeService.to;
-await themeService.toggleTheme();
+// supply a BuildContext so AdaptiveTheme can be toggled as well
+await themeService.toggleTheme(context);
 
 // Check current theme
 bool isDark = ThemeService.to.isDarkMode.value;

@@ -10,43 +10,74 @@ class DistribUrl extends GetxController {
 
   handleUrl(String url) async {
     try {
-      // Instagram URL patterns
-      RegExp ins = RegExp(r'instagram.com');
-      bool isInstagram = ins.hasMatch(url);
+      // If the incoming text contains other words (e.g. "Check this out: https://..."),
+      // extract the first http(s) URL found. Fall back to the original string if none.
+      final urlMatch = RegExp(r'https?://[^\s]+').firstMatch(url);
+      final incoming = urlMatch != null ? urlMatch.group(0)!.trim() : url.trim();
 
-      // YouTube URL patterns
-      RegExp you = RegExp(r'youtube.com');
-      RegExp youm = RegExp(r'youtu.be');
-      bool isYouTube = you.hasMatch(url);
-      bool isYouTubeShort = youm.hasMatch(url);
+      // Instagram URL patterns
+      final isInstagram = RegExp(r'instagram\.com|instagr\.am', caseSensitive: false)
+          .hasMatch(incoming);
+
+        // YouTube URL patterns (check the extracted incoming text)
+        final isYouTube = RegExp(r'youtube\.com|youtube\.googleapis|youtu\.be|youtube',
+            caseSensitive: false)
+          .hasMatch(incoming);
+        final isYouTubeShort = RegExp(r'youtu\.be|/shorts/', caseSensitive: false)
+          .hasMatch(incoming);
 
       if (isInstagram) {
         instaController = Get.put(InstaDownloadController());
-        var segments = url.split("/");
-        if (segments.length > 3) {
-          var option = segments[3];
-          if (option == 'p' || option == 'reel') {
-            await instaController.downloadReal(url, null);
-            instaController.onClose();
-          } else if (option == 'stories' && segments.length > 5) {
-            if (segments[4] == 'highlights') {
-              await instaController.highlight(segments[5]);
+        final uri = Uri.tryParse(incoming);
+        if (uri != null) {
+          final segments = uri.pathSegments;
+
+          // Find which Instagram resource this URL points to
+          if (segments.isNotEmpty) {
+            // common: /p/{shortcode}/ or /reel/{shortcode}/
+            final first = segments[0].toLowerCase();
+            if (first == 'p' || first == 'reel') {
+              await instaController.downloadReal(incoming, null);
               instaController.onClose();
+            } else if (first == 'stories' && segments.length >= 3) {
+              // /stories/{username}/{storyId}
+              final userId = segments[1];
+              final storyId = segments[2];
+              final idMatch = RegExp(r'^(\d+)').firstMatch(storyId);
+              if (idMatch != null) {
+                await instaController.stories(userId, idMatch.group(0)!);
+                instaController.onClose();
+              }
+            } else if (segments.contains('highlights')) {
+              // /stories/highlights/{highlightId} or /{username}/highlights/{id}
+              final idx = segments.indexOf('highlights');
+              if (idx + 1 < segments.length) {
+                final highlightId = segments[idx + 1];
+                await instaController.highlight(highlightId);
+                instaController.onClose();
+              }
             } else {
-              var userId = segments[4];
-              var storyId = segments[5];
-              RegExp regExp = RegExp(r'^(\d+)');
-              var match = regExp.firstMatch(storyId);
-              if (match != null) {
-                await instaController.stories(userId, match.group(0)!);
+              // fallback: try to detect shortcode in the path and attempt download
+              // e.g. instagram.com/{username}/p/{shortcode} or embedded links
+              if (incoming.contains('/p/') || incoming.contains('/reel/')) {
+                await instaController.downloadReal(incoming, null);
                 instaController.onClose();
               }
             }
           }
+        } else {
+          // If parsing failed, attempt naive match for /p/ or /reel/ in the raw text
+          if (incoming.contains('/p/') || incoming.contains('/reel/')) {
+            instaController = Get.put(InstaDownloadController());
+            await instaController.downloadReal(incoming, null);
+            instaController.onClose();
+          }
         }
       } else if (isYouTube || isYouTubeShort) {
         ytController = Get.put(YTDownloadController());
-        ytController.youtube(url);
+        // pass the cleaned/extracted URL (incoming) so short links and embedded
+        // text are handled correctly by the YouTube downloader
+        await ytController.youtube(incoming);
       }
     } catch (e, stackTrace) {
       catchInfo(e, stackTrace);

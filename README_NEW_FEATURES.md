@@ -187,7 +187,9 @@ RecoveryScreen
 
 ### Theme Toggle
 ```dart
-ThemeService.to.toggleTheme();
+// pass a BuildContext so that the underlying AdaptiveTheme
+// instance can be updated as well as the stored flag.
+ThemeService.to.toggleTheme(context);
 ```
 
 ### Show Progress

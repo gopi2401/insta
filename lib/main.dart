@@ -168,6 +168,43 @@ class MyHomePageState extends State<MyHomePage> {
     appUpdate();
   }
 
+  /// Centralises download-button logic so the build method stays clean.
+  Future<void> _onDownloadPressed() async {
+    setState(() {
+      downloading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final url = reelController.text.trim();
+      if (url.isEmpty) {
+        setState(() {
+          errorMessage = 'URL cannot be empty';
+        });
+        showToast();
+      } else {
+        final uri = Uri.tryParse(url);
+        if (uri == null || !uri.hasAbsolutePath) {
+          setState(() {
+            errorMessage = 'Please enter a valid URL';
+          });
+          showToast();
+        } else {
+          downloadController = Get.put(DistribUrl());
+          contexts = context;
+          await downloadController.handleUrl(url);
+          reelController.clear();
+        }
+      }
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
+    } finally {
+      setState(() {
+        downloading = false;
+      });
+    }
+  }
+
   appUpdate() async {
     var appVersion = await getAppVersion();
     var newVersion = await checkUpdate();
@@ -242,81 +279,65 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: const DrawerButton()),
-      body: Center(
+      appBar: AppBar(
+        leading: const DrawerButton(),
+        title: const Text('Instagram Downloader'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            downloading ? const CupertinoActivityIndicator() : Container(),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: TextField(
-                controller: reelController,
-                decoration: const InputDecoration(hintText: "Url"),
-              ),
+            const SizedBox(height: 8),
+            Text(
+              'Paste an Instagram URL below and tap download',
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
             ),
-            if (errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  errorMessage!,
-                  style: const TextStyle(color: Colors.red),
+            const SizedBox(height: 16),
+            TextField(
+              controller: reelController,
+              decoration: InputDecoration(
+                labelText: 'Instagram URL',
+                border: const OutlineInputBorder(),
+                hintText: 'https://www.instagram.com/p/xyz',
+                errorText: errorMessage,
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () => reelController.clear(),
                 ),
               ),
-            ElevatedButton(
-              child: downloading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Download'),
-              onPressed: () async {
-                if (!downloading) {
-                  try {
-                    setState(() {
-                      downloading = true;
-                      errorMessage = null;
-                    });
-                    var url = reelController.text.trim();
-                    if (url.isNotEmpty) {
-                      final Uri uri = Uri.parse(url);
-                      if (uri.hasAbsolutePath) {
-                        downloadController = Get.put(DistribUrl());
-                        contexts = context;
-                        await downloadController.handleUrl(url);
-                        reelController.clear();
-                        setState(() {
-                          downloading = false;
-                        });
-                      } else {
-                        setState(() {
-                          downloading = false;
-                          errorMessage = "Please enter valid url";
-                        });
-                        showToast();
-                      }
-                    } else {
-                      setState(() {
-                        downloading = false;
-                        errorMessage = "url not found!. please enter url";
-                      });
-                      showToast();
-                    }
-                  } catch (e, stackTrace) {
-                    setState(() {
-                      downloading = false;
-                    });
-                    catchInfo(e, stackTrace);
-                  }
-                }
-              },
             ),
-            TextButton(
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: downloading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Icon(Icons.download),
+              label: Text(downloading ? 'Downloading...' : 'Download'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              onPressed: downloading ? null : _onDownloadPressed,
+            ),
+            const SizedBox(height: 12),
+            TextButton.icon(
+              icon: const Icon(Icons.login),
+              label: const Text('Login to Instagram'),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const InstaLogin()),
                 );
               },
-              child: const Text('Login'),
             ),
+            const Spacer(),
             const Additional(),
           ],
         ),
@@ -436,7 +457,9 @@ class DrawerWidget extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    themeService.toggleTheme();
+                    // keep service state in sync and let AdaptiveTheme
+                    // actually switch the UI
+                    themeService.toggleTheme(context);
                   },
                 ),
               ],
