@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../models/download_job.dart';
 import '../services/analytics_service.dart';
 import '../services/download_queue_service.dart';
 import '../services/notification_service.dart';
+import '../status_saver/utils/video_play.dart';
 
 class DownloadQueueScreen extends StatefulWidget {
   const DownloadQueueScreen({super.key});
@@ -39,6 +42,70 @@ class _DownloadQueueScreenState extends State<DownloadQueueScreen> {
   void dispose() {
     searchController.dispose();
     super.dispose();
+  }
+
+  bool _isPlayableVideo(String path) {
+    final lower = path.toLowerCase();
+    return lower.endsWith('.mp4') ||
+        lower.endsWith('.mov') ||
+        lower.endsWith('.m4v') ||
+        lower.endsWith('.webm') ||
+        lower.endsWith('.mkv') ||
+        lower.endsWith('.3gp');
+  }
+
+  Future<void> _shareDownloadedFile(DownloadJob job) async {
+    final path = job.filePath;
+    if (path == null || path.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('File path unavailable for sharing.')),
+      );
+      return;
+    }
+
+    final file = File(path);
+    if (!await file.exists()) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Downloaded file is missing.')),
+      );
+      return;
+    }
+
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(path)],
+        text: job.fileName,
+        subject: 'Shared from Insta Downloader',
+      ),
+    );
+  }
+
+  Future<void> _playDownloadedVideo(DownloadJob job) async {
+    final path = job.filePath;
+    if (path == null || path.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Video path unavailable.')),
+      );
+      return;
+    }
+
+    final file = File(path);
+    if (!await file.exists()) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Video file is missing.')),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => PlayStatus(videoFile: path)),
+    );
   }
 
   @override
@@ -165,12 +232,30 @@ class _DownloadQueueScreenState extends State<DownloadQueueScreen> {
                   subtitle: Text(
                     '${NotificationService.to.getTypeLabel(job.type)} - ${job.status.name}',
                   ),
-                  trailing: job.status == DownloadStatus.failed
-                      ? IconButton(
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (job.status == DownloadStatus.success && job.filePath != null)
+                        IconButton(
+                          tooltip: 'Share',
+                          icon: const Icon(Icons.share),
+                          onPressed: () => _shareDownloadedFile(job),
+                        ),
+                      if (job.status == DownloadStatus.success &&
+                          job.filePath != null &&
+                          _isPlayableVideo(job.filePath!))
+                        IconButton(
+                          tooltip: 'Play',
+                          icon: const Icon(Icons.play_circle),
+                          onPressed: () => _playDownloadedVideo(job),
+                        ),
+                      if (job.status == DownloadStatus.failed)
+                        IconButton(
                           icon: const Icon(Icons.refresh),
                           onPressed: () => queue.retry(job.id),
-                        )
-                      : null,
+                        ),
+                    ],
+                  ),
                 );
               },
             );

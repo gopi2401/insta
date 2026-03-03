@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:path/path.dart' as path;
 import '../../utils/app_utils.dart';
@@ -122,6 +123,29 @@ class PlayStatusState extends State<PlayStatus> {
     }
   }
 
+  Future<void> _shareVideo() async {
+    try {
+      final file = File(widget.videoFile);
+      if (!await file.exists()) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Video file is missing.')),
+        );
+        return;
+      }
+
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(widget.videoFile)],
+          text: path.basename(widget.videoFile),
+          subject: 'Shared from Insta Downloader',
+        ),
+      );
+    } catch (e, stackTrace) {
+      catchInfo(e, stackTrace);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,6 +162,14 @@ class PlayStatusState extends State<PlayStatus> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
+          IconButton(
+            color: Colors.white,
+            icon: const Icon(
+              Icons.share,
+              color: Colors.white,
+            ),
+            onPressed: _shareVideo,
+          ),
           IconButton(
             color: Colors.white,
             icon: const Icon(
